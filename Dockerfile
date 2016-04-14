@@ -5,7 +5,8 @@ EXPOSE 80
 
 # Install dependencies
 RUN apt-get update
-RUN apt-get -y install apache2 php7.0 php7.0-pgsql
+RUN apt-get -y install apache2 php7.0 php7.0-pgsql \
+                        libapache2-mod-php7.0
 
 # Apache configuration
 COPY config/apache/plagiarism-vhost.conf /etc/apache2/sites-available
