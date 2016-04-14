@@ -1,16 +1,15 @@
 <?php
 
-namespace eu\luige\plagiarismServices;
+namespace eu\luige\plagiarism\plagiarismServices;
 
-use eu\luige\resources\Resource;
-use eu\luige\similarity\Similarity;
+use eu\luige\plagiarism\similarity\Similarity;
 
 abstract class PlagiarismService
 {
 
     /**
      * @param Resource[] $resources
-     * @return Similarity[] 
+     * @return Similarity[]
      */
     abstract function compare(array $resources);
 

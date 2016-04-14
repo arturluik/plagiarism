@@ -1,5 +1,5 @@
 <?php
-namespace eu\luige\resources;
+namespace eu\luige\plagiarism\resource;
 
 class WebResource extends Resource
 {

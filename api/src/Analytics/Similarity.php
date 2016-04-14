@@ -1,8 +1,8 @@
 <?php
 
-namespace eu\luige\similarity;
+namespace eu\luige\plagiarism\similarity;
 
-use eu\luige\resources\Resource;
+use eu\luige\plagiarism\resources\Resource;
 
 abstract class Similarity
 {

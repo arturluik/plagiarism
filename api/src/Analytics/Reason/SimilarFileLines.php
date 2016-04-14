@@ -1,8 +1,8 @@
 <?php
 
-namespace eu\luige\similarity\reason;
+namespace eu\luige\plagiarism\plagiarism\similarity\reason;
 
-use eu\luige\datatypes\Range;
+use eu\luige\plagiarism\datatypes\Range;
 
 class SimilarFileLines extends Reason
 {

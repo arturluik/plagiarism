@@ -1,6 +1,6 @@
 <?php
 
-namespace eu\luige\similarity\reason;
+namespace eu\luige\plagiarism\plagiarism\similarity\reason;
 
 abstract class Reason
 {

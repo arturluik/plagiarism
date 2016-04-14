@@ -1,5 +1,7 @@
 <?php
 
+namespace eu\luige\plagiarism\similarity;
+
 class PercentageSimilarity extends Similarity
 {
     /** @var  int */
