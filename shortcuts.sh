@@ -13,5 +13,13 @@ function d-shell {
 }
 
 function d-run {
-    docker run -v $(pwd)/api:/plagiarism/api -v $(pwd)/web:/plagiarism/web -v $(pwd)/logs:/logs -p 80:80 -p 15672:15672 plagiarism
+    if [ $(docker ps | wc -l) -gt 1 ]; then
+        d-kill
+    fi
+        docker run -v $(pwd)/api:/plagiarism/api -v $(pwd)/web:/plagiarism/web -v $(pwd)/logs:/logs -p 80:80 -p 15672:15672 plagiarism
+}
+
+function d-buildrun {
+    d-build
+    d-run
 }

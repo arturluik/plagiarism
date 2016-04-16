@@ -1,5 +1,8 @@
 <?php
 
 return [
-    "test" => 4
+    "settings" => [
+        "debug" => true,
+        "displayErrorDetails" => true
+    ]
 ];

@@ -3,10 +3,14 @@
 # Load environment configuration
 source env.sh
 
-# Build API
-if [ ! -d /var/www/html/api ]; then
-    ln -s /plagiarism/api/ /var/www/html/api
-fi
+# Application environment setup
+rm -rf /var/www/html & mkdir /var/www/plagiarism
+ln -s /plagiarism/web /var/www/plagiarism/web
+ln -s /plagiarism/api /var/www/plagiarism/api
+
+# Generate documentation
+cd /tmp
+apidoc -i /plagiarism/api/ -o /var/www/plagiarism/documentation -f "index\\.php$"
 
 # Start services
 service rabbitmq-server start

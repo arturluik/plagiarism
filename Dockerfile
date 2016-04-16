@@ -5,18 +5,28 @@ EXPOSE 80
 
 # Install dependencies
 RUN apt-get update && apt-get -y install apache2 php7.0 php7.0-pgsql \
-                        libapache2-mod-php7.0 vim \
+                        libapache2-mod-php7.0 vim npm nodejs \
                         --fix-missing
 
 RUN echo 'deb http://www.rabbitmq.com/debian/ testing main' | \
         tee /etc/apt/sources.list.d/rabbitmq.list
 
 RUN apt-get update & apt-get -f -y install rabbitmq-server
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+
+RUN npm install apidoc -g
+
+# Apidoc configuration (used to generate automated API documentation)
+COPY config/apidoc.json /tmp/apidoc.json
 
 # Apache configuration
 COPY config/apache/plagiarism-vhost.conf /etc/apache2/sites-available
 RUN a2dissite 000-default.conf
 RUN a2ensite plagiarism-vhost.conf
+RUN a2enmod rewrite
+
+# PHP configuration
+COPY config/php/php.ini /etc/php/7.0/apache2/conf.d/30-application-config.ini
 
 # RabbitMQ configuration
 RUN service rabbitmq-server start && rabbitmq-plugins enable rabbitmq_management

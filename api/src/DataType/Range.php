@@ -1,6 +1,6 @@
 <?php
 
-namespace eu\luige\plagiarism\datatypes;
+namespace eu\luige\plagiarism\datatype;
 
 class Range
 {
