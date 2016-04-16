@@ -6,6 +6,7 @@ EXPOSE 80
 # Install dependencies
 RUN apt-get update && apt-get -y install apache2 php7.0 php7.0-pgsql \
                         libapache2-mod-php7.0 vim npm nodejs \
+                        php7.0-mbstring php7.0-bcmath \
                         --fix-missing
 
 RUN echo 'deb http://www.rabbitmq.com/debian/ testing main' | \

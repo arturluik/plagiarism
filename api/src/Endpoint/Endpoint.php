@@ -8,6 +8,8 @@ class Endpoint
 {
     /** @var  Container */
     protected $container;
+    /** @var  array */
+    protected $config;
 
     /**
      * Endpoint constructor.
@@ -16,6 +18,7 @@ class Endpoint
     public function __construct(Container $container)
     {
         $this->container = $container;
+        $this->config = $container->get("settings");
     }
 
 

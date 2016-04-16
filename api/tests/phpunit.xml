@@ -1,5 +1,8 @@
 <phpunit bootstrap="bootstrap.php">
     <testsuites>
+        <testsuite name="regtests">
+            <directory suffix="Test.php">./regtests</directory>
+        </testsuite>
         <testsuite name="unit">
             <directory suffix="Test.php">./unit</directory>
         </testsuite>

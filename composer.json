@@ -11,7 +11,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "eu\\luige\\": "api/src"
+      "eu\\luige\\": "api/src",
+      "tests\\eu\\luige\\": "api/tests"
     }
   },
   "repositories": {
@@ -37,6 +38,8 @@
   "require": {
     "Phhere/MOSS-PHP": "1.0.0",
     "php-amqplib/php-amqplib": "2.5.*",
-    "slim/slim": "^3.3"
+    "slim/slim": "^3.3",
+    "guzzlehttp/guzzle": "^6.2",
+    "monolog/monolog": "^1.19"
   }
 }
