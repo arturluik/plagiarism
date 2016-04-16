@@ -1,17 +1,17 @@
 <?php
 namespace eu\luige\plagiarism\resource;
 
+use eu\luige\plagiarism\mimetype\MimeType;
+
 class FileResource extends Resource
 {
     /** @var  String */
     private $fileName;
     /** @var  String */
-    private $encoding;
-    /** @var  String */
-    private $mimeType;
-    /** @var  String */
     private $path;
-
+    /** @var  String */
+    private $content = null;
+    
     /**
      * FileResource constructor.
      * @param String $path
@@ -19,6 +19,28 @@ class FileResource extends Resource
     public function __construct($path)
     {
         $this->path = $path;
+        $this->fileName = basename($this->path);
+    }
+    
+    public function fileExists()
+    {
+        return file_exists($this->path);
+    }
+
+    /**
+     * Lazy loader for content.
+     */
+    public function getContent()
+    {
+        if (!$this->isContentLoaded()) {
+            if ($this->fileExists()) {
+                $this->content = file_get_contents($this->path);
+            } else {
+                throw new \Exception("File $this->path does not exist or not readable");
+            }
+        }
+        
+        return $this->content;
     }
 
     /**
@@ -42,15 +64,7 @@ class FileResource extends Resource
      */
     public function getEncoding()
     {
-        return $this->encoding;
-    }
-
-    /**
-     * @param String $encoding
-     */
-    public function setEncoding($encoding)
-    {
-        $this->encoding = $encoding;
+        return mb_detect_encoding($this->getContent());
     }
 
     /**
@@ -58,15 +72,7 @@ class FileResource extends Resource
      */
     public function getMimeType()
     {
-        return $this->mimeType;
-    }
-
-    /**
-     * @param String $mimeType
-     */
-    public function setMimeType($mimeType)
-    {
-        $this->mimeType = $mimeType;
+        return MimeType::detect($this->path);
     }
 
     /**
@@ -83,5 +89,14 @@ class FileResource extends Resource
     public function setPath($path)
     {
         $this->path = $path;
+    }
+
+    /**
+     * Check whether the content is already loaded
+     * @return bool
+     */
+    private function isContentLoaded()
+    {
+        return $this->content !== null;
     }
 }
