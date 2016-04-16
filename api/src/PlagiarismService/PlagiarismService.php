@@ -1,6 +1,6 @@
 <?php
 
-namespace eu\luige\plagiarism\plagiarismServices;
+namespace eu\luige\plagiarism\plagiarismservices;
 
 use eu\luige\plagiarism\similarity\Similarity;
 
