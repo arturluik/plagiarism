@@ -2,7 +2,6 @@
 
 namespace eu\luige\plagiarism\similarity;
 
-use eu\luige\plagiarism\resources\Resource;
 
 abstract class Similarity
 {

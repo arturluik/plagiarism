@@ -10,9 +10,9 @@ class TaskMessage extends AMQPMessage
     /** @var  string */
     private $id;
     /** @var  string */
-    private $service;
+    private $plagiarismService;
     /** @var  string */
-    private $method;
+    private $resourceProvider;
     /** @var  mixed */
     private $payload;
 
@@ -36,8 +36,8 @@ class TaskMessage extends AMQPMessage
     {
         return json_encode([
             "id" => $this->id,
-            "service" => $this->service,
-            "method" => $this->method,
+            "plagiarism_service" => $this->plagiarismService,
+            "resource_provider" => $this->resourceProvider,
             "payload" => $this->payload
         ]);
     }
@@ -62,34 +62,34 @@ class TaskMessage extends AMQPMessage
     /**
      * @return string
      */
-    public function getService()
+    public function getPlagiarismService()
     {
-        return $this->service;
+        return $this->plagiarismService;
     }
 
     /**
-     * @param string $service
+     * @param string $plagiarismService
      */
-    public function setService($service)
+    public function setPlagiarismService($plagiarismService)
     {
-        $this->service = $service;
+        $this->plagiarismService = $plagiarismService;
         $this->onPropertyChanged();
     }
 
     /**
      * @return string
      */
-    public function getMethod()
+    public function getResourceProvider()
     {
-        return $this->method;
+        return $this->resourceProvider;
     }
 
     /**
-     * @param string $method
+     * @param string $resourceProvider
      */
-    public function setMethod($method)
+    public function setResourceProvider($resourceProvider)
     {
-        $this->method = $method;
+        $this->resourceProvider = $resourceProvider;
         $this->onPropertyChanged();
     }
 

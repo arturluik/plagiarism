@@ -5,6 +5,7 @@ namespace eu\luige\plagiarism\endpoint;
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\datastructure\TaskMessage;
 use eu\luige\plagiarism\plagiarismservices\PlagiarismService;
+use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Slim\Container;
 use Slim\Http\Request;
@@ -30,14 +31,20 @@ class Check extends Endpoint
         $apiResponse = new ApiResponse();
         $channel = $this->connection->channel();
 
-        $this->assertParamsExist($request, ['method', 'payload', 'service']);
+        $this->assertParamsExist($request, ['resource_provider', 'payload', 'service']);
         $service = $this->assertServiceExists($request->getParam('service'));
+        $provider = $this->assertResourceProviderExists($request->getParam('resource_provider'));
+
+        $payloadValidation = $provider->validatePayload($request->getParam('payload'));
+        if ($payloadValidation !== true) {
+            throw new \Exception("Payload error: $payloadValidation");
+        }
 
         $message = new TaskMessage();
         $message->setId(uniqid('task_'));
-        $message->setMethod($request->getParam('method'));
+        $message->setResourceProvider(get_class($provider));
         $message->setPayload($request->getParam('payload'));
-        $message->setService($request->getParam('service'));
+        $message->setPlagiarismService(get_class($service));
 
         $channel->basic_publish($message, '', $service->getQueueName());
 
@@ -47,6 +54,22 @@ class Check extends Endpoint
         ]);
 
         return $this->response($response, $apiResponse);
+    }
+
+    /**
+     * @param string $provider
+     * @return ResourceProvider
+     * @throws \Exception
+     */
+    public function assertResourceProviderExists(string $provider)
+    {
+        $providers = ResourceProvider::getProviders();
+        foreach ($providers as $providerClass) {
+            /** @var ResourceProvider $providerInstance */
+            $providerInstance = new $providerClass($this->container);
+            if (mb_strtolower($providerInstance->getName()) === mb_strtolower($provider)) return $providerInstance;
+        }
+        throw new \Exception("Unknown provider: $provider", 400);
     }
 
     /**
@@ -60,9 +83,9 @@ class Check extends Endpoint
         foreach ($services as $serviceClass) {
             /** @var PlagiarismService $serviceInstance */
             $serviceInstance = new $serviceClass($this->container);
-            if ($serviceInstance->getName() === $service) return $serviceInstance;
+            if (mb_strtolower($serviceInstance->getName()) === mb_strtolower($service)) return $serviceInstance;
 
         }
-        throw new \Exception("Unknown service : $service");
+        throw new \Exception("Unknown service : $service", 400);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace eu\luige\plagiarism\plagiarismservices;
 
+use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\similarity\Similarity;
 use Monolog\Logger;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -35,6 +36,20 @@ abstract class PlagiarismService
         $channel->queue_declare($this->getQueueName(), false, true, false, false);
         $channel->basic_consume($this->getQueueName(), '', false, false, false, false, function (AMQPMessage $message) {
             $this->logger->info("Worker {$this->getName()} got message $message->body");
+            try {
+                $json = json_decode($message->body, true);
+                /** @var ResourceProvider $provider */
+                $provider = new $json['resource_provider']($this->container);
+                /** @var PlagiarismService $service */
+                $service = new $json['plagiarism_service']($this->container);
+                $service->compare($provider->getResources($json['payload']));
+
+                $this->logger->info("Message $message->body finished");
+
+                $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            } catch (\Exception $e) {
+                $this->logger->error("Worker error: {$e->getMessage()}", $e);
+            }
         });
         while (true) {
             $channel->wait();
@@ -61,7 +76,8 @@ abstract class PlagiarismService
     }
 
     /**
-     * Get Service name
+     * Get plagiarsimService name
+     * (Displayed in UI)
      * @return string
      */
     abstract public function getName();
