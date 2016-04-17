@@ -32,13 +32,32 @@ abstract class PlagiarismService
         $this->logger->info("Starting worker {$this->getName()}");
         $this->connection = $this->container->get(AMQPStreamConnection::class);
         $channel = $this->connection->channel();
-        $channel->queue_declare("queue_{$this->getName()}", false, true, false, false);
-        $channel->basic_consume("queue_{$this->getName()}", '', false, false, false, false, function (AMQPMessage $message) {
-            $this->logger->info("Worker {$this->getName()} got message $message");
+        $channel->queue_declare($this->getQueueName(), false, true, false, false);
+        $channel->basic_consume($this->getQueueName(), '', false, false, false, false, function (AMQPMessage $message) {
+            $this->logger->info("Worker {$this->getName()} got message $message->body");
         });
         while (true) {
             $channel->wait();
         }
+    }
+
+    public static function getServices()
+    {
+        $services = [];
+        $classMap = require __DIR__ . '/../../deps/composer/autoload_classmap.php';
+        foreach ($classMap as $class => $path) {
+            if (preg_match('/plagiarismservices/', $class) && $class != \eu\luige\plagiarism\plagiarismservices\PlagiarismService::class) {
+                $services[] = $class;
+            }
+        }
+
+        return $services;
+    }
+
+    public function getQueueName()
+    {
+        return "queue_{
+                $this->getName()}";
     }
 
     /**

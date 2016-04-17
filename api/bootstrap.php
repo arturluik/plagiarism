@@ -46,6 +46,11 @@ $container[AMQPStreamConnection::class] = function () use ($config) {
         $config['amqp']['password']
     );
 };
+
+$jsonHelpers = new JsonHelpers\JsonHelpers($app->getContainer());
+$jsonHelpers->registerResponseView();
+$jsonHelpers->registerErrorHandlers();
+
 $container[Logger::class] = function () use ($log) {
     return $log;
 };

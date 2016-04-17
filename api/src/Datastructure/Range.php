@@ -1,6 +1,6 @@
 <?php
 
-namespace eu\luige\plagiarism\datatype;
+namespace eu\luige\plagiarism\datastructure;
 
 class Range
 {
@@ -51,5 +51,5 @@ class Range
     {
         $this->upperBound = $upperBound;
     }
-    
+
 }

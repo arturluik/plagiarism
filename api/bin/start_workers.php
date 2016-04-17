@@ -2,12 +2,9 @@
 
 require __DIR__ . '/../bootstrap.php';
 
-// Find all plagiarism services
-$classMap = require __DIR__ . '/../deps/composer/autoload_classmap.php';
-foreach ($classMap as $class => $path) {
-    if (preg_match('/plagiarismservices/', $class) && $class != \eu\luige\plagiarism\plagiarismservices\PlagiarismService::class) {
-        startWorker($class);
-    }
+$services = \eu\luige\plagiarism\plagiarismservices\PlagiarismService::getServices();
+foreach ($services as $service) {
+    startWorker($service);
 }
 
 function startWorker($service)
