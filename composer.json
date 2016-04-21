@@ -41,6 +41,7 @@
     "slim/slim": "^3.3",
     "guzzlehttp/guzzle": "^6.2",
     "monolog/monolog": "^1.19",
-    "aporat/slim-json-helpers": "^1.0"
+    "aporat/slim-json-helpers": "^1.0",
+    "doctrine/orm": "^2.5"
   }
 }

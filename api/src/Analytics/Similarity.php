@@ -3,13 +3,13 @@
 namespace eu\luige\plagiarism\similarity;
 
 
-abstract class Similarity
+class Similarity
 {
     /** @var  Resource */
     protected $firstResource;
     /** @var  Resource */
     protected $secondResource;
-
+    
     /**
      * @return Resource
      */

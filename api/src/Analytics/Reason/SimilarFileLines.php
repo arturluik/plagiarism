@@ -2,7 +2,8 @@
 
 namespace eu\luige\plagiarism\plagiarism\similarity\reason;
 
-use eu\luige\plagiarism\datatypes\Range;
+
+use eu\luige\plagiarism\datastructure\Range;
 
 class SimilarFileLines extends Reason
 {

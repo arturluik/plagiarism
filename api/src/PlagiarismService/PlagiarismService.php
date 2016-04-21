@@ -71,8 +71,7 @@ abstract class PlagiarismService
 
     public function getQueueName()
     {
-        return "queue_{
-                $this->getName()}";
+        return "queue_{$this->getName()}";
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Setup;
 use eu\luige\plagiarism\endpoint\Check;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -37,6 +39,20 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($log) {
         $log->addError("Error $errno: $errstr in $errfile line $errline");
     }
 }, E_ALL);
+
+// Create a simple "default" Doctrine ORM configuration for Annotations
+$doctrineConfig = Setup::createAnnotationMetadataConfiguration([__DIR__], $config['doctrine']['devmode']);
+// database configuration parameters
+$conn = [
+    'dbname' => $config['database']['name'],
+    'user' => $config['database']['user'],
+    'password' => $config['database']['password'],
+    'host' => $config['database']['host'],
+    'driver' => $config['database']['driver']
+];
+
+$entityManager = EntityManager::create($conn, $doctrineConfig);
+
 
 $container[AMQPStreamConnection::class] = function () use ($config) {
     return new AMQPStreamConnection(
