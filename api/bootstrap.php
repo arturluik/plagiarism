@@ -16,7 +16,6 @@ $config = $container->get("settings");
 
 $log = new Logger($config['application']);
 $log->pushHandler(new StreamHandler($config['monolog']['logfile'], $config['monolog']['loglevel']));
-
 register_shutdown_function(function () use ($log) {
     $error = error_get_last();
     if ($error !== NULL) {
@@ -41,7 +40,7 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($log) {
 }, E_ALL);
 
 // Create a simple "default" Doctrine ORM configuration for Annotations
-$doctrineConfig = Setup::createAnnotationMetadataConfiguration([__DIR__], $config['doctrine']['devmode']);
+$doctrineConfig = Setup::createAnnotationMetadataConfiguration([__DIR__ . '/src'], $config['doctrine']['devmode']);
 // database configuration parameters
 $conn = [
     'dbname' => $config['database']['name'],

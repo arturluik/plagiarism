@@ -19,7 +19,7 @@ return [
             'user' => 'plagiarism',
             'password' => 'sandbox',
             'host' => 'localhost',
-            'driver' => 'pgsql'
+            'driver' => 'pdo_pgsql'
         ],
         'monolog' => [
             'loglevel' => \Psr\Log\LogLevel::DEBUG,
