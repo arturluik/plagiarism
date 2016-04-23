@@ -2,7 +2,6 @@
 
 namespace eu\luige\plagiarism\endpoint;
 
-
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\datastructure\TaskMessage;
 use eu\luige\plagiarism\plagiarismservices\PlagiarismService;
@@ -25,6 +24,17 @@ class Check extends Endpoint
     {
         parent::__construct($container);
         $this->checkService = $container->get(\eu\luige\plagiarism\service\Check::class);
+    }
+
+
+    public function getDetailedInformation(Request $request, Response $response)
+    {
+        $apiResponse = new ApiResponse();
+        $this->assertAttributesExist($request, ['id']);
+        $apiResponse->setContent(
+            $this->checkService->getDetailedCheckInfo($request->getAttribute('id'))
+        );
+        return $this->response($response, $apiResponse);
     }
 
     public function getChecks(Request $request, Response $response)

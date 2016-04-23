@@ -1,11 +1,10 @@
 <?php
 namespace eu\luige\plagiarismresources;
 
+use eu\luige\plagiarism\mimetype\MimeType;
+
 class File extends Resource
 {
-    /** @var  String */
-    private $fileName;
-    /** @var  String */
     private $encoding;
     /** @var  String */
     private $mimeType;
@@ -36,7 +35,7 @@ class File extends Resource
      */
     public function getFileName()
     {
-        return $this->fileName;
+        return basename($this->path);
     }
 
     /**
@@ -52,33 +51,17 @@ class File extends Resource
      */
     public function getEncoding()
     {
-        return $this->encoding;
+        return mb_detect_encoding($this->getContent());
     }
-
-    /**
-     * @param String $encoding
-     */
-    public function setEncoding($encoding)
-    {
-        $this->encoding = $encoding;
-    }
-
+    
     /**
      * @return String
      */
     public function getMimeType()
     {
-        return $this->mimeType;
+        return MimeType::detect($this->getPath());
     }
-
-    /**
-     * @param String $mimeType
-     */
-    public function setMimeType($mimeType)
-    {
-        $this->mimeType = $mimeType;
-    }
-
+    
     /**
      * @return String
      */

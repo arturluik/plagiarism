@@ -16,7 +16,7 @@ class Check extends Entity
     protected $messageId;
     /** @var  string @Column(type="string") */
     protected $name;
-    /** @var  Similarity[] @OneToMany(targetEntity="Similarity", mappedBy="Check") */
+    /** @var  Similarity[] @OneToMany(targetEntity="Similarity", mappedBy="Check", cascade={"persist"}) */
     protected $similarities;
     /** @var  string @Column(type="string") */
     protected $serviceName;
@@ -127,4 +127,12 @@ class Check extends Entity
         $this->serviceName = $serviceName;
     }
 
+    function jsonSerialize()
+    {
+        // Check id is not important, but doctrine needs it
+        // Check id is actually equivalent to messageId
+        $vars = parent::jsonSerialize();
+        unset($vars['id']);
+        return $vars;
+    }
 }

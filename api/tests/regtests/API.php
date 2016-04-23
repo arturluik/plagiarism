@@ -13,16 +13,27 @@ class API
      */
     public function __construct()
     {
-        global $config;
-        var_dump($config);
         $this->guzzle = new Client([
             'timeout' => 2.0,
+            'base_uri' => 'http://localhost/'
         ]);
     }
 
-    public function plagiarismCheck()
+    public function getCheckById($id)
     {
-        var_dump($this->guzzle->post('http://192.168.99.100/api/index.php/plagiarism/check'));
+        return json_decode($this->guzzle->get("/api/plagiarism/check/$id", [
+        ])->getBody()->getContents(), true);
     }
 
+    public function check($service, $provider, $payload, $name = "test")
+    {
+        return json_decode($this->guzzle->post('/api/plagiarism/check', [
+            'form_params' => [
+                'payload' => $payload,
+                'service' => $service,
+                'resource_provider' => $provider,
+                'name' => $name
+            ]
+        ])->getBody()->getContents(), true);
+    }
 }

@@ -25,7 +25,7 @@ abstract class PlagiarismService
     /** @var  Logger */
     protected $logger;
     /** @var  EntityManager */
-    private $entityManger;
+    private $entityManager;
     /** @var  EntityRepository */
     private $resourceRepository;
 
@@ -37,8 +37,8 @@ abstract class PlagiarismService
     {
         $this->container = $container;
         $this->logger = $container->get(Logger::class);
-        $this->entityManger = $container->get(EntityManager::class);
-        $this->resourceRepository = $this->entityManger->getRepository(ResourceEntity::class);
+        $this->entityManager = $container->get(EntityManager::class);
+        $this->resourceRepository = $this->entityManager->getRepository(ResourceEntity::class);
     }
 
     public function work()
@@ -67,12 +67,19 @@ abstract class PlagiarismService
             $channel->wait();
         }
     }
-
+    
     /**
      * @param Similarity[] $similarities
      */
     private function persistSimilarities(array $similarities, PlagiarismService $plagiarismService, ResourceProvider $resourceProvider, $messageId)
     {
+        if (!$this->entityManager->isOpen()) {
+            $this->entityManager = $this->entityManager->create(
+                $this->entityManager->getConnection(),
+                $this->entityManager->getConfiguration()
+            );
+        }
+        
         $check = new Check();
         $check->setName("test check");
         $check->setFinished(new \DateTime());
@@ -80,25 +87,27 @@ abstract class PlagiarismService
         $check->setProviderName($resourceProvider->getName());
         $check->setMessageId($messageId);
 
+        $similarityEntities = [];
+        
         foreach ($similarities as $similarity) {
-
             try {
                 $similarityEntity = new SimilarityEntity();
 
                 $similarityEntity->setFirstResource($this->createOrGetResource($similarity->getFirstResource()));
                 $similarityEntity->setSecondResource($this->createOrGetResource($similarity->getSecondResource()));
-
+                
                 $similarityEntity->setSimilarityPercentage($similarity->getSimilarityPercentage());
                 $similarityEntity->setCheck($check);
 
-                $this->entityManger->persist($check);
-
+                $similarityEntities[] = $similarityEntity;
             } catch (\Exception $e) {
                 $this->logger->error('similarity save error', ['error' => $e]);
             }
         }
-
-        $this->entityManger->flush();
+        
+        $check->setSimilarities($similarityEntities);
+        $this->entityManager->persist($check);
+        $this->entityManager->flush();
     }
 
 

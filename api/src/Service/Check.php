@@ -1,6 +1,7 @@
 <?php
 namespace eu\luige\plagiarism\service;
 
+use Doctrine\ORM\EntityRepository;
 use eu\luige\plagiarism\datastructure\TaskMessage;
 use eu\luige\plagiarism\plagiarismservices\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
@@ -13,6 +14,8 @@ class Check extends Service
     protected $connection;
     /** @var \PhpAmqpLib\Channel\AMQPChannel */
     protected $channel;
+    /** @var  EntityRepository */
+    protected $checkRepository;
 
     /**
      * Check constructor.
@@ -23,6 +26,18 @@ class Check extends Service
         parent::__construct($container);
         $this->connection = $container->get(AMQPStreamConnection::class);
         $this->channel = $this->connection->channel();
+        $this->checkRepository = $this->entityManager->getRepository(\eu\luige\plagiarism\entity\Check::class);
+    }
+
+    public function getDetailedCheckInfo($messageId)
+    {
+        /** @var \eu\luige\plagiarism\entity\Check $check */
+        $check = $this->checkRepository->findOneBy(['messageId' => $messageId]);
+        if (!$check) {
+            throw new \Exception("No such check with id: $messageId");
+        }
+        $check->setSimilarities($check->getSimilarities());
+        return $check;
     }
 
     public function getBasicChecksInfo()
@@ -35,7 +50,7 @@ class Check extends Service
                 'serviceName' => $check->getServiceName(),
                 'providerName' => $check->getProviderName()
             ];
-        }, $this->entityManager->getRepository(\eu\luige\plagiarism\entity\Check::class)->findAll());
+        }, $this->checkRepository->findAll());
     }
 
 

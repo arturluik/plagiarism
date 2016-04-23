@@ -16,6 +16,12 @@ $app->post('/plagiarism/check', Check::class . ':enqueue');
  * @apiGroup Plagiarism
  */
 $app->get('/plagiarism/check', Check::class . ':getChecks');
-
+/**
+ * @api {get} /plagiarism/check/:id Get detailed check information
+ * @apiVersion 1.0.0
+ * @apiGroup Plagiarism
+ * @apiParam {string} [check unique id]
+ */
+$app->get('/plagiarism/check/{id}', Check::class . ':getDetailedInformation');
 
 $app->run();

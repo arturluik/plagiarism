@@ -28,6 +28,7 @@ class Test extends PlagiarismService
         $similarity = new \eu\luige\plagiarism\similarity\Similarity();
         $similarity->setFirstResource($resources[0]);
         $similarity->setSecondResource($resources[1]);
+        $similarity->setSimilarityPercentage(10);
         
         return [
             $similarity     

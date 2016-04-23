@@ -18,7 +18,21 @@ class CheckTest extends RegressionTestCase
 
     public function testSimpleEnqueue()
     {
-        $this->API->plagiarismCheck();
+        $response = $this->API->check('test-1.0', 'test-1.0', 'test');
+        $this->assertHeadersExist($response);
+        $this->assertFieldsExistInResponse($response, ['id']);
+    }
+
+    public function testCheckCreated()
+    {
+        $response = $this->API->check('test-1.0', 'test-1.0', 'test');
+        $id = $response['content']['id'];
+        $response = $this->API->getCheckById($id);
+        $this->assertFieldsExistInResponse($response, ['finished', 'messageId', 'name', 'similarities', 'serviceName', 'providerName']);
+
+        $this->assertEquals($response['content']['serviceName'], 'test-1.0');
+        $this->assertEquals($response['content']['providerName'], 'test-1.0');
+
     }
 
 }
