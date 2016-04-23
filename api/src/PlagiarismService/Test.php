@@ -6,7 +6,7 @@ namespace eu\luige\plagiarism\plagiarismservices;
 
 use eu\luige\plagiarism\entity\Similarity;
 
-class TestService extends PlagiarismService
+class Test extends PlagiarismService
 {
 
     /**

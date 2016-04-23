@@ -9,7 +9,7 @@ use eu\luige\plagiarism\entity\Resource as ResourceEntity;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\similarity\Similarity;
 use eu\luige\plagiarism\entity\Similarity as SimilarityEntity;
-use eu\luige\plagiarismresources\FileResource;
+use eu\luige\plagiarismresources\File;
 use eu\luige\plagiarismresources\Resource;
 use Monolog\Logger;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -56,7 +56,7 @@ abstract class PlagiarismService
                 /** @var PlagiarismService $service */
                 $service = new $json['plagiarism_service']($this->container);
                 $similarities = $service->compare($provider->getResources($json['payload']));
-                $this->persistSimilarities($similarities);
+                $this->persistSimilarities($similarities, $service, $provider, $json['id']);
                 $this->logger->info("Message $message->body finished");
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             } catch (\Throwable $e) {
@@ -71,13 +71,15 @@ abstract class PlagiarismService
     /**
      * @param Similarity[] $similarities
      */
-    private function persistSimilarities(array $similarities)
+    private function persistSimilarities(array $similarities, PlagiarismService $plagiarismService, ResourceProvider $resourceProvider, $messageId)
     {
         $check = new Check();
-        $check->setName("Test check");
+        $check->setName("test check");
         $check->setFinished(new \DateTime());
-        $check->setServiceName("Testservice");
-       
+        $check->setServiceName($plagiarismService->getName());
+        $check->setProviderName($resourceProvider->getName());
+        $check->setMessageId($messageId);
+
         foreach ($similarities as $similarity) {
 
             try {
@@ -102,7 +104,7 @@ abstract class PlagiarismService
 
     private function createOrGetResource(Resource $resource)
     {
-        if ($resource instanceof FileResource) {
+        if ($resource instanceof File) {
             $hash = hash('sha256', $resource->getContent());
             /** @var Resource $result */
             $result = $this->resourceRepository->findOneBy(['hash' => $hash]);

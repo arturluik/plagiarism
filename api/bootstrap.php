@@ -75,3 +75,6 @@ $container[Check::class] = function ($container) {
 $container[EntityManager::class] = function () use ($entityManager) {
     return $entityManager;
 };
+$container[\eu\luige\plagiarism\service\Check::class] = function($container) {
+    return new \eu\luige\plagiarism\service\Check($container);
+};

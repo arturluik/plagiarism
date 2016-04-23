@@ -23,7 +23,7 @@ class Resource extends Entity
     {
         return $this->id;
     }
-    
+
     /**
      * @return string
      */

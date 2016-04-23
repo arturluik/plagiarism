@@ -2,19 +2,20 @@
 
 namespace eu\luige\plagiarism\endpoint;
 
+
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\datastructure\TaskMessage;
 use eu\luige\plagiarism\plagiarismservices\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 class Check extends Endpoint
 {
-    /** @var  AMQPStreamConnection */
-    protected $connection;
+
+    /** @var  \eu\luige\plagiarism\service\Check */
+    protected $checkService;
 
     /**
      * Check constructor.
@@ -23,13 +24,22 @@ class Check extends Endpoint
     public function __construct(Container $container)
     {
         parent::__construct($container);
-        $this->connection = $container->get(AMQPStreamConnection::class);
+        $this->checkService = $container->get(\eu\luige\plagiarism\service\Check::class);
+    }
+
+    public function getChecks(Request $request, Response $response)
+    {
+        $apiResponse = new ApiResponse();
+        $apiResponse->setContent(
+            $this->checkService->getBasicChecksInfo()
+        );
+
+        return $this->response($response, $apiResponse);
     }
 
     public function enqueue(Request $request, Response $response)
     {
         $apiResponse = new ApiResponse();
-        $channel = $this->connection->channel();
 
         $this->assertParamsExist($request, ['resource_provider', 'payload', 'service']);
         $service = $this->assertServiceExists($request->getParam('service'));
@@ -40,13 +50,8 @@ class Check extends Endpoint
             throw new \Exception("Payload error: $payloadValidation");
         }
 
-        $message = new TaskMessage();
-        $message->setId(uniqid('task_'));
-        $message->setResourceProvider(get_class($provider));
-        $message->setPayload($request->getParam('payload'));
-        $message->setPlagiarismService(get_class($service));
-
-        $channel->basic_publish($message, '', $service->getQueueName());
+        /** @var TaskMessage $message */
+        $message = $this->checkService->newCheckMessage($provider, $service, $request->getParam('payload'));
 
         $apiResponse->setErrorCode(0);
         $apiResponse->setContent([

@@ -12,12 +12,48 @@ class Check extends Entity
     protected $id;
     /** @var  \DateTime @Column(type="datetime") */
     protected $finished;
+    /** @var  string  @Column(type="string", name="message_id") */
+    protected $messageId;
     /** @var  string @Column(type="string") */
     protected $name;
-    /** @var  @OneToMany(targetEntity="Similarity", mappedBy="Check") */
+    /** @var  Similarity[] @OneToMany(targetEntity="Similarity", mappedBy="Check") */
     protected $similarities;
     /** @var  string @Column(type="string") */
     protected $serviceName;
+    /** @var  string @Column(type="string") */
+    protected $providerName;
+
+    /**
+     * @return string
+     */
+    public function getProviderName()
+    {
+        return $this->providerName;
+    }
+
+    /**
+     * @param string $providerName
+     */
+    public function setProviderName($providerName)
+    {
+        $this->providerName = $providerName;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getMessageId()
+    {
+        return $this->messageId;
+    }
+
+    /**
+     * @param string $messageId
+     */
+    public function setMessageId($messageId)
+    {
+        $this->messageId = $messageId;
+    }
 
     /**
      * @return mixed
@@ -60,7 +96,7 @@ class Check extends Entity
     }
 
     /**
-     * @return mixed
+     * @return Similarity[]
      */
     public function getSimilarities()
     {
@@ -68,7 +104,7 @@ class Check extends Entity
     }
 
     /**
-     * @param mixed $similarities
+     * @param  Similarity[] $similarities
      */
     public function setSimilarities($similarities)
     {

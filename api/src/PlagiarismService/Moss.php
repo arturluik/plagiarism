@@ -4,7 +4,7 @@ namespace eu\luige\plagiarism\plagiarismservices;
 
 use eu\luige\plagiarism\similarity\Similarity;
 
-class MossService extends PlagiarismService
+class Moss extends PlagiarismService
 {
     /**
      * @param Resource[] $resources

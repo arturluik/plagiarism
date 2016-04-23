@@ -1,7 +1,7 @@
 <?php
 namespace eu\luige\plagiarismresources;
 
-class FileResource extends Resource
+class File extends Resource
 {
     /** @var  String */
     private $fileName;

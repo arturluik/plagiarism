@@ -4,9 +4,9 @@
 namespace eu\luige\plagiarism\resourceprovider;
 
 
-use eu\luige\plagiarismresources\FileResource;
+use eu\luige\plagiarismresources\File;
 
-class TestResourceProvider extends ResourceProvider
+class Test extends ResourceProvider
 {
 
     /**
@@ -28,8 +28,8 @@ class TestResourceProvider extends ResourceProvider
     public function getResources($payload)
     {
         return [
-            new FileResource(__DIR__ . '/../../tests/stubs/Resources/HelloWorld.java'),
-            new FileResource(__DIR__ . '/../../tests/stubs/Resources/style.css'),
+            new File(__DIR__ . '/../../tests/stubs/Resources/HelloWorld.java'),
+            new File(__DIR__ . '/../../tests/stubs/Resources/style.css'),
         ];
     }
 

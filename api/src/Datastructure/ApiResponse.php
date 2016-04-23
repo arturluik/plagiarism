@@ -28,7 +28,7 @@ class ApiResponse
     }
 
     /**
-     * @param array $content
+     * @param $content
      */
     public function setContent($content)
     {

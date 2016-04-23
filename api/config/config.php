@@ -26,7 +26,7 @@ return [
             'logfile' => '/logs/app.log'
         ],
         'workers' => [
-            \eu\luige\plagiarism\plagiarismservices\MossService::class => 2,
-            \eu\luige\plagiarism\plagiarismservices\TestService::class => 2
+            \eu\luige\plagiarism\plagiarismservices\Moss::class => 2,
+            \eu\luige\plagiarism\plagiarismservices\Test::class => 2
         ]
     ]];
