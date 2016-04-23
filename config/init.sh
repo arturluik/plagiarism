@@ -34,12 +34,12 @@ if [ ! -d /var/www/plagiarism/web ]; then
     echo "Application folder created"
 fi
 
-#cd /plagiarism
-#./composer.phar install
-#./composer.phar dump-autoload -o
-#cd api
-#./deps/bin/doctrine orm:schema-tool:drop --force
-#./deps/bin/doctrine orm:schema-tool:create
-#./deps/bin/doctrine orm:generate-proxies
+cd /plagiarism
+./composer.phar install
+./composer.phar dump-autoload -o
+cd api
+./deps/bin/doctrine orm:schema-tool:drop --force
+./deps/bin/doctrine orm:schema-tool:create
+./deps/bin/doctrine orm:generate-proxies
 
 /usr/sbin/apache2ctl -D FOREGROUND
