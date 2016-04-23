@@ -28,7 +28,7 @@ register_shutdown_function(function () use ($log) {
         }
     }
 });
-set_exception_handler(function (Exception $e) use ($log) {
+set_exception_handler(function (Throwable $e) use ($log) {
     if (strstr($e->getFile(), "capella") !== false) {
         $log->addError($e->getTraceAsString(), ["exception" => $e]);
     }
@@ -71,4 +71,7 @@ $container[Logger::class] = function () use ($log) {
 };
 $container[Check::class] = function ($container) {
     return new Check($container);
+};
+$container[EntityManager::class] = function () use ($entityManager) {
+    return $entityManager;
 };

@@ -1,19 +1,17 @@
 <?php
 
-namespace eu\luige\plagiarism\plagiarism\similarity\reason;
+namespace eu\luige\plagiarism\similarity;
 
 
-use eu\luige\plagiarism\datastructure\Range;
-
-class SimilarFileLines extends Reason
+class SimilarFileLines
 {
-    /** @var Range */
+    /** @var array */
     protected $firstFileLines;
-    /** @var  Range */
+    /** @var  array */
     protected $secondFileLines;
 
     /**
-     * @return Range
+     * @return array
      */
     public function getFirstFileLines()
     {
@@ -21,7 +19,7 @@ class SimilarFileLines extends Reason
     }
 
     /**
-     * @param Range $firstFileLines
+     * @param array $firstFileLines
      */
     public function setFirstFileLines($firstFileLines)
     {
@@ -29,7 +27,7 @@ class SimilarFileLines extends Reason
     }
 
     /**
-     * @return Range
+     * @return array
      */
     public function getSecondFileLines()
     {
@@ -37,7 +35,7 @@ class SimilarFileLines extends Reason
     }
 
     /**
-     * @param Range $secondFileLines
+     * @param array $secondFileLines
      */
     public function setSecondFileLines($secondFileLines)
     {

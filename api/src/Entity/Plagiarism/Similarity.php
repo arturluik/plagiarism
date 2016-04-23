@@ -3,12 +3,9 @@
 
 namespace eu\luige\plagiarism\entity;
 
-use Doctrine\ORM\Mapping\ManyToOne;
-use eu\luige\plagiarismresources\Resource;
-
 /**
  * @Entity
- * @Table(name="similarity")
+ * @Table(name="plagiarism_similarity")
  */
 class Similarity extends Entity
 {
@@ -34,9 +31,11 @@ class Similarity extends Entity
     protected $secondResource;
     /** @var float @Column(type="integer", name="similarity_percentage") */
     protected $similarityPercentage;
-    /** @var Similarity[] @ManyToOne(targetEntity="Check", inversedBy="similarities") */
+    /** @var Check @ManyToOne(targetEntity="Check", inversedBy="similarities") */
     protected $check;
-
+    /** @var  SimilarResourceLines[] @OneToMany(targetEntity="SimilarResourceLines", mappedBy="Similarity") */
+    protected $similarResourceLines;
+    
     /**
      * @return mixed
      */
@@ -94,7 +93,7 @@ class Similarity extends Entity
     }
 
     /**
-     * @return Similarity[]
+     * @return Check
      */
     public function getCheck()
     {
@@ -102,7 +101,7 @@ class Similarity extends Entity
     }
 
     /**
-     * @param Similarity[] $check
+     * @param Check $check
      */
     public function setCheck($check)
     {

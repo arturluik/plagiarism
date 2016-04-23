@@ -3,18 +3,18 @@ namespace eu\luige\plagiarism\entity;
 
 /**
  * @Entity
- * @Table(name="resource")
+ * @Table(name="plagiarism_resource")
  */
 class Resource extends Entity
 {
     /** @Id @Column(type="integer") @GeneratedValue * */
     protected $id;
     /** @var string @Column(type="string") */
-    public $name;
+    protected $name;
     /** @var resource @Column(type="blob") */
-    public $content;
+    protected $content;
     /** @var string @Column(type="string") */
-    public $hash;
+    protected $hash;
 
     /**
      * @return mixed

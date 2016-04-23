@@ -27,5 +27,6 @@ return [
         ],
         'workers' => [
             \eu\luige\plagiarism\plagiarismservices\MossService::class => 2,
+            \eu\luige\plagiarism\plagiarismservices\TestService::class => 2
         ]
     ]];

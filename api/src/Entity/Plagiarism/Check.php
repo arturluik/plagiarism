@@ -4,7 +4,7 @@ namespace eu\luige\plagiarism\entity;
 
 /**
  * @Entity
- * @Table(name="check")
+ * @Table(name="plagiarism_check")
  */
 class Check extends Entity
 {
@@ -26,7 +26,7 @@ class Check extends Entity
     {
         return $this->id;
     }
-    
+
     /**
      * @return \DateTime
      */

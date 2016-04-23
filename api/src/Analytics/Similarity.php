@@ -9,6 +9,42 @@ class Similarity
     protected $firstResource;
     /** @var  Resource */
     protected $secondResource;
+    /** @var  SimilarFileLines */
+    protected $similarFileLines;
+    /** @var  int */
+    protected $similarityPercentage;
+
+    /**
+     * @return SimilarFileLines
+     */
+    public function getSimilarFileLines()
+    {
+        return $this->similarFileLines;
+    }
+
+    /**
+     * @param SimilarFileLines $similarFileLines
+     */
+    public function setSimilarFileLines($similarFileLines)
+    {
+        $this->similarFileLines = $similarFileLines;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSimilarityPercentage()
+    {
+        return $this->similarityPercentage;
+    }
+
+    /**
+     * @param int $similarityPercentage
+     */
+    public function setSimilarityPercentage($similarityPercentage)
+    {
+        $this->similarityPercentage = $similarityPercentage;
+    }
     
     /**
      * @return Resource

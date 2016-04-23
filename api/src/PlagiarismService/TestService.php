@@ -4,7 +4,7 @@
 namespace eu\luige\plagiarism\plagiarismservices;
 
 
-use eu\luige\plagiarism\similarity\Similarity;
+use eu\luige\plagiarism\entity\Similarity;
 
 class TestService extends PlagiarismService
 {
@@ -25,6 +25,12 @@ class TestService extends PlagiarismService
      */
     public function compare(array $resources)
     {
-        return [];
+        $similarity = new \eu\luige\plagiarism\similarity\Similarity();
+        $similarity->setFirstResource($resources[0]);
+        $similarity->setSecondResource($resources[1]);
+        
+        return [
+            $similarity     
+        ];
     }
 }

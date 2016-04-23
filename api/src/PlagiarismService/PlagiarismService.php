@@ -2,8 +2,15 @@
 
 namespace eu\luige\plagiarism\plagiarismservices;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use eu\luige\plagiarism\entity\Check;
+use eu\luige\plagiarism\entity\Resource as ResourceEntity;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\similarity\Similarity;
+use eu\luige\plagiarism\entity\Similarity as SimilarityEntity;
+use eu\luige\plagiarismresources\FileResource;
+use eu\luige\plagiarismresources\Resource;
 use Monolog\Logger;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -17,6 +24,10 @@ abstract class PlagiarismService
     private $connection;
     /** @var  Logger */
     protected $logger;
+    /** @var  EntityManager */
+    private $entityManger;
+    /** @var  EntityRepository */
+    private $resourceRepository;
 
     /**
      * PlagiarismService constructor.
@@ -26,6 +37,8 @@ abstract class PlagiarismService
     {
         $this->container = $container;
         $this->logger = $container->get(Logger::class);
+        $this->entityManger = $container->get(EntityManager::class);
+        $this->resourceRepository = $this->entityManger->getRepository(ResourceEntity::class);
     }
 
     public function work()
@@ -42,17 +55,67 @@ abstract class PlagiarismService
                 $provider = new $json['resource_provider']($this->container);
                 /** @var PlagiarismService $service */
                 $service = new $json['plagiarism_service']($this->container);
-                $service->compare($provider->getResources($json['payload']));
-
+                $similarities = $service->compare($provider->getResources($json['payload']));
+                $this->persistSimilarities($similarities);
                 $this->logger->info("Message $message->body finished");
-
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
-            } catch (\Exception $e) {
-                $this->logger->error("Worker error: {$e->getMessage()}", $e);
+            } catch (\Throwable $e) {
+                $this->logger->error("Worker error: {$e->getMessage()}", ['error' => $e]);
             }
         });
         while (true) {
             $channel->wait();
+        }
+    }
+
+    /**
+     * @param Similarity[] $similarities
+     */
+    private function persistSimilarities(array $similarities)
+    {
+        $check = new Check();
+        $check->setName("Test check");
+        $check->setFinished(new \DateTime());
+        $check->setServiceName("Testservice");
+       
+        foreach ($similarities as $similarity) {
+
+            try {
+                $similarityEntity = new SimilarityEntity();
+
+                $similarityEntity->setFirstResource($this->createOrGetResource($similarity->getFirstResource()));
+                $similarityEntity->setSecondResource($this->createOrGetResource($similarity->getSecondResource()));
+
+                $similarityEntity->setSimilarityPercentage($similarity->getSimilarityPercentage());
+                $similarityEntity->setCheck($check);
+
+                $this->entityManger->persist($check);
+
+            } catch (\Exception $e) {
+                $this->logger->error('similarity save error', ['error' => $e]);
+            }
+        }
+
+        $this->entityManger->flush();
+    }
+
+
+    private function createOrGetResource(Resource $resource)
+    {
+        if ($resource instanceof FileResource) {
+            $hash = hash('sha256', $resource->getContent());
+            /** @var Resource $result */
+            $result = $this->resourceRepository->findOneBy(['hash' => $hash]);
+            if (!$result) {
+                $resourceEntity = new ResourceEntity();
+                $resourceEntity->setContent($resource->getContent());
+                $resourceEntity->setHash($hash);
+                $resourceEntity->setName($resource->getFileName());
+            } else {
+                return $result;
+            }
+        } else {
+            $this->logger->error("Unexpected resource found");
         }
     }
 

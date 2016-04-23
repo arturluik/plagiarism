@@ -11,6 +11,8 @@ class FileResource extends Resource
     private $mimeType;
     /** @var  String */
     private $path;
+    /** @var  string */
+    private $cachedContent;
 
     /**
      * FileResource constructor.
@@ -19,6 +21,14 @@ class FileResource extends Resource
     public function __construct($path)
     {
         $this->path = $path;
+    }
+
+    public function getContent()
+    {
+        if (!$this->cachedContent) {
+            $this->cachedContent = file_get_contents($this->getPath());
+        }
+        return $this->cachedContent;
     }
 
     /**
