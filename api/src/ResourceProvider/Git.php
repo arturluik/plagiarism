@@ -3,13 +3,27 @@
 namespace eu\luige\plagiarism\resourceprovider;
 
 use eu\luige\plagiarism\resource\File;
+use eu\luige\plagiarism\service\PathPatternMatcher;
 use GitWrapper\GitWrapper;
+use Slim\Container;
 
 class Git extends ResourceProvider
 {
 
     /** @var  string */
     private $tempFolder;
+    /** @var  PathPatternMatcher */
+    private $patternMatcher;
+
+    /**
+     * Git constructor.
+     */
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->patternMatcher = $container->get(PathPatternMatcher::class);
+    }
+
 
     /**
      * Validate request payload. Make sure all parameters exist.
@@ -21,6 +35,10 @@ class Git extends ResourceProvider
     public function validatePayload(array $payload)
     {
         $this->fieldsMustExistInArray($payload, ['authMethod', 'clone']);
+
+        if (isset($payload['directoryPattern'])) {
+            $this->patternMatcher->validatePattern(trim($payload['directoryPattern']));
+        }
 
         switch (mb_strtolower($payload['authMethod'])) {
             case 'password':
@@ -63,18 +81,27 @@ class Git extends ResourceProvider
     public function getResources($payload)
     {
         $this->cloneAll($payload);
+        if (isset($payload['directoryPattern'])) {
+            return $this->traverse($this->getTempFolder(), $payload['directoryPattern']);
+        }
         return $this->traverse($this->getTempFolder());
     }
 
-    public function traverse($path)
+    public function traverse($path, $pattern = false)
     {
         $resources = [];
         if (is_dir($path)) {
             foreach (array_diff(scandir($path), ['.', '..', '.git']) as $file) {
-                $resources = array_merge($resources, $this->traverse($path . '/' . $file));
+                $resources = array_merge($resources, $this->traverse($path . '/' . $file, $pattern));
             }
         } else if (is_file($path)) {
-            $resources[] = new File($path);
+            // Remove temp folder part and git folder name
+            $relativePath = strstr(str_replace($this->getTempFolder() . '/', '', $path), '/');
+            if (($pattern && $this->patternMatcher->matchesPattern($pattern, $relativePath)) || !$pattern) {
+                $resources[] = new File($path);
+            } else {
+                $this->logger->debug("File $path doesn't match pattern $pattern");
+            }
         }
         return $resources;
     }

@@ -2,9 +2,12 @@
 
 namespace tests\eu\luige\plagiarism\resourceprovider;
 
+use Doctrine\ORM\EntityManager;
 use eu\luige\plagiarism\resourceprovider\Git;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\resource\File;
+use eu\luige\plagiarism\service\PathPatternMatcher;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Slim\Container;
 
@@ -26,7 +29,15 @@ class GitTest extends \PHPUnit_Framework_TestCase
                 'temp_folder' => '/tmp/'
             ],
             Logger::class => function () {
-                return $this->getMockBuilder(Logger::class)->setMethods(['error', 'info'])->disableOriginalConstructor()->getMock();
+                $log = new Logger("test");
+                $log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+                return $log;
+            },
+            PathPatternMatcher::class => function ($container) {
+                return new PathPatternMatcher($container);
+            },
+            EntityManager::class => function () {
+                return null;
             }
         ]);
 
@@ -62,8 +73,21 @@ class GitTest extends \PHPUnit_Framework_TestCase
         $this->git->validatePayload($array);
     }
 
+    public function testGitIntegrationDirectoryPattern()
+    {
+        $resources = $this->git->getResources([
+            "authMethod" => "noauth",
+            "directoryPattern" => "/api/tests/stubs/Resources",
+            "clone" => [
+                "https://github.com/Tomatipasta/plagiarism.git"
+            ]
+        ]);
 
-    public function testGitIntegration()
+        $this->assertEquals(3, count($resources));
+
+    }
+
+    public function testGitIntegrationNoDirectoryPattern()
     {
         $resources = $this->git->getResources([
             "authMethod" => "noauth",

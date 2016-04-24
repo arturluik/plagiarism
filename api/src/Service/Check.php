@@ -39,7 +39,7 @@ class Check extends Service
         $checkArray = json_decode(json_encode($check), true);
 
         foreach ($check->getSimilarities() as $similarity) {
-            $checkArray['simialrities'][] = [
+            $checkArray['similarities'][] = [
                 'firstResource' => $similarity->getFirstResource()->getName(),
                 'secondResource' => $similarity->getSecondResource()->getName(),
                 'percentage' => $similarity->getSimilarityPercentage()
