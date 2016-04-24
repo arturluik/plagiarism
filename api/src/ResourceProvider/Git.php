@@ -2,7 +2,7 @@
 
 namespace eu\luige\plagiarism\resourceprovider;
 
-use eu\luige\plagiarismresources\File;
+use eu\luige\plagiarism\resource\File;
 use GitWrapper\GitWrapper;
 
 class Git extends ResourceProvider

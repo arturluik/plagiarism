@@ -1,10 +1,11 @@
 <?php
-namespace eu\luige\plagiarismresources;
+namespace eu\luige\plagiarism\resource;
 
 use eu\luige\plagiarism\mimetype\MimeType;
 
 class File extends Resource
 {
+    /** @var  String */
     private $path;
     /** @var  string */
     private $cachedContent;
@@ -33,7 +34,8 @@ class File extends Resource
     {
         return basename($this->path);
     }
-    
+
+
     /**
      * @return String
      */

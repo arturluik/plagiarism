@@ -3,7 +3,7 @@
 namespace tests\eu\luige\plagiarism\plagiarism\resource;
 
 use eu\luige\plagiarism\mimetype\MimeType;
-use eu\luige\plagiarismresources\File;
+use eu\luige\plagiarism\resource\File;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,9 +37,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testExampleResourceFileTypes()
     {
         $resource1 = new File(__DIR__ . '/../../stubs/Resources/style.css');
-        $this->assertEquals(MimeType::CSS_MIME, $resource1->getMimeType());
+        $this->assertEquals(MimeType::CSS, $resource1->getMimeType());
         $resource2 = new File(__DIR__ . '/../../stubs/Resources/HelloWorld.java');
-        $this->assertEquals(MimeType::JAVA_MIME, $resource2->getMimeType());
+        $this->assertEquals(MimeType::JAVA, $resource2->getMimeType());
     }
 
     public function testExampleResourceContent()

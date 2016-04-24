@@ -3,8 +3,8 @@
 namespace eu\luige\plagiarism\plagiarismservices;
 
 use eu\luige\plagiarism\similarity\Similarity;
-use eu\luige\plagiarismresources\File;
-use eu\luige\plagiarismresources\Resource;
+use eu\luige\plagiarism\resource\File;
+use eu\luige\plagiarism\resource\Resource;
 use Slim\Container;
 
 class Moss extends PlagiarismService
@@ -35,6 +35,9 @@ class Moss extends PlagiarismService
     {
         $this->logger->info("Moss {$this->getName()} started with " . count($resources) . " resources");
 
+         
+        
+        
         $this->copyResources($resources);
         $moss = new \MOSS($this->config['moss']['key']);
         $moss->setLanguage('java');

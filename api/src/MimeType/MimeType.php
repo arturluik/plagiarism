@@ -9,12 +9,12 @@ namespace eu\luige\plagiarism\mimetype;
  */
 class MimeType
 {
-    const JAVA_MIME = 'text/x-java-source';
-    const CSS_MIME = 'text/css';
+    const JAVA = 'text/x-java-source';
+    const CSS = 'text/css';
 
     static $customMimeTypes = [
-        'java' => self::JAVA_MIME,
-        'css' => self::CSS_MIME
+        'java' => self::JAVA,
+        'css' => self::CSS
     ];
 
     /**

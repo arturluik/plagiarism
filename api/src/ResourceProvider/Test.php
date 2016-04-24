@@ -4,7 +4,7 @@
 namespace eu\luige\plagiarism\resourceprovider;
 
 
-use eu\luige\plagiarismresources\File;
+use eu\luige\plagiarism\resource\File;
 
 class Test extends ResourceProvider
 {

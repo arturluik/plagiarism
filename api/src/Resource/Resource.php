@@ -1,5 +1,5 @@
 <?php
-namespace eu\luige\plagiarismresources;
+namespace eu\luige\plagiarism\resource;
 
 abstract class Resource
 {

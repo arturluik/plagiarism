@@ -4,7 +4,7 @@ namespace tests\eu\luige\plagiarism\resourceprovider;
 
 use eu\luige\plagiarism\resourceprovider\Git;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
-use eu\luige\plagiarismresources\File;
+use eu\luige\plagiarism\resource\File;
 use Monolog\Logger;
 use Slim\Container;
 
