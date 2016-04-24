@@ -46,9 +46,12 @@ class CheckTest extends RegressionTestCase
 
     public function testMoss()
     {
-        $response = $this->API->check('moss-1.0', "test-1.0", ["test" => 1]);
-
-
+        $response = $this->API->check('moss-1.0', "git-1.0", [
+            "authMethod" => "noauth",
+            "clone" => [
+                "https://github.com/Tomatipasta/plagiarism.git"
+            ]
+        ]);
     }
 
 }

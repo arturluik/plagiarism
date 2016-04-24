@@ -18,7 +18,6 @@ class Moss extends PlagiarismService
     /** @var  string */
     private $createdTempFolder;
 
-
     /**
      * Moss constructor.
      */
@@ -52,8 +51,9 @@ class Moss extends PlagiarismService
 
         $result = $moss->send();
         $this->logger->info("Moss completed with result: $result");
-    }
+        return $this->getSimilaritiesFromResult($resources, $result);
 
+    }
     /**
      * @param Resource[] $resources
      * @param string $resultPage
@@ -63,7 +63,7 @@ class Moss extends PlagiarismService
     {
         include __DIR__ . '/../../deps/simple-html-dom/simple-html-dom/simple_html_dom.php';
         /** @var \simple_html_dom $result */
-        $result = file_get_html("http://moss.stanford.edu/results/916056439/");
+        $result = file_get_html(trim($resultPage));
         /** @var \simple_html_dom_node[] $tableRows */
         $tableRows = $result->find("table tr");
         // Skip first, because its information tr
@@ -135,6 +135,8 @@ class Moss extends PlagiarismService
             }
         }
         $this->logger->warn("Resource $path not found");
+        
+        return null;
     }
 
     private function getLinkAndPercentage($text) : array

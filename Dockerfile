@@ -31,6 +31,7 @@ RUN a2enmod dump_io
 
 # PHP configuration
 COPY config/php/php.ini /etc/php/7.0/apache2/conf.d/30-application-config.ini
+COPY config/php/php.ini /etc/php/7.0/cli/conf.d/30-application-config.ini
 
 # Postgresql configuration
 COPY config/postgresql/postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
