@@ -3,7 +3,6 @@
 namespace eu\luige\plagiarism\resourceprovider;
 
 use eu\luige\plagiarismresources\File;
-use eu\luige\plagiarismresources\Resource;
 use GitWrapper\GitWrapper;
 
 class Git extends ResourceProvider
@@ -14,13 +13,34 @@ class Git extends ResourceProvider
 
     /**
      * Validate request payload. Make sure all parameters exist.
-     * If something is wrong, return error message
+     * If something is wrong, throw new exception
      * @param string $payload
      * @return bool
      */
-    public function validatePayload(string $payload)
+    public function validatePayload(array $payload)
     {
-        // TODO: Implement validatePayload() method.
+        $this->fieldsMustExistInArray($payload, ['authMethod', 'clone']);
+
+        switch (mb_strtolower($payload['authMethod'])) {
+            case 'password':
+                $this->fieldsMustExistInArray($payload, ['username', 'password']);
+                break;
+            case 'privateKey':
+                $this->fieldsMustExistInArray($payload, ['privateKey']);
+                break;
+        }
+
+        return true;
+    }
+
+    private function fieldsMustExistInArray(array $array, array $fields)
+    {
+        foreach ($fields as $field) {
+            if (!array_key_exists($field, $array)) {
+                throw new \Exception("Field: $field must exist in payload!");
+            }
+        }
+        return true;
     }
 
     /**

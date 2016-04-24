@@ -27,6 +27,7 @@ COPY config/apache/plagiarism-vhost.conf /etc/apache2/sites-available
 RUN a2dissite 000-default.conf
 RUN a2ensite plagiarism-vhost.conf
 RUN a2enmod rewrite
+RUN a2enmod dump_io
 
 # PHP configuration
 COPY config/php/php.ini /etc/php/7.0/apache2/conf.d/30-application-config.ini

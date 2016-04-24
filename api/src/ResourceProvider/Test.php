@@ -38,7 +38,7 @@ class Test extends ResourceProvider
      *
      * @return bool
      */
-    public function validatePayload(string $payload)
+    public function validatePayload(array $payload)
     {
         return true;
     }

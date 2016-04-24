@@ -19,7 +19,6 @@ class Check extends Service
 
     /**
      * Check constructor.
-     * @internal param AMQPStreamConnection $connection
      */
     public function __construct(Container $container)
     {

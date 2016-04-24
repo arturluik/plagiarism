@@ -62,6 +62,7 @@ $container[AMQPStreamConnection::class] = function () use ($config) {
     );
 };
 
+
 $jsonHelpers = new JsonHelpers\JsonHelpers($app->getContainer());
 $jsonHelpers->registerResponseView();
 $jsonHelpers->registerErrorHandlers();
@@ -75,6 +76,6 @@ $container[Check::class] = function ($container) {
 $container[EntityManager::class] = function () use ($entityManager) {
     return $entityManager;
 };
-$container[\eu\luige\plagiarism\service\Check::class] = function($container) {
+$container[\eu\luige\plagiarism\service\Check::class] = function ($container) {
     return new \eu\luige\plagiarism\service\Check($container);
 };

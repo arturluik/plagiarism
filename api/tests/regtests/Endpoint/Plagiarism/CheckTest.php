@@ -18,14 +18,14 @@ class CheckTest extends RegressionTestCase
 
     public function testSimpleEnqueue()
     {
-        $response = $this->API->check('test-1.0', 'test-1.0', 'test');
+        $response = $this->API->check('test-1.0', 'test-1.0',['test' => 1]);
         $this->assertHeadersExist($response);
         $this->assertFieldsExistInResponse($response, ['id']);
     }
 
     public function testCheckCreated()
     {
-        $response = $this->API->check('test-1.0', 'test-1.0', 'test');
+        $response = $this->API->check('test-1.0', 'test-1.0', ['test' => 1]);
         $id = $response['content']['id'];
         $response = $this->API->getCheckById($id);
         $this->assertFieldsExistInResponse($response, ['finished', 'messageId', 'name', 'similarities', 'serviceName', 'providerName']);
@@ -35,7 +35,7 @@ class CheckTest extends RegressionTestCase
     }
 
     public function testMoss() {
-        $response = $this->API->check('moss-1.0', "test-1.0", "test");
+        $response = $this->API->check('moss-1.0', "test-1.0", ["test" => 1]);
 
 
     }

@@ -41,11 +41,11 @@ abstract class ResourceProvider
 
     /**
      * Validate request payload. Make sure all parameters exist.
-     * If something is wrong, return error message
-     * @param string $payload
+     * If something is wrong, throw new exception
+     * @param array $payload
      * @return bool
      */
-    abstract public function validatePayload(string $payload);
+    abstract public function validatePayload(array  $payload);
 
     /**
      * Get ResourceProvider name

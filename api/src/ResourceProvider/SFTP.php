@@ -9,10 +9,10 @@ class SFTP extends ResourceProvider
     /**
      * Validate request payload. Make sure all parameters exist.
      * If something is wrong, return error message
-     * @param string $payload
+     * @param array $payload
      * @return bool
      */
-    public function validatePayload(string $payload)
+    public function validatePayload(array $payload)
     {
         // TODO: Implement validatePayload() method.
     }

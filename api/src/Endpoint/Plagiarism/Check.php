@@ -55,10 +55,12 @@ class Check extends Endpoint
         $service = $this->assertServiceExists($request->getParam('service'));
         $provider = $this->assertResourceProviderExists($request->getParam('resource_provider'));
 
-        $payloadValidation = $provider->validatePayload($request->getParam('payload'));
-        if ($payloadValidation !== true) {
-            throw new \Exception("Payload error: $payloadValidation");
+        $payload = json_decode($request->getParam('payload'), true);
+        if (json_last_error()) {
+            throw new \Exception('Payload json parse error');
         }
+
+        $provider->validatePayload($payload);
 
         /** @var TaskMessage $message */
         $message = $this->checkService->newCheckMessage($provider, $service, $request->getParam('payload'));

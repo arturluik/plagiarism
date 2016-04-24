@@ -25,11 +25,11 @@ class API
         ])->getBody()->getContents(), true);
     }
 
-    public function check($service, $provider, $payload, $name = "test")
+    public function check($service, $provider, array $payload, $name = "test")
     {
         return json_decode($this->guzzle->post('/api/plagiarism/check', [
             'form_params' => [
-                'payload' => $payload,
+                'payload' => json_encode($payload),
                 'service' => $service,
                 'resource_provider' => $provider,
                 'name' => $name
