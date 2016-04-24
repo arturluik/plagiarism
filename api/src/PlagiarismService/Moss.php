@@ -1,9 +1,11 @@
 <?php
 
-namespace eu\luige\plagiarism\plagiarismservices;
+namespace eu\luige\plagiarism\plagiarismservice;
 
 use eu\luige\plagiarism\mimetype\MimeType;
+use eu\luige\plagiarism\resource\Resource;
 use eu\luige\plagiarism\resourcefilter\MimeTypeFilter;
+use eu\luige\plagiarism\similarity\SimilarFileLines;
 use eu\luige\plagiarism\similarity\Similarity;
 use eu\luige\plagiarism\resource\File;
 use Slim\Container;
@@ -51,9 +53,94 @@ class Moss extends PlagiarismService
         $result = $moss->send();
         $this->logger->info("Moss completed with result: $result");
     }
-    
-    public function parseResult() {
-         
+
+    /**
+     * @param Resource[] $resources
+     * @param string $resultPage
+     * @return Similarity[]
+     */
+    public function getSimilaritiesFromResult(array $resources, string $resultPage) : array
+    {
+        include __DIR__ . '/../../deps/simple-html-dom/simple-html-dom/simple_html_dom.php';
+        /** @var \simple_html_dom $result */
+        $result = file_get_html("http://moss.stanford.edu/results/916056439/");
+        /** @var \simple_html_dom_node[] $tableRows */
+        $tableRows = $result->find("table tr");
+        // Skip first, because its information tr
+
+        $similarities = [];
+        for ($i = 1; $i < count($tableRows); $i++) {
+            $tableRow = $tableRows[$i];
+            /** @var \simple_html_dom_node[] $a */
+            $a = $tableRow->find("a");
+            $this->getLinkAndPercentage($a[0]->text());
+            list($firstLink, $firstPercentage) = $this->getLinkAndPercentage($a[0]->text());
+            list($secondLink, $secondPercentage) = $this->getLinkAndPercentage($a[1]->text());
+
+            $matchURL = $a[0]->getAttribute('href');
+
+            $firstResource = $this->findResourceByPath($resources, $firstLink);
+            $secondResource = $this->findResourceByPath($resources, $secondLink);
+
+            if ($firstResource && $secondResource) {
+                $similarity = new Similarity();
+                $similarity->setFirstResource($firstResource);
+                $similarity->setSecondResource($secondResource);
+                $similarity->setSimilarityPercentage(max(intval($firstPercentage), intval($secondPercentage)));
+                $similarity->setSimilarFileLines($this->getSimilarLinesFromMatch($matchURL));
+                $similarities[] = $similarity;
+            }
+        }
+        return $similarities;
+    }
+
+    /**
+     * @param string $matchURL
+     * @return SimilarFileLines[]
+     */
+    private function getSimilarLinesFromMatch(string $matchURL) : array
+    {
+        // Similar rows are inside the iframe
+        /** @var \simple_html_dom $result */
+        $result = \file_get_html(str_replace('.html', '-top.html', $matchURL));
+        /** @var \simple_html_dom_node[] $tableRows */
+        $tableRows = $result->find('table tr');
+
+        $similarFileLines = [];
+        for ($i = 1; $i < count($tableRows); $i++) {
+            $tableRow = $tableRows[$i];
+            /** @var \simple_html_dom_node[] $tds */
+            $tds = $tableRow->find('td');
+            $firstLines = trim($tds[0]->text());
+            $secondLines = trim($tds[2]->text());
+            $similarFileLine = new SimilarFileLines();
+            $similarFileLine->setFirstFileLines(explode("-", $firstLines));
+            $similarFileLine->setSecondFileLines(explode("-", $secondLines));
+            $similarFileLines[] = $similarFileLine;
+        }
+
+        return $similarFileLines;
+    }
+
+    /**
+     * @param Resource[] $resources
+     * @param $path
+     * @return mixed|Resource
+     */
+    private function findResourceByPath(array $resources, string $path) : Resource
+    {
+        foreach ($resources as $resource) {
+            if ($resource instanceof File && $resource->getPath() == $path) {
+                return $resource;
+            }
+        }
+        $this->logger->warn("Resource $path not found");
+    }
+
+    private function getLinkAndPercentage($text) : array
+    {
+        preg_match('/(.*)\((\d+)%\)/', $text, $result);
+        return [trim($result[1]), trim($result[2])];
     }
 
     /**
@@ -70,7 +157,7 @@ class Moss extends PlagiarismService
         }
     }
 
-    public function getTempFolder()
+    public function getTempFolder() : string
     {
         if (!$this->createdTempFolder) {
             $this->createdTempFolder = "{$this->temp}/" . uniqid('moss_temp_folder');
@@ -83,7 +170,7 @@ class Moss extends PlagiarismService
      * Get Service name
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return "Moss-1.0";
     }

@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../bootstrap.php';
 
-$services = \eu\luige\plagiarism\plagiarismservices\PlagiarismService::getServices();
+$services = \eu\luige\plagiarism\plagiarismservice\PlagiarismService::getServices();
 foreach ($services as $service) {
     startWorker($service);
 }

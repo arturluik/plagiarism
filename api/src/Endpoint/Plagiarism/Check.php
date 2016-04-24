@@ -4,7 +4,7 @@ namespace eu\luige\plagiarism\endpoint;
 
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\datastructure\TaskMessage;
-use eu\luige\plagiarism\plagiarismservices\PlagiarismService;
+use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use Slim\Container;
 use Slim\Http\Request;

@@ -3,7 +3,7 @@ namespace eu\luige\plagiarism\service;
 
 use Doctrine\ORM\EntityRepository;
 use eu\luige\plagiarism\datastructure\TaskMessage;
-use eu\luige\plagiarism\plagiarismservices\PlagiarismService;
+use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Slim\Container;

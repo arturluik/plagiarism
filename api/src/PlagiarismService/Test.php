@@ -1,7 +1,7 @@
 <?php
 
 
-namespace eu\luige\plagiarism\plagiarismservices;
+namespace eu\luige\plagiarism\plagiarismservice;
 
 
 use eu\luige\plagiarism\entity\Similarity;

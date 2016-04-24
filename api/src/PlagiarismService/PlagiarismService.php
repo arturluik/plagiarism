@@ -1,6 +1,6 @@
 <?php
 
-namespace eu\luige\plagiarism\plagiarismservices;
+namespace eu\luige\plagiarism\plagiarismservice;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -142,7 +142,7 @@ abstract class PlagiarismService
         $services = [];
         $classMap = require __DIR__ . '/../../deps/composer/autoload_classmap.php';
         foreach ($classMap as $class => $path) {
-            if (preg_match('/plagiarismservices/', $class) && $class != \eu\luige\plagiarism\plagiarismservices\PlagiarismService::class) {
+            if (preg_match('/plagiarismservice/', $class) && $class != \eu\luige\plagiarism\plagiarismservice\PlagiarismService::class) {
                 $services[] = $class;
             }
         }

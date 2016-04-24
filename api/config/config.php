@@ -30,7 +30,7 @@ return [
             'key' => '873311630'
         ],
         'workers' => [
-            \eu\luige\plagiarism\plagiarismservices\Moss::class => 2,
-            \eu\luige\plagiarism\plagiarismservices\Test::class => 2
+            \eu\luige\plagiarism\plagiarismservice\Moss::class => 2,
+            \eu\luige\plagiarism\plagiarismservice\Test::class => 2
         ]
     ]];

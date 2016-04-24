@@ -26,7 +26,7 @@ class GitTest extends \PHPUnit_Framework_TestCase
                 'temp_folder' => '/tmp/'
             ],
             Logger::class => function () {
-                return $this->getMockBuilder(Logger::class)->setMethods(['error'])->disableOriginalConstructor()->getMock();
+                return $this->getMockBuilder(Logger::class)->setMethods(['error', 'info'])->disableOriginalConstructor()->getMock();
             }
         ]);
 

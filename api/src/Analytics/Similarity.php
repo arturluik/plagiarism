@@ -9,13 +9,13 @@ class Similarity
     protected $firstResource;
     /** @var  Resource */
     protected $secondResource;
-    /** @var  SimilarFileLines */
+    /** @var  SimilarFileLines[] */
     protected $similarFileLines;
     /** @var  int */
     protected $similarityPercentage;
 
     /**
-     * @return SimilarFileLines
+     * @return SimilarFileLines[]
      */
     public function getSimilarFileLines()
     {
@@ -23,7 +23,7 @@ class Similarity
     }
 
     /**
-     * @param SimilarFileLines $similarFileLines
+     * @param SimilarFileLines[] $similarFileLines
      */
     public function setSimilarFileLines($similarFileLines)
     {
