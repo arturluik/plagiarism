@@ -12,6 +12,9 @@ return [
             'username' => 'guest',
             'password' => 'guest'
         ],
+        'google' => [
+            'auth_url' => 'https://www.googleapis.com/oauth2/v1/tokeninfo'
+        ],
         'doctrine' => [
             'debug' => true
         ],

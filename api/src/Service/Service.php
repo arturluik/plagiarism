@@ -12,6 +12,8 @@ abstract class Service
     protected $container;
     /** @var  EntityManager */
     protected $entityManager;
+    /** @var  array */
+    protected $config;
 
     /**
      * Service constructor.
@@ -21,6 +23,7 @@ abstract class Service
     {
         $this->container = $container;
         $this->entityManager = $container->get(EntityManager::class);
+        $this->config = $container->get('settings');
     }
 
 

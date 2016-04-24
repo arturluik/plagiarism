@@ -29,6 +29,11 @@ class Endpoint
         return $this->container->view->render($response, json_decode(json_encode($apiResponse), 1));
     }
 
+    public function authenticate(Request $request)
+    {
+       
+    }
+
     public function assertAttributesExist(Request $request, array $array)
     {
         $attributes = $request->getAttributes();

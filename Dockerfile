@@ -6,7 +6,8 @@ RUN apt-get update && apt-get -y install apache2 php7.0 php7.0-pgsql \
                         libapache2-mod-php7.0 vim npm nodejs \
                         php7.0-mbstring php7.0-bcmath php7.0-dom php7.0-zip git \
                         postgresql-9.5 php7.0-pgsql \
-                        postgresql-client sudo wget\
+                        postgresql-client sudo wget \
+                        redis-server \
                         --fix-missing
 
 RUN echo 'deb http://www.rabbitmq.com/debian/ testing main' | \

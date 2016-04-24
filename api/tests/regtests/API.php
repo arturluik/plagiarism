@@ -15,7 +15,7 @@ class API
     {
         $this->guzzle = new Client([
             'timeout' => 2.0,
-            'base_uri' => 'http://localhost/'
+            'base_url' => 'http://localhost/'
         ]);
     }
 
@@ -28,7 +28,7 @@ class API
     public function check($service, $provider, array $payload, $name = "test")
     {
         return json_decode($this->guzzle->post('/api/plagiarism/check', [
-            'form_params' => [
+            'body' => [
                 'payload' => json_encode($payload),
                 'service' => $service,
                 'resource_provider' => $provider,

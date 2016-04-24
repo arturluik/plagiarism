@@ -1,10 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {render}  from 'react-dom';
+import {Router, Route, Link, browserHistory} from 'react-router';
 
-class Hello extends React.Component {
-    render() {
-        return <h1>Hello</h1>
-    }
-}
+import Index from './Component/Index.jsx';
 
-ReactDOM.render(<Hello/>, document.getElementById('content'));
+import 'bootstrap/dist/css/bootstrap.css';
+
+render((
+    <Router history={browserHistory}>
+        <Route path="/web" component={Index}>
+        </Route>
+    </Router>
+), document.getElementById("root-container"));

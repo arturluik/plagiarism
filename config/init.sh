@@ -9,10 +9,12 @@ cd /tmp
 apidoc -i /plagiarism/api/ -o /var/www/plagiarism/documentation -f "index\\.php$"
 
 # Start services
+service redis-server start
 service rabbitmq-server start
 rabbitmqctl add_user $RABBIT_USER $RABBIT_PASSWORD
 rabbitmqctl set_permissions -p / $RABBIT_USER ".*" ".*" ".*"
 rabbitmqctl set_user_tags $RABBIT_USER administrator
+
 
 # Database setup
 service postgresql start

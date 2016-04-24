@@ -4,4 +4,4 @@ api/deps
 web/static/documentation
 composer.lock
 node_module
-web/src/bundle.js
+web/build
