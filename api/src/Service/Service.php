@@ -3,6 +3,7 @@
 namespace eu\luige\plagiarism\service;
 
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 use Slim\Container;
 
 abstract class Service
@@ -14,6 +15,8 @@ abstract class Service
     protected $entityManager;
     /** @var  array */
     protected $config;
+    /** @var  Logger */
+    protected $logger;
 
     /**
      * Service constructor.
@@ -24,6 +27,7 @@ abstract class Service
         $this->container = $container;
         $this->entityManager = $container->get(EntityManager::class);
         $this->config = $container->get('settings');
+        $this->logger = $container->get(Logger::class);
     }
 
 

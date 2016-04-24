@@ -6,6 +6,7 @@ use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\datastructure\TaskMessage;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
+use eu\luige\plagiarism\service\Cache;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;

@@ -79,6 +79,9 @@ $container[EntityManager::class] = function () use ($entityManager) {
 $container[\eu\luige\plagiarism\service\Check::class] = function ($container) {
     return new \eu\luige\plagiarism\service\Check($container);
 };
-$container[\eu\luige\plagiarism\service\PathPatternMatcher::class] = function($container) {
+$container[\eu\luige\plagiarism\service\PathPatternMatcher::class] = function ($container) {
     return new \eu\luige\plagiarism\service\PathPatternMatcher($container);
+};
+$container[\eu\luige\plagiarism\service\Cache::class] = function ($container) {
+    return new \eu\luige\plagiarism\service\Cache($container);
 };

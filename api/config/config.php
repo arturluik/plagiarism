@@ -18,6 +18,11 @@ return [
         'doctrine' => [
             'debug' => true
         ],
+        "redis" => [
+            'scheme' => 'tcp',
+            'host' => 'localhost',
+            'port' => 6379,
+        ],
         'database' => [
             'name' => 'plagiarism',
             'user' => 'plagiarism',

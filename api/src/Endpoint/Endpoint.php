@@ -3,6 +3,7 @@
 namespace eu\luige\plagiarism\endpoint;
 
 use eu\luige\plagiarism\datastructure\ApiResponse;
+use Monolog\Logger;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -13,6 +14,8 @@ class Endpoint
     protected $container;
     /** @var  array */
     protected $config;
+    /** @var  Logger */
+    protected $logger;
 
     /**
      * Endpoint constructor.
@@ -22,6 +25,7 @@ class Endpoint
     {
         $this->container = $container;
         $this->config = $container->get("settings");
+        $this->logger = $container->get(Logger::class);
     }
 
     public function response(Response $response, ApiResponse $apiResponse)
@@ -31,7 +35,7 @@ class Endpoint
 
     public function authenticate(Request $request)
     {
-       
+
     }
 
     public function assertAttributesExist(Request $request, array $array)
