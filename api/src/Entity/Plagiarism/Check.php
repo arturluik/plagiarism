@@ -16,7 +16,7 @@ class Check extends Entity
     protected $messageId;
     /** @var  string @Column(type="string") */
     protected $name;
-    /** @var  Similarity[] @OneToMany(targetEntity="Similarity", mappedBy="Check", cascade={"persist"}) */
+    /** @var  Similarity[] @OneToMany(targetEntity="Similarity", mappedBy="check", cascade={"persist"}) */
     protected $similarities;
     /** @var  string @Column(type="string") */
     protected $serviceName;

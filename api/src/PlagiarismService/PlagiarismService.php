@@ -129,6 +129,8 @@ abstract class PlagiarismService
                 $resourceEntity->setContent($resource->getContent());
                 $resourceEntity->setHash($hash);
                 $resourceEntity->setName($resource->getFileName());
+                $this->entityManager->persist($resourceEntity);
+                return $resourceEntity;
             } else {
                 return $result;
             }

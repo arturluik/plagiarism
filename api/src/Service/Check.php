@@ -35,8 +35,19 @@ class Check extends Service
         if (!$check) {
             throw new \Exception("No such check with id: $messageId");
         }
-        $check->setSimilarities($check->getSimilarities());
-        return $check;
+
+        $checkArray = json_decode(json_encode($check), true);
+
+        foreach ($check->getSimilarities() as $similarity) {
+            $checkArray['simialrities'][] = [
+                'firstResource' => $similarity->getFirstResource()->getName(),
+                'secondResource' => $similarity->getSecondResource()->getName(),
+                'percentage' => $similarity->getSimilarityPercentage()
+            ];
+        }
+
+
+        return $checkArray;
     }
 
     public function getBasicChecksInfo()

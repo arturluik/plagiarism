@@ -13,29 +13,23 @@ class Similarity extends Entity
     protected $id;
     /**
      * @var Resource
-     * @ManyToMany(targetEntity="Resource")
-     * @JoinTable(name="check_first_resource",
-     *      joinColumns={@JoinColumn(name="check_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="resource_id", referencedColumnName="id")}
-     *      )
-     */
+     * @ManyToOne(targetEntity="Resource")
+     * @JoinColumn(name="first_resource_id", referencedColumnName="id")
+     * */
     protected $firstResource;
     /**
      * @var Resource
-     * @ManyToMany(targetEntity="Resource")
-     * @JoinTable(name="check_second_resource",
-     *      joinColumns={@JoinColumn(name="check_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="resource_id", referencedColumnName="id")}
-     *      )
+     * @ManyToOne(targetEntity="Resource")
+     * @JoinColumn(name="second_resource_id", referencedColumnName="id")
      */
     protected $secondResource;
     /** @var float @Column(type="integer", name="similarity_percentage") */
     protected $similarityPercentage;
     /** @var Check @ManyToOne(targetEntity="Check", inversedBy="similarities") */
     protected $check;
-    /** @var  SimilarResourceLines[] @OneToMany(targetEntity="SimilarResourceLines", mappedBy="Similarity") */
+    /** @var  SimilarResourceLines[] @OneToMany(targetEntity="SimilarResourceLines", mappedBy="Similarity", cascade={"persist"}) */
     protected $similarResourceLines;
-    
+
     /**
      * @return mixed
      */
@@ -43,9 +37,9 @@ class Similarity extends Entity
     {
         return $this->id;
     }
-    
+
     /**
-     * @return mixed
+     * @return \eu\luige\plagiarism\entity\Resource
      */
     public function getFirstResource()
     {
@@ -53,7 +47,7 @@ class Similarity extends Entity
     }
 
     /**
-     * @param mixed $firstResource
+     * @param \eu\luige\plagiarism\entity\Resource $firstResource
      */
     public function setFirstResource($firstResource)
     {
@@ -61,7 +55,7 @@ class Similarity extends Entity
     }
 
     /**
-     * @return mixed
+     * @return \eu\luige\plagiarism\entity\Resource
      */
     public function getSecondResource()
     {
@@ -69,7 +63,7 @@ class Similarity extends Entity
     }
 
     /**
-     * @param mixed $secondResource
+     * @param \eu\luige\plagiarism\entity\Resource $secondResource
      */
     public function setSecondResource($secondResource)
     {
@@ -107,4 +101,21 @@ class Similarity extends Entity
     {
         $this->check = $check;
     }
+
+    /**
+     * @return SimilarResourceLines[]
+     */
+    public function getSimilarResourceLines()
+    {
+        return $this->similarResourceLines;
+    }
+
+    /**
+     * @param SimilarResourceLines[] $similarResourceLines
+     */
+    public function setSimilarResourceLines($similarResourceLines)
+    {
+        $this->similarResourceLines = $similarResourceLines;
+    }
+
 }
