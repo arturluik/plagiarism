@@ -32,6 +32,11 @@ class CheckTest extends RegressionTestCase
 
         $this->assertEquals($response['content']['serviceName'], 'test-1.0');
         $this->assertEquals($response['content']['providerName'], 'test-1.0');
+    }
+
+    public function testMoss() {
+        $response = $this->API->check('moss-1.0', "test-1.0", "test");
+
 
     }
 

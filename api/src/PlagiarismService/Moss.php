@@ -3,16 +3,69 @@
 namespace eu\luige\plagiarism\plagiarismservices;
 
 use eu\luige\plagiarism\similarity\Similarity;
+use eu\luige\plagiarismresources\File;
+use eu\luige\plagiarismresources\Resource;
+use Slim\Container;
 
 class Moss extends PlagiarismService
 {
+
+    /** @var  string */
+    private $temp;
+    /** @var  string */
+    private $createdTempFolder;
+
+
+    /**
+     * Moss constructor.
+     */
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->temp = $this->config['temp_folder'];
+        require_once  __DIR__  . '/../../deps/Phhere/MOSS-PHP/moss.php';
+    }
+
+
     /**
      * @param Resource[] $resources
      * @return Similarity[]
      */
     public function compare(array $resources)
     {
-        // TODO: Implement compare() method.
+        $this->logger->info("Moss {$this->getName()} started with " . count($resources) . " resources");
+
+        $this->copyResources($resources);
+        $moss = new \MOSS($this->config['moss']['key']);
+        $moss->setLanguage('java');
+        $moss->addByWildcard($this->getTempFolder() . '/*');
+
+        $result = $moss->send();
+
+        $this->logger->info("Moss completed with result: $result");
+    }
+
+    /**
+     * @param Resource[] $resources
+     */
+    public function copyResources(array $resources)
+    {
+        $tempFolder = $this->getTempFolder();
+        $this->logger->info("Copying " . count($resources) . " resources to $tempFolder");
+        foreach ($resources as $resource) {
+            if ($resource instanceof File) {
+                copy($resource->getPath(), "$tempFolder/{$resource->getMimeType()}");
+            }
+        }
+    }
+
+    public function getTempFolder()
+    {
+        if (!$this->createdTempFolder) {
+            $this->createdTempFolder = "{$this->temp}/" . uniqid('moss_temp_folder');
+            mkdir($this->createdTempFolder);
+        }
+        return $this->createdTempFolder;
     }
 
     /**

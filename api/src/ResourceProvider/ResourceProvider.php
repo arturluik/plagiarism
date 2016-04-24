@@ -2,8 +2,30 @@
 
 namespace eu\luige\plagiarism\resourceprovider;
 
+use Monolog\Logger;
+use Slim\Container;
+
 abstract class ResourceProvider
 {
+    /** @var  Container */
+    protected $container;
+    /** @var  array */
+    protected $config;
+    /** @var  Logger */
+    protected $logger;
+
+    /**
+     * ResourceProvider constructor.
+     * @param Container $container
+     */
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+        $this->logger = $this->container->get(Logger::class);
+        $this->config = $this->container->get("settings");
+    }
+
+
     public static function getProviders()
     {
         $providers = [];

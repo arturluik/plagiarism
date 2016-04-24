@@ -1,7 +1,6 @@
 {
   "name": "Tomatipasta/plagiarism",
   "description": "Collection of plagiarism services",
-  "minimum-stability": "beta",
   "license": "MIT",
   "authors": [
     {
@@ -42,6 +41,7 @@
     "guzzlehttp/guzzle": "^6.2",
     "monolog/monolog": "^1.19",
     "aporat/slim-json-helpers": "^1.0",
-    "doctrine/orm": "^2.5"
+    "doctrine/orm": "^2.5",
+    "cpliakas/git-wrapper": "^1.7"
   }
 }

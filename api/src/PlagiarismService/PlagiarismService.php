@@ -28,6 +28,8 @@ abstract class PlagiarismService
     private $entityManager;
     /** @var  EntityRepository */
     private $resourceRepository;
+    /** @var  array */
+    protected $config;
 
     /**
      * PlagiarismService constructor.
@@ -39,6 +41,7 @@ abstract class PlagiarismService
         $this->logger = $container->get(Logger::class);
         $this->entityManager = $container->get(EntityManager::class);
         $this->resourceRepository = $this->entityManager->getRepository(ResourceEntity::class);
+        $this->config = $container->get("settings");
     }
 
     public function work()

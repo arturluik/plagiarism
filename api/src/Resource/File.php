@@ -5,10 +5,6 @@ use eu\luige\plagiarism\mimetype\MimeType;
 
 class File extends Resource
 {
-    private $encoding;
-    /** @var  String */
-    private $mimeType;
-    /** @var  String */
     private $path;
     /** @var  string */
     private $cachedContent;
@@ -37,15 +33,7 @@ class File extends Resource
     {
         return basename($this->path);
     }
-
-    /**
-     * @param String $fileName
-     */
-    public function setFileName($fileName)
-    {
-        $this->fileName = $fileName;
-    }
-
+    
     /**
      * @return String
      */
