@@ -41,10 +41,19 @@ class Moss extends PlagiarismService
         $this->copyResources($resources);
         $moss = new \MOSS($this->config['moss']['key']);
         $moss->setLanguage('java');
-        $moss->addByWildcard($this->getTempFolder() . '/*');
+
+        foreach ($resources as $resource) {
+            if ($resource instanceof File) {
+                $moss->addFile($resource->getPath());
+            }
+        }
 
         $result = $moss->send();
         $this->logger->info("Moss completed with result: $result");
+    }
+    
+    public function parseResult() {
+         
     }
 
     /**

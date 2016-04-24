@@ -58,7 +58,11 @@ abstract class PlagiarismService
                 $provider = new $json['resource_provider']($this->container);
                 /** @var PlagiarismService $service */
                 $service = new $json['plagiarism_service']($this->container);
-                $similarities = $service->compare($provider->getResources($json['payload']));
+
+                $this->logger->info("Using {$json['resource_provider']} as a provider with payload {$json['payload']}
+                                     and {$json['plagiarism_service']} as service");
+
+                $similarities = $service->compare($provider->getResources(json_decode($json['payload'], true)));
                 $this->persistSimilarities($similarities, $service, $provider, $json['id']);
                 $this->logger->info("Message $message->body finished");
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
@@ -70,7 +74,7 @@ abstract class PlagiarismService
             $channel->wait();
         }
     }
-    
+
     /**
      * @param Similarity[] $similarities
      */
@@ -82,7 +86,7 @@ abstract class PlagiarismService
                 $this->entityManager->getConfiguration()
             );
         }
-        
+
         $check = new Check();
         $check->setName("test check");
         $check->setFinished(new \DateTime());
@@ -91,14 +95,14 @@ abstract class PlagiarismService
         $check->setMessageId($messageId);
 
         $similarityEntities = [];
-        
+
         foreach ($similarities as $similarity) {
             try {
                 $similarityEntity = new SimilarityEntity();
 
                 $similarityEntity->setFirstResource($this->createOrGetResource($similarity->getFirstResource()));
                 $similarityEntity->setSecondResource($this->createOrGetResource($similarity->getSecondResource()));
-                
+
                 $similarityEntity->setSimilarityPercentage($similarity->getSimilarityPercentage());
                 $similarityEntity->setCheck($check);
 
@@ -107,7 +111,7 @@ abstract class PlagiarismService
                 $this->logger->error('similarity save error', ['error' => $e]);
             }
         }
-        
+
         $check->setSimilarities($similarityEntities);
         $this->entityManager->persist($check);
         $this->entityManager->flush();

@@ -14,8 +14,9 @@ class Git extends ResourceProvider
     /**
      * Validate request payload. Make sure all parameters exist.
      * If something is wrong, throw new exception
-     * @param string $payload
+     * @param array $payload
      * @return bool
+     * @throws \Exception
      */
     public function validatePayload(array $payload)
     {
@@ -88,18 +89,23 @@ class Git extends ResourceProvider
 
         foreach ($payload['clone'] as $repository) {
             $toDir = $this->getTempFolder() . '/' . str_replace('.git', '', basename($repository));
-            switch (mb_strtolower($payload['authMethod'])) {
-                case 'password':
-                    $this->cloneRepositoryWithPassword($repository, $payload['username'], $payload['password'], $toDir);
-                    break;
-                case 'noauth':
-                    $this->cloneRepositoryWithoutAuthentication($repository, $toDir);
-                    break;
-                case 'privateKey':
-                    $this->cloneRepositoryWithSsh($repository, $payload['privateKey'], $toDir);
-                    break;
-                default:
-                    $this->logger->error("Unknown authMethod", ['payload' => $payload]);
+            try {
+                switch (mb_strtolower($payload['authMethod'])) {
+                    case 'password':
+                        $this->cloneRepositoryWithPassword($repository, $payload['username'], $payload['password'], $toDir);
+                        break;
+                    case 'noauth':
+                        $this->cloneRepositoryWithoutAuthentication($repository, $toDir);
+                        break;
+                    case 'privateKey':
+                        $this->cloneRepositoryWithSsh($repository, $payload['privateKey'], $toDir);
+                        break;
+                    default:
+                        $this->logger->error("Unknown authMethod", ['payload' => $payload]);
+                }
+                $this->logger->info("Repository $repository successfully cloned");
+            } catch (\Exception $e) {
+                $this->logger->info("Failed cloning repository $repository");
             }
         }
     }
