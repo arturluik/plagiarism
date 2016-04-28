@@ -5,6 +5,7 @@ import {Router, Route, Link, browserHistory} from 'react-router';
 import Index from './Component/Index.jsx';
 
 import 'bootstrap/dist/css/bootstrap.css';
+import './sass/style.scss';
 
 render((
     <Router history={browserHistory}>

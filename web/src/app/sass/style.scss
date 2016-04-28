@@ -1,0 +1,30 @@
+$navbar-color: #D24D57;
+$navbar-text: #fff;
+
+* {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.index {
+  hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}
+
+.index-login {
+  img {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+  font-size: 16pt;
+  text-align: center;
+
+}
+
+.navbar {
+  .navbar-brand {
+    color: $navbar-text;
+  }
+  background-color: $navbar-color
+}
