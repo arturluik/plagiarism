@@ -6,6 +6,7 @@ use eu\luige\plagiarism\datastructure\TaskMessage;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Ramsey\Uuid\Uuid;
 use Slim\Container;
 
 class Check extends Service
@@ -68,7 +69,7 @@ class Check extends Service
     {
 
         $message = new TaskMessage();
-        $message->setId(uniqid());
+        $message->setId(Uuid::uuid4());
         $message->setResourceProvider(get_class($resourceProvider));
         $message->setPayload($payload);
         $message->setPlagiarismService(get_class($plagiarismService));

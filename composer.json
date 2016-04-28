@@ -48,6 +48,7 @@
     "doctrine/orm": "^2.5",
     "cpliakas/git-wrapper": "^1.7",
     "simple-html-dom/simple-html-dom": "*",
-    "predis/predis": "^1.0"
+    "predis/predis": "^1.0",
+    "ramsey/uuid": "^3.4"
   }
 }

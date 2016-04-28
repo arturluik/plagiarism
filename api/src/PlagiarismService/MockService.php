@@ -6,7 +6,7 @@ namespace eu\luige\plagiarism\plagiarismservice;
 
 use eu\luige\plagiarism\entity\Similarity;
 
-class Test extends PlagiarismService
+class MockService extends PlagiarismService
 {
 
     /**
@@ -16,7 +16,7 @@ class Test extends PlagiarismService
      */
     public function getName()
     {
-        return "test-1.0";
+        return "MockService-1.0";
     }
 
     /**

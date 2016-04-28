@@ -39,6 +39,6 @@ return [
         ],
         'workers' => [
             \eu\luige\plagiarism\plagiarismservice\Moss::class => 2,
-            \eu\luige\plagiarism\plagiarismservice\Test::class => 2
+            \eu\luige\plagiarism\plagiarismservice\MockService::class => 2
         ]
     ]];

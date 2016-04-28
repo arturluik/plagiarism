@@ -6,7 +6,7 @@ namespace eu\luige\plagiarism\resourceprovider;
 
 use eu\luige\plagiarism\resource\File;
 
-class Test extends ResourceProvider
+class MockProvider extends ResourceProvider
 {
 
     /**
@@ -16,7 +16,7 @@ class Test extends ResourceProvider
      */
     public function getName()
     {
-        return "test-1.0";
+        return "MockProvider-1.0";
     }
 
     /**
