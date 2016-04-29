@@ -89,21 +89,4 @@ class Check extends Endpoint
         }
         throw new \Exception("Unknown provider: $provider", 400);
     }
-
-    /**
-     * @param string $service
-     * @return PlagiarismService
-     * @throws \Exception
-     */
-    public function assertServiceExists(string $service)
-    {
-        $services = PlagiarismService::getServices();
-        foreach ($services as $serviceClass) {
-            /** @var PlagiarismService $serviceInstance */
-            $serviceInstance = new $serviceClass($this->container);
-            if (mb_strtolower($serviceInstance->getName()) === mb_strtolower($service)) return $serviceInstance;
-
-        }
-        throw new \Exception("Unknown service : $service", 400);
-    }
 }

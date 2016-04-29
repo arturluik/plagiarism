@@ -3,6 +3,7 @@
 namespace eu\luige\plagiarism\endpoint;
 
 use eu\luige\plagiarism\datastructure\ApiResponse;
+use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use Monolog\Logger;
 use Slim\Container;
 use Slim\Http\Request;
@@ -48,6 +49,17 @@ class Endpoint
         }
     }
 
+    public function assertServiceExists(string $service) {
+        $services = PlagiarismService::getServices();
+        foreach ($services as $serviceClass) {
+            /** @var PlagiarismService $serviceInstance */
+            $serviceInstance = new $serviceClass($this->container);
+            if (mb_strtolower($serviceInstance->getName()) === mb_strtolower($service)) return $serviceInstance;
+
+        }
+        throw new \Exception("Unknown service : $service", 404);
+    }
+    
     public function assertParamsExist(Request $request, array $array)
     {
         $params = $request->getParams();

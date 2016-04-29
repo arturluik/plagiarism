@@ -85,3 +85,6 @@ $container[\eu\luige\plagiarism\service\PathPatternMatcher::class] = function ($
 $container[\eu\luige\plagiarism\service\Cache::class] = function ($container) {
     return new \eu\luige\plagiarism\service\Cache($container);
 };
+$container[\eu\luige\plagiarism\service\Preset::class] = function ($container) {
+    return new \eu\luige\plagiarism\service\Preset($container);
+};

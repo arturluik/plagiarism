@@ -10,7 +10,7 @@ class Check extends Entity
 {
     /** @Id @Column(type="integer") @GeneratedValue * */
     protected $id;
-    /** @var  \DateTime @Column(type="datetime") */
+    /** @var  int @Column(type="datetime") */
     protected $finished;
     /** @var  string  @Column(type="string", name="message_id") */
     protected $messageId;
@@ -22,6 +22,8 @@ class Check extends Entity
     protected $serviceName;
     /** @var  string @Column(type="string") */
     protected $providerName;
+    /** @var  CheckSuite @ManyToOne(targetEntity="CheckSuite", inversedBy="checks") */
+    protected $checkSuite;
 
     /**
      * @return string
@@ -38,7 +40,7 @@ class Check extends Entity
     {
         $this->providerName = $providerName;
     }
-    
+
     /**
      * @return string
      */
@@ -64,7 +66,7 @@ class Check extends Entity
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
     public function getFinished()
     {
@@ -72,7 +74,7 @@ class Check extends Entity
     }
 
     /**
-     * @param \DateTime $finished
+     * @param int $finished
      */
     public function setFinished($finished)
     {
