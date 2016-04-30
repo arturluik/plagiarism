@@ -19,6 +19,10 @@ class API {
         ]);
     }
 
+    public function getSupportedMimeTypes() {
+        return $this->get('/api/plagiarism/supportedmimetypes');
+    }
+    
     public function getAllResourceProviders() {
         return $this->get('/api/plagiarism/resourceprovider');
     }

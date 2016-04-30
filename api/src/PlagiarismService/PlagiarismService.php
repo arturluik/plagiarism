@@ -158,6 +158,13 @@ abstract class PlagiarismService {
     abstract public function getName();
 
     /**
+     * Get supported mimeTypes
+     *
+     * @return string[]
+     */
+    abstract public function getSupportedMimeTypes();
+
+    /**
      * Get plagiarims service description for user.
      *
      * @return string

@@ -33,7 +33,7 @@ $app->get('/plagiarism/resourceprovider', ResourceProvider::class . ':all');
 
 $app->get('/plagiarism/plagiarismservice', PlagiarismService::class . ':all');
 $app->get('/plagiarism/plagiarismservice/{id}', PlagiarismService::class . ':get');
-
+$app->get('/plagiarism/supportedmimetypes', PlagiarismService::class . ':getSupportedTypes');
 
 $app->put('/plagiarism/preset', Preset::class . ':create');
 $app->get('/plagiarism/preset/{id}', Preset::class . ':read');

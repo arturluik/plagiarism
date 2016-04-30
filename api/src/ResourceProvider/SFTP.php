@@ -51,6 +51,6 @@ class SFTP extends ResourceProvider {
      * @return PayloadProperty[]
      */
     public function getPayloadProperties() {
-        // TODO: Implement getPayloadProperties() method.
+        return [];
     }
 }

@@ -40,7 +40,7 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($log) {
 }, E_ALL);
 
 // Create a simple "default" Doctrine ORM configuration for Annotations
-$doctrineConfig = Setup::createAnnotationMetadataConfiguration([__DIR__ . '/src'], $config['doctrine']['devmode']);
+$doctrineConfig = Setup::createAnnotationMetadataConfiguration([__DIR__ . '/src/Entity'], $config['doctrine']['devmode']);
 // database configuration parameters
 $conn = [
     'dbname' => $config['database']['name'],

@@ -7,8 +7,7 @@ namespace eu\luige\plagiarism\mimetype;
  * MimeType detection class especially meant for plagarism detection
  * It was made because php finfo and default mime type detection doesn't support css / java files
  */
-class MimeType
-{
+class MimeType {
     const JAVA = 'text/x-java-source';
     const CSS = 'text/css';
 
@@ -21,8 +20,7 @@ class MimeType
      * @param $path
      * @return string
      */
-    public static function detect(string $path)
-    {
+    public static function detect(string $path) {
         $split = explode(".", $path);
         if (array_key_exists(end($split), MimeType::$customMimeTypes)) {
             return MimeType::$customMimeTypes[end($split)];

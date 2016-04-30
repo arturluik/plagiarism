@@ -10,8 +10,7 @@ use eu\luige\plagiarism\similarity\Similarity;
 use eu\luige\plagiarism\resource\File;
 use Slim\Container;
 
-class Moss extends PlagiarismService
-{
+class Moss extends PlagiarismService {
 
     /** @var  string */
     private $temp;
@@ -21,8 +20,7 @@ class Moss extends PlagiarismService
     /**
      * Moss constructor.
      */
-    public function __construct(Container $container)
-    {
+    public function __construct(Container $container) {
         parent::__construct($container);
         $this->temp = $this->config['temp_folder'];
         require_once __DIR__ . '/../../deps/Phhere/MOSS-PHP/moss.php';
@@ -33,8 +31,7 @@ class Moss extends PlagiarismService
      * @param Resource[] $resources
      * @return Similarity[]
      */
-    public function compare(array $resources)
-    {
+    public function compare(array $resources) {
         $this->logger->info("Moss {$this->getName()} started with " . count($resources) . " resources");
         $mimeTypeFilter = new MimeTypeFilter([MimeType::JAVA]);
         $resources = $mimeTypeFilter->apply($resources);
@@ -54,13 +51,13 @@ class Moss extends PlagiarismService
         return $this->getSimilaritiesFromResult($resources, $result);
 
     }
+
     /**
      * @param Resource[] $resources
      * @param string $resultPage
      * @return Similarity[]
      */
-    public function getSimilaritiesFromResult(array $resources, string $resultPage) : array
-    {
+    public function getSimilaritiesFromResult(array $resources, string $resultPage) : array {
         include __DIR__ . '/../../deps/simple-html-dom/simple-html-dom/simple_html_dom.php';
         /** @var \simple_html_dom $result */
         $result = file_get_html(trim($resultPage));
@@ -98,8 +95,7 @@ class Moss extends PlagiarismService
      * @param string $matchURL
      * @return SimilarFileLines[]
      */
-    private function getSimilarLinesFromMatch(string $matchURL) : array
-    {
+    private function getSimilarLinesFromMatch(string $matchURL) : array {
         // Similar rows are inside the iframe
         /** @var \simple_html_dom $result */
         $result = \file_get_html(str_replace('.html', '-top.html', $matchURL));
@@ -127,20 +123,18 @@ class Moss extends PlagiarismService
      * @param $path
      * @return mixed|Resource
      */
-    private function findResourceByPath(array $resources, string $path) : Resource
-    {
+    private function findResourceByPath(array $resources, string $path) : Resource {
         foreach ($resources as $resource) {
             if ($resource instanceof File && $resource->getPath() == $path) {
                 return $resource;
             }
         }
         $this->logger->warn("Resource $path not found");
-        
+
         return null;
     }
 
-    private function getLinkAndPercentage($text) : array
-    {
+    private function getLinkAndPercentage($text) : array {
         preg_match('/(.*)\((\d+)%\)/', $text, $result);
         return [trim($result[1]), trim($result[2])];
     }
@@ -148,8 +142,7 @@ class Moss extends PlagiarismService
     /**
      * @param Resource[] $resources
      */
-    public function copyResources(array $resources)
-    {
+    public function copyResources(array $resources) {
         $tempFolder = $this->getTempFolder();
         $this->logger->info("Copying " . count($resources) . " resources to $tempFolder");
         foreach ($resources as $resource) {
@@ -159,8 +152,7 @@ class Moss extends PlagiarismService
         }
     }
 
-    public function getTempFolder() : string
-    {
+    public function getTempFolder() : string {
         if (!$this->createdTempFolder) {
             $this->createdTempFolder = "{$this->temp}/" . uniqid('moss_temp_folder');
             mkdir($this->createdTempFolder, 0777, true);
@@ -172,8 +164,7 @@ class Moss extends PlagiarismService
      * Get Service name
      * @return string
      */
-    public function getName() : string
-    {
+    public function getName() : string {
         return "Moss-1.0";
     }
 
@@ -184,5 +175,17 @@ class Moss extends PlagiarismService
      */
     public function getDescription() {
         return 'Standforid ülikooli poolt loodud plagiaadituvastusüsteem';
+    }
+
+    /**
+     * Get supported mimeTypes
+     *
+     * @return string[]
+     */
+    public function getSupportedMimeTypes() {
+        return [
+            MimeType::CSS,
+            MimeType::JAVA
+        ];
     }
 }

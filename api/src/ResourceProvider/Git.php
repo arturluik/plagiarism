@@ -86,7 +86,10 @@ class Git extends ResourceProvider {
         return [
             new SelectProperty('authMethod', 'Autentimismeetod', ['privateKey' => 'avalik võti', 'password' => 'parooliga'], true,
                 'Giti kasutajatuvastusmeetod, mille abil tõmmatakse alla repositooriumi sisu'),
-            new PayloadProperty('text', 'clone', 'Repositooriumid', false, 'Giti repositooriumite URId, kui neid on rohkem, siis eraldada komaga'),
+            new PayloadProperty('textarea', 'clone', 'Repositooriumid', false, 'Giti repositooriumite URId, kui neid on rohkem, siis eraldada komaga'),
+            new PayloadProperty('text', 'username', 'Kasutajatunnus', false, 'Kasutajatunnus giti autentimiseks'),
+            new PayloadProperty('text', 'password', 'Parool', false, 'Parool giti autentimiseks'),
+            new PayloadProperty('textarea', 'pubkey', 'Avalik võti', false, 'Avalik võti giti autentimiseks (kui parooli pole)'),
             new PayloadProperty('text', 'directoryPattern', 'Sisumuster', false,
                 'Repositoorumi täpsema sisu filtreerimiseks: näiteks /*/EX08 otsib kõikdiest repositooriumi kasutades EX08 kasuta ja kasutab selle sisu')
         ];

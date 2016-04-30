@@ -5,6 +5,7 @@ namespace eu\luige\plagiarism\plagiarismservice;
 
 
 use eu\luige\plagiarism\entity\Similarity;
+use eu\luige\plagiarism\mimetype\MimeType;
 
 class MockService extends PlagiarismService {
 
@@ -39,5 +40,17 @@ class MockService extends PlagiarismService {
      */
     public function getDescription() {
         return 'Näidisteenus testimiseks ja demomiseks';
+    }
+
+    /**
+     * Get supported mimeTypes
+     *
+     * @return string[]
+     */
+    public function getSupportedMimeTypes() {
+        return [
+            MimeType::JAVA,
+            MimeType::CSS
+        ];
     }
 }

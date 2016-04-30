@@ -7,17 +7,31 @@ use Slim\Http\Response;
 
 class PlagiarismService extends Endpoint {
 
+    public function getSupportedTypes(Request $request, Response $response) {
+        $apiResponse = new ApiResponse();
+
+        $supportedMimeTypes = [];
+
+        /** @var \eu\luige\plagiarism\plagiarismservice\PlagiarismService[] $services */
+        $services = $this->getServices();
+
+        foreach ($services as $service) {
+            $supportedMimeTypes += $service->getSupportedMimeTypes();
+        }
+
+        $apiResponse->setContent($supportedMimeTypes);
+
+        return $this->response($response, $apiResponse);
+    }
+
     public function all(Request $request, Response $response) {
         $apiResponse = new ApiResponse();
 
         $result = [];
-
-        $services = \eu\luige\plagiarism\plagiarismservice\PlagiarismService::getServices();
+        /** @var \eu\luige\plagiarism\plagiarismservice\PlagiarismService[] $services */
+        $services = $this->getServices();
         foreach ($services as $serviceClass) {
-            /** @var \eu\luige\plagiarism\plagiarismservice\PlagiarismService $instance */
-            $instance = new $serviceClass($this->container);
-            $this->logger->debug($serviceClass);
-            $result[] = $instance->getName();
+            $result[] = $serviceClass->getName();
         }
 
         $apiResponse->setContent($result);
@@ -28,17 +42,17 @@ class PlagiarismService extends Endpoint {
 
         $this->assertAttributesExist($request, ['id']);
 
-        $services = \eu\luige\plagiarism\plagiarismservice\PlagiarismService::getServices();
 
-        foreach ($services as $serviceClass) {
-            /** @var \eu\luige\plagiarism\plagiarismservice\PlagiarismService $instance */
-            $instance = new $serviceClass($this->container);
-            if (mb_strtolower($instance->getName()) == mb_strtolower($request->getAttribute('id'))) {
+        /** @var \eu\luige\plagiarism\plagiarismservice\PlagiarismService[] $services */
+        $services = $this->getServices();
+
+        foreach ($services as $service) {
+            if (mb_strtolower($service->getName()) == mb_strtolower($request->getAttribute('id'))) {
                 $apiResponse = new ApiResponse();
 
                 $apiResponse->setContent([
-                    'name' => $instance->getName(),
-                    'description' => $instance->getDescription()
+                    'name' => $service->getName(),
+                    'description' => $service->getDescription()
                 ]);
 
                 return $this->response($response, $apiResponse);
@@ -46,6 +60,14 @@ class PlagiarismService extends Endpoint {
         }
 
         throw new \Exception("No such plagiarismService: {$request->getAttribute('id')}");
+    }
+
+    public function getServices() {
+        $result = [];
+        foreach (\eu\luige\plagiarism\plagiarismservice\PlagiarismService::getServices() as $serviceClass) {
+            $result[] = new $serviceClass($this->container);
+        }
+        return $result;
     }
 
 }

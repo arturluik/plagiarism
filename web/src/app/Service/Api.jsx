@@ -3,8 +3,28 @@ import $ from 'jquery';
 
 export default class API {
 
-    
-    
+
+    static getSupportedMimeTypes() {
+        return API.get('/plagiarism/supportedmimetypes');
+    }
+
+    static getPlagiarismServices() {
+        return API.get('/plagiarism/plagiarismservice');
+    }
+
+    static getPlagiarismService(id) {
+        return API.get('/plagiarism/plagiarismservice/' + id)
+    }
+
+    static getResourceProvider(id) {
+        return API.get('/plagiarism/resourceprovider/' + id)
+
+    }
+
+    static getResourceProviders() {
+        return API.get('/plagiarism/resourceprovider');
+    }
+
     static getChecks() {
         return API.get("/plagiarism/check");
     }
@@ -22,7 +42,7 @@ export default class API {
     }
 
     static apiWrapper(method, resource, data) {
-        console.info(method + " " + resource + "data : " + data);
+        console.info(method + " " + resource + " data : " + JSON.stringify(data));
         return $.ajax({
             type: method,
             url: Config.API_ROOT + resource,

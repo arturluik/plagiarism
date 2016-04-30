@@ -36,7 +36,6 @@ class CheckTest extends RegressionTestCase
     public function testCheckCreated()
     {
         $response = $this->API->check('MockService-1.0', 'MockProvider-1.0', ['test' => 1]);
-        var_dump($response);
         $id = $response['content']['id'];
         $response = $this->API->getCheckById($id);
         $this->assertFieldsExistInResponse($response, ['finished', 'messageId', 'name', 'similarities', 'serviceName', 'providerName']);
