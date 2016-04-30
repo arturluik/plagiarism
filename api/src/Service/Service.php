@@ -6,8 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Slim\Container;
 
-abstract class Service
-{
+abstract class Service {
 
     /** @var  Container */
     protected $container;
@@ -22,13 +21,16 @@ abstract class Service
      * Service constructor.
      * @param $container
      */
-    public function __construct(Container $container)
-    {
+    public function __construct(Container $container) {
         $this->container = $container;
         $this->entityManager = $container->get(EntityManager::class);
         $this->config = $container->get('settings');
         $this->logger = $container->get(Logger::class);
     }
 
+
+    public function pagedResultSet($repository, $page = 1) {
+        return $repository->findBy([], ['id' => 'DESC'], $this->config['default_paging_size'], ($page - 1) * $this->config['default_paging_size']);
+    }
 
 }

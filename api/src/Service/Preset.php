@@ -18,7 +18,7 @@ class Preset extends Service {
     }
 
     public function update($id, $serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
-        $preset = $this->getById($id);
+        $preset = $this->get($id);
         if (!$preset) {
             return null;
         }
@@ -48,7 +48,7 @@ class Preset extends Service {
 
     public function delete($id) {
 
-        $preset = $this->getById($id);
+        $preset = $this->get($id);
         if ($preset) {
             $this->entityManager->remove($preset);
             $this->entityManager->flush();
@@ -58,11 +58,11 @@ class Preset extends Service {
         return false;
     }
 
-    public function getAll() {
-        return $this->presetRepository->findAll();
+    public function all($page = 1) {
+        return $this->pagedResultSet($this->presetRepository, $page);
     }
 
-    public function getById($id) {
+    public function get($id) {
         return $this->presetRepository->findOneBy(['id' => $id]);
     }
 }

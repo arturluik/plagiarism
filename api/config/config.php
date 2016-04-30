@@ -6,6 +6,7 @@ return [
         'debug' => true,
         'displayErrorDetails' => true,
         'temp_folder' => '/tmp',
+        'default_paging_size' => 15,
         'amqp' => [
             'server' => 'localhost',
             'port' => 5672,

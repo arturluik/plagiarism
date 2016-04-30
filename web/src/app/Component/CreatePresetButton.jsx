@@ -58,8 +58,32 @@ export default class CreatePresetButton extends React.Component {
 
     savePreset() {
 
+        var presetName = $('#preset-name').val();
+        var mimeType = $('#preset-mimetype').val();
+        // Find settings
+        var settings = {};
+        $("#resourceProviderSettings > div").each((i, settingsDiv) => {
+            // Find all settings
+            settings[settingsDiv.id] = {};
+            ['input', 'select', 'textarea'].forEach(selector => {
+                $(settingsDiv).find(selector).each((i, input) => {
+                    settings[settingsDiv.id][input.name] = input.value;
+                })
+            });
 
-        console.log(this);
+        });
+
+        var plagiarismServices = [];
+        $(".plagiarismServices input:checked").each((key, input) => {
+            plagiarismServices.push(input.value);
+        });
+
+        var resouceProviders = [];
+        $(".resourceProviders input:checked").each((key, input) => {
+            resouceProviders.push(input.value);
+        });
+
+        API.createPreset(plagiarismServices, resouceProviders, presetName, settings);
     }
 
     onResourceProviderSelect(element) {
@@ -76,12 +100,12 @@ export default class CreatePresetButton extends React.Component {
                                     return <option key={value} value={value}>{property.values[value]}</option>
                                 });
                                 content = (
-                                    <FormControl componentClass="select">
+                                    <FormControl componentClass="select" name={property.name}>
                                         {options}
                                     </FormControl>
                                 );
                             } else if (property.type == 'textarea') {
-                                content = <FormControl componentClass="textarea"/>
+                                content = <FormControl name={property.name} componentClass="textarea"/>
                             } else {
                                 content = <FormControl type="text" name={property.name}></FormControl>
                             }
@@ -98,12 +122,14 @@ export default class CreatePresetButton extends React.Component {
                         });
 
                         this.setState(oldState => {
-                            oldState.resourceProviderSettings.push(
-                                <div key={result.content.name}>
-                                    <h4>{result.content.name} seaded</h4>
-                                    {properties}
-                                </div>
-                            );
+                            if (properties.length > 0) {
+                                oldState.resourceProviderSettings.push(
+                                    <div id={result.content.name} key={result.content.name}>
+                                        <h4>{result.content.name} seaded</h4>
+                                        {properties}
+                                    </div>
+                                );
+                            }
                             return oldState;
                         });
                     }
@@ -163,26 +189,26 @@ export default class CreatePresetButton extends React.Component {
                                 <Col sm={4}>Kontrolli nimi</Col>
                                 <Col sm={8}><FormControl id="preset-name" type="text"/></Col>
                             </FormGroup>
-                            <FormGroup controlId="preset-name">
+                            <FormGroup>
                                 <Col sm={4}>Tüüp</Col>
                                 <Col sm={8}>
-                                    <FormControl componentClass="select">
+                                    <FormControl componentClass="select" id="preset-mimetype">
                                         {this.state.supportedMimeTypes}
                                     </FormControl>
                                 </Col>
                             </FormGroup>
                             <FormGroup>
                                 <Col sm={4}>Lubatud teenused</Col>
-                                <Col sm={8}>
+                                <Col sm={8} className='plagiarismServices'>
                                     {this.state.plagiarismServices}
                                 </Col>
                             </FormGroup>
                             <FormGroup>
                                 <Col sm={4}>Andmeallikad</Col>
-                                <Col sm={8}>
+                                <Col sm={8} className='resourceProviders'>
                                     {this.state.resourceProviders}
                                 </Col>
-                                <Col sm={10} smOffset={2}>
+                                <Col sm={10} smOffset={2} id={"resourceProviderSettings"}>
                                     {this.state.resourceProviderSettings}
                                 </Col>
                             </FormGroup>

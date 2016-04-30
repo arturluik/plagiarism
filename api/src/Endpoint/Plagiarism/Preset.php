@@ -49,7 +49,7 @@ class Preset extends Endpoint {
     public function all(Request $request, Response $response) {
 
         $apiResponse = new ApiResponse();
-        $apiResponse->setContent($this->presetService->getAll());
+        $apiResponse->setContent($this->presetService->all());
 
         return $this->response($response, $apiResponse);
     }
@@ -106,7 +106,7 @@ class Preset extends Endpoint {
 
         $id = $request->getAttribute('id');
 
-        $preset = $this->presetService->getById($id);
+        $preset = $this->presetService->get($id);
         if (!$preset) {
             throw new \Exception("Unknown preset with id: $id", 404);
         }
@@ -118,7 +118,7 @@ class Preset extends Endpoint {
 
     public function assertProvdersExistsAndPayloadsAreOk($providerNames, $payloads) {
         foreach ($providerNames as $providerName) {
-            $this->assertProviderExistsAndPayloadIsOk($providerName, $payloads[$providerName]);
+            $this->assertProviderExistsAndPayloadIsOk($providerName, $payloads[$providerName] ?? []);
         }
     }
 

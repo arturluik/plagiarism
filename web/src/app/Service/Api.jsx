@@ -4,6 +4,34 @@ import $ from 'jquery';
 export default class API {
 
 
+    static createPreset(serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads) {
+        return API.put('/plagiarism/preset',
+            {
+                'serviceNames': serviceNames.join(''),
+                'resourceProviderNames': resourceProviderNames.join(','),
+                'suiteName': suiteName,
+                'resourceProviderPayloads': JSON.stringify(resourceProviderPayloads)
+            }
+        );
+    }
+
+    static updatePreset(id, serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads) {
+        return API.post('/plagiarism/preset/' + id, {
+                'serviceNames': serviceNames.implode('.'),
+                'resourceProviderNames': resourceProviderNames.implode(','),
+                'suiteName': suiteName,
+                'resourceProviderPayloads': JSON.stringify(resourceProviderPayloads)
+            }
+        );
+    }
+
+    static getAllPresets(page) {
+        if (!page) {
+            page = 1;
+        }
+        return API.get('/plagiarism/preset', {'page': page});
+    }
+
     static getSupportedMimeTypes() {
         return API.get('/plagiarism/supportedmimetypes');
     }
@@ -48,7 +76,7 @@ export default class API {
             url: Config.API_ROOT + resource,
             data: data
         }).error(function (data) {
-            console.error("Ajax call failed: " + data);
+            console.error("Ajax call failed: " + JSON.stringify(data));
         });
     }
 }

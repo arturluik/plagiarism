@@ -3,7 +3,8 @@ import Navbar from './Navbar.jsx';
 import Auth from './../Service/Auth.jsx';
 
 import API from './../Service/Api.jsx';
-
+import Col from 'react-bootstrap/lib/Col';
+import Panel from 'react-bootstrap/lib/Panel';
 
 import CreatePresetButton from './CreatePresetButton.jsx';
 
@@ -14,13 +15,29 @@ export default class Index extends React.Component {
         super(props, context);
 
         this.state = {
-            checks: []
+            checks: [],
+            presets: []
         };
     };
 
     componentDidMount() {
+        this.datasetChanged();
+
+    }
+
+    datasetChanged() {
         API.getChecks().success(data => {
-            this.setState({checks: data.content.map((e => <CheckRow check={e} key={e.messageId}/>))});
+            this.updateState('checks', data.content.map((e => <CheckRow check={e} key={e.messageId}/>)));
+        });
+        API.getAllPresets().success(data => {
+            this.updateState('presets', data.content.map((e, i) => <Preset key={i} name={e.suiteName}></Preset>));
+        });
+    }
+
+    updateState(parameter, value) {
+        this.setState(oldState => {
+            oldState[parameter] = value;
+            return oldState;
         });
     }
 
@@ -29,8 +46,12 @@ export default class Index extends React.Component {
         return (
             <div className="container-fluid">
                 <div className="row index">
-                    <CreatePresetButton/>
-                    <SettingsSection/>
+                    <Navbar/>
+                    <Col sm={6}>
+                        <Panel bsStyle={"danger"} header={'Eeldefineeritud kontrollid'}>
+                            {this.state.presets}
+                        </Panel>
+                    </Col>
                     <CheckSection checkRows={this.state.checks}/>
                 </div>
             </div>
@@ -38,39 +59,11 @@ export default class Index extends React.Component {
     }
 }
 
-class SettingsSection extends React.Component {
-    render() {
-        return (
-            <div className="col-sm-6">
-                <div className="panel panel-danger">
-                    <div className="panel-heading"><b>Plagiaadikontrolli seaded</b></div>
-                    <div className="panel-body">
-                        <b>Globaalsed seaded</b>
-                        <hr/>
-                        <div className="row">
-                            <Setting/>
-                            <Setting/>
-                        </div>
-                        <b>Eeldefinieeritud kontrollid</b>
-                        <hr/>
-                        <ul className="list-group">
-                            <PredefinedCheck/>
-                            <PredefinedCheck/>
-                        </ul>
-                        <a className="btn btn-danger pull-right">Lisa uus</a>
-                    </div>
-                    <hr/>
-                </div>
-            </div>
-        );
-    }
-}
-
-class PredefinedCheck extends React.Component {
+class Preset extends React.Component {
     render() {
         return (
             <li className="list-group-item">
-                ITI0011 EX08
+                {this.props.name}
                 <a className="btn-xs btn-success pull-right">Start</a>
                 &nbsp;
                 <a className="btn-xs btn-danger pull-right">Kustuta</a>
