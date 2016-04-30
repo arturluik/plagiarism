@@ -2,13 +2,14 @@
 
 namespace eu\luige\plagiarism\resourceprovider;
 
+use eu\luige\plagiarism\datastructure\PayloadProperty;
+use eu\luige\plagiarism\datastructure\SelectProperty;
 use eu\luige\plagiarism\resource\File;
 use eu\luige\plagiarism\service\PathPatternMatcher;
 use GitWrapper\GitWrapper;
 use Slim\Container;
 
-class Git extends ResourceProvider
-{
+class Git extends ResourceProvider {
 
     /** @var  string */
     private $tempFolder;
@@ -18,8 +19,7 @@ class Git extends ResourceProvider
     /**
      * Git constructor.
      */
-    public function __construct(Container $container)
-    {
+    public function __construct(Container $container) {
         parent::__construct($container);
         $this->patternMatcher = $container->get(PathPatternMatcher::class);
     }
@@ -32,8 +32,7 @@ class Git extends ResourceProvider
      * @return bool
      * @throws \Exception
      */
-    public function validatePayload(array $payload)
-    {
+    public function validatePayload(array $payload) {
         $this->fieldsMustExistInArray($payload, ['authMethod', 'clone']);
 
         if (isset($payload['directoryPattern'])) {
@@ -52,8 +51,7 @@ class Git extends ResourceProvider
         return true;
     }
 
-    private function fieldsMustExistInArray(array $array, array $fields)
-    {
+    private function fieldsMustExistInArray(array $array, array $fields) {
         foreach ($fields as $field) {
             if (!array_key_exists($field, $array)) {
                 throw new \Exception("Field: $field must exist in payload!");
@@ -67,9 +65,31 @@ class Git extends ResourceProvider
      * (displayed in UI)
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return 'GIT-1.0';
+    }
+
+    /**
+     * Get provider description that is displayed in UI
+     * @return string
+     */
+    public function getDescription() {
+        return 'Võimaldab alla laadida materjali git repositoorumitest nii parooliga kui ka avaliku võtmega';
+    }
+
+    /**
+     * Return properties that are needed for payload.
+     *
+     * @return PayloadProperty[]
+     */
+    public function getPayloadProperties() {
+        return [
+            new SelectProperty('authMethod', 'Autentimismeetod', ['privateKey' => 'avalik võti', 'password' => 'parooliga'], true,
+                'Giti kasutajatuvastusmeetod, mille abil tõmmatakse alla repositooriumi sisu'),
+            new PayloadProperty('text', 'clone', 'Repositooriumid', false, 'Giti repositooriumite URId, kui neid on rohkem, siis eraldada komaga'),
+            new PayloadProperty('text', 'directoryPattern', 'Sisumuster', false,
+                'Repositoorumi täpsema sisu filtreerimiseks: näiteks /*/EX08 otsib kõikdiest repositooriumi kasutades EX08 kasuta ja kasutab selle sisu')
+        ];
     }
 
     /**
@@ -78,8 +98,7 @@ class Git extends ResourceProvider
      * @param $payload
      * @return Resource[]
      */
-    public function getResources($payload)
-    {
+    public function getResources($payload) {
         $this->cloneAll($payload);
         if (isset($payload['directoryPattern'])) {
             return $this->traverse($this->getTempFolder(), $payload['directoryPattern']);
@@ -87,8 +106,7 @@ class Git extends ResourceProvider
         return $this->traverse($this->getTempFolder());
     }
 
-    public function traverse($path, $pattern = false)
-    {
+    public function traverse($path, $pattern = false) {
         $resources = [];
         if (is_dir($path)) {
             foreach (array_diff(scandir($path), ['.', '..', '.git']) as $file) {
@@ -107,8 +125,7 @@ class Git extends ResourceProvider
     }
 
 
-    public function cloneAll($payload)
-    {
+    public function cloneAll($payload) {
         // Support only one git url without array
         if (!is_array($payload['clone'])) {
             $payload['clone'] = [$payload['clone']];
@@ -137,8 +154,7 @@ class Git extends ResourceProvider
         }
     }
 
-    private function getTempFolder()
-    {
+    private function getTempFolder() {
         if (!$this->tempFolder) {
             $this->tempFolder = $this->config['temp_folder'] . '/' . uniqid('git_');
             mkdir($this->tempFolder, 0777, true);
@@ -146,8 +162,7 @@ class Git extends ResourceProvider
         return $this->tempFolder;
     }
 
-    private function cloneRepositoryWithSsh($repository, $privateKey, $toDir)
-    {
+    private function cloneRepositoryWithSsh($repository, $privateKey, $toDir) {
         try {
             $privateKeyFile = $this->config['temp_folder'] . '/' . uniqid('key_');
             file_put_contents($privateKeyFile, $privateKey);
@@ -161,20 +176,17 @@ class Git extends ResourceProvider
         }
     }
 
-    private function cloneRepositoryWithoutAuthentication($repository, $toDir)
-    {
+    private function cloneRepositoryWithoutAuthentication($repository, $toDir) {
         $gitWrapper = new GitWrapper();
         $gitWrapper->cloneRepository($repository, $toDir);
     }
 
-    private function cloneRepositoryWithPassword($repository, $username, $password, $toDir)
-    {
+    private function cloneRepositoryWithPassword($repository, $username, $password, $toDir) {
         $gitWrapper = new GitWrapper();
         $gitWrapper->cloneRepository($this->addCredentialsToGitUrl($username, $password, $repository), $toDir);
     }
 
-    private function addCredentialsToGitUrl($username, $password, $gitUrl)
-    {
+    private function addCredentialsToGitUrl($username, $password, $gitUrl) {
         $domain = parse_url($gitUrl, PHP_URL_HOST);
         return str_replace($domain, urlencode($username) . ':' . urlencode($password) . "@$domain", $gitUrl);
     }

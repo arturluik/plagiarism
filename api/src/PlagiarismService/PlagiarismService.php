@@ -16,8 +16,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Slim\Container;
 
-abstract class PlagiarismService
-{
+abstract class PlagiarismService {
     /** @var  Container */
     protected $container;
     /** @var  AMQPStreamConnection */
@@ -35,8 +34,7 @@ abstract class PlagiarismService
      * PlagiarismService constructor.
      * @param Container $container
      */
-    public function __construct(Container $container)
-    {
+    public function __construct(Container $container) {
         $this->container = $container;
         $this->logger = $container->get(Logger::class);
         $this->entityManager = $container->get(EntityManager::class);
@@ -44,8 +42,7 @@ abstract class PlagiarismService
         $this->config = $container->get("settings");
     }
 
-    public function work()
-    {
+    public function work() {
         $this->logger->info("Starting worker {$this->getName()}");
         $this->connection = $this->container->get(AMQPStreamConnection::class);
         $channel = $this->connection->channel();
@@ -78,8 +75,7 @@ abstract class PlagiarismService
     /**
      * @param Similarity[] $similarities
      */
-    private function persistSimilarities(array $similarities, PlagiarismService $plagiarismService, ResourceProvider $resourceProvider, $messageId)
-    {
+    private function persistSimilarities(array $similarities, PlagiarismService $plagiarismService, ResourceProvider $resourceProvider, $messageId) {
         if (!$this->entityManager->isOpen()) {
             $this->entityManager = $this->entityManager->create(
                 $this->entityManager->getConnection(),
@@ -118,8 +114,7 @@ abstract class PlagiarismService
     }
 
 
-    private function createOrGetResource(Resource $resource)
-    {
+    private function createOrGetResource(Resource $resource) {
         if ($resource instanceof File) {
             $hash = hash('sha256', $resource->getContent());
             /** @var Resource $result */
@@ -139,12 +134,11 @@ abstract class PlagiarismService
         }
     }
 
-    public static function getServices()
-    {
+    public static function getServices() {
         $services = [];
         $classMap = require __DIR__ . '/../../deps/composer/autoload_classmap.php';
         foreach ($classMap as $class => $path) {
-            if (preg_match('/plagiarismservice/', $class) && $class != \eu\luige\plagiarism\plagiarismservice\PlagiarismService::class) {
+            if (preg_match('/^eu.luige.plagiarism.plagiarismservice/', $class) && $class != \eu\luige\plagiarism\plagiarismservice\PlagiarismService::class) {
                 $services[] = $class;
             }
         }
@@ -152,8 +146,7 @@ abstract class PlagiarismService
         return $services;
     }
 
-    public function getQueueName()
-    {
+    public function getQueueName() {
         return "queue_{$this->getName()}";
     }
 
@@ -164,6 +157,12 @@ abstract class PlagiarismService
      */
     abstract public function getName();
 
+    /**
+     * Get plagiarims service description for user.
+     *
+     * @return string
+     */
+    abstract public function getDescription();
 
     /**
      * @param Resource[] $resources

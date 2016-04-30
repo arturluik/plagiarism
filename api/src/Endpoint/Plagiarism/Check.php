@@ -28,7 +28,7 @@ class Check extends Endpoint
     }
 
 
-    public function getDetailedInformation(Request $request, Response $response)
+    public function get(Request $request, Response $response)
     {
         $apiResponse = new ApiResponse();
         $this->assertAttributesExist($request, ['id']);
@@ -38,7 +38,7 @@ class Check extends Endpoint
         return $this->response($response, $apiResponse);
     }
 
-    public function getChecks(Request $request, Response $response)
+    public function all(Request $request, Response $response)
     {
         $apiResponse = new ApiResponse();
         $apiResponse->setContent(

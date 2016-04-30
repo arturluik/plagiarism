@@ -38,7 +38,7 @@ class PresetTest extends RegressionTestCase {
 
         $ids = array_map(function ($preset) {
             return $preset['id'];
-        }, $this->API->readAllPresets()['content']);
+        }, $this->API->getAllPresets()['content']);
 
         $this->assertTrue(in_array($result1['content']['id'], $ids));
         $this->assertTrue(in_array($result2['content']['id'], $ids));

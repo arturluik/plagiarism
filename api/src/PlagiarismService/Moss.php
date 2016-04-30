@@ -176,4 +176,13 @@ class Moss extends PlagiarismService
     {
         return "Moss-1.0";
     }
+
+    /**
+     * Get plagiarims service description for user.
+     *
+     * @return string
+     */
+    public function getDescription() {
+        return 'Standforid ülikooli poolt loodud plagiaadituvastusüsteem';
+    }
 }

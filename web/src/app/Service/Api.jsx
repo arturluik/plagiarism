@@ -3,6 +3,8 @@ import $ from 'jquery';
 
 export default class API {
 
+    
+    
     static getChecks() {
         return API.get("/plagiarism/check");
     }

@@ -19,6 +19,22 @@ class API {
         ]);
     }
 
+    public function getAllResourceProviders() {
+        return $this->get('/api/plagiarism/resourceprovider');
+    }
+
+    public function getResourceProvider($id) {
+        return $this->get("/api/plagiarism/resourceprovider/$id");
+    }
+
+    public function getPlagiarismService($id) {
+        return $this->get("/api/plagiarism/plagiarismservice/$id");
+    }
+
+    public function getAllPlagiarismServices() {
+        return $this->get('/api/plagiarism/plagiarismservice');
+    }
+
     public function getPreset($id) {
         return $this->get("/api/plagiarism/preset/$id");
     }
@@ -46,7 +62,7 @@ class API {
         return $this->delete("/api/plagiarism/preset/$id");
     }
 
-    public function readAllPresets() {
+    public function getAllPresets() {
         return $this->get('/api/plagiarism/preset');
     }
 

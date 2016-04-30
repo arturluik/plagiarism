@@ -4,6 +4,9 @@ import Auth from './../Service/Auth.jsx';
 
 import API from './../Service/Api.jsx';
 
+
+import CreatePresetButton from './CreatePresetButton.jsx';
+
 export default class Index extends React.Component {
 
 
@@ -25,8 +28,8 @@ export default class Index extends React.Component {
 
         return (
             <div className="container-fluid">
-                <Navbar/>
                 <div className="row index">
+                    <CreatePresetButton/>
                     <SettingsSection/>
                     <CheckSection checkRows={this.state.checks}/>
                 </div>

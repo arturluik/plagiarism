@@ -19,6 +19,10 @@ function d-run {
         docker run -v $(pwd):/plagiarism/ -v $(pwd)/logs:/logs -v $(pwd)/data:/data -p 80:80 -p 15672:15672 -p 5432:5432 plagiarism
 }
 
+function webpack-watch {
+	node  ../node_modules/webpack/bin/webpack.js --progress --colors --watch
+}
+
 function d-buildrun {
     d-build
     d-run
