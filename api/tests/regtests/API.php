@@ -22,7 +22,7 @@ class API {
     public function getSupportedMimeTypes() {
         return $this->get('/api/plagiarism/supportedmimetypes');
     }
-    
+
     public function getAllResourceProviders() {
         return $this->get('/api/plagiarism/resourceprovider');
     }
@@ -43,21 +43,21 @@ class API {
         return $this->get("/api/plagiarism/preset/$id");
     }
 
-    public function createPreset($serviceName, $resourceProviderName, $suiteName, $resourceProviderPayload) {
+    public function createPreset($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
         return $this->put('/api/plagiarism/preset', [
-            'serviceName' => $serviceName,
-            'resourceProviderName' => $resourceProviderName,
+            'serviceNames' => $serviceNames,
+            'resourceProviderNames' => $resourceProviderNames,
             'suiteName' => $suiteName,
-            'resourceProviderPayload' => json_encode($resourceProviderPayload)
+            'resourceProviderPayloads' => json_encode($resourceProviderPayloads)
         ]);
     }
 
-    public function updatePreset($id, $serviceName, $resourceProviderName, $suiteName, $resourceProviderPayload) {
+    public function updatePreset($id, $serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
         return $this->post("/api/plagiarism/preset/$id", [
-            'serviceName' => $serviceName,
-            'resourceProviderName' => $resourceProviderName,
+            'serviceNames' => $serviceNames,
+            'resourceProviderNames' => $resourceProviderNames,
             'suiteName' => $suiteName,
-            'resourceProviderPayload' => json_encode($resourceProviderPayload)
+            'resourceProviderPayloads' => json_encode($resourceProviderPayloads)
         ]);
     }
 

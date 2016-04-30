@@ -17,14 +17,14 @@ class Preset extends Service {
         $this->presetRepository = $this->entityManager->getRepository(\eu\luige\plagiarism\entity\Preset::class);
     }
 
-    public function update($id, $serviceName, $resourceProviderName, $suiteName, $resourceProviderPayload) {
+    public function update($id, $serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
         $preset = $this->getById($id);
-        if(!$preset) {
+        if (!$preset) {
             return null;
         }
-        $preset->setResourceProviderName($resourceProviderName);
-        $preset->setResourceProviderPayload($resourceProviderPayload);
-        $preset->setServiceName($serviceName);
+        $preset->setResourceProviderNames($resourceProviderNames);
+        $preset->setResourceProviderPayloads($resourceProviderPayloads);
+        $preset->setServiceNames($serviceNames);
         $preset->setSuiteName($suiteName);
 
         $this->entityManager->persist($preset);
@@ -33,11 +33,11 @@ class Preset extends Service {
         return $preset;
     }
 
-    public function create($serviceName, $resourceProviderName, $suiteName, $resourceProviderPayload) {
+    public function create($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayload) {
         $preset = new \eu\luige\plagiarism\entity\Preset();
-        $preset->setResourceProviderName($resourceProviderName);
-        $preset->setResourceProviderPayload($resourceProviderPayload);
-        $preset->setServiceName($serviceName);
+        $preset->setResourceProviderNames($resourceProviderNames);
+        $preset->setResourceProviderPayloads($resourceProviderPayload);
+        $preset->setServiceNames($serviceNames);
         $preset->setSuiteName($suiteName);
 
         $this->entityManager->persist($preset);

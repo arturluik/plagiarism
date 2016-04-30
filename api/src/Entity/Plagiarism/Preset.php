@@ -5,89 +5,79 @@ namespace eu\luige\plagiarism\entity;
  * @Entity
  * @Table(name="plagiarism_preset")
  */
-class Preset extends Entity
-{
+class Preset extends Entity {
     /** @Id @Column(type="integer") @GeneratedValue * */
     protected $id;
     /** @var  string[] @Column(type="json_array") */
-    protected $serviceName;
-    /** @var  string @Column(type="string") */
-    protected $resourceProviderName;
+    protected $serviceNames;
+    /** @var  string[] @Column(type="json_array") */
+    protected $resourceProviderNames;
     /** @var  string @Column(type="string") */
     protected $suiteName;
     /** @var  string @Column (type="string") */
-    protected $resourceProviderPayload;
+    protected $resourceProviderPayloads;
 
     /**
      * @return mixed
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
      * @return \string[]
      */
-    public function getServiceName()
-    {
-        return $this->serviceName;
+    public function getServiceNames() {
+        return $this->serviceNames;
     }
 
     /**
-     * @param \string[] $serviceName
+     * @param \string[] $serviceNames
      */
-    public function setServiceName($serviceName)
-    {
-        $this->serviceName = $serviceName;
+    public function setServiceNames($serviceNames) {
+        $this->serviceNames = $serviceNames;
     }
 
     /**
-     * @return \string
+     * @return \string[]
      */
-    public function getResourceProviderName()
-    {
-        return $this->resourceProviderName;
+    public function getResourceProviderNames() {
+        return $this->resourceProviderNames;
     }
 
     /**
-     * @param \string $resourceProviderName
+     * @param \string $resourceProviderNames
      */
-    public function setResourceProviderName($resourceProviderName)
-    {
-        $this->resourceProviderName = $resourceProviderName;
+    public function setResourceProviderNames($resourceProviderNames) {
+        $this->resourceProviderNames = $resourceProviderNames;
     }
 
     /**
      * @return string
      */
-    public function getSuiteName()
-    {
+    public function getSuiteName() {
         return $this->suiteName;
     }
 
     /**
      * @param string $suiteName
      */
-    public function setSuiteName($suiteName)
-    {
+    public function setSuiteName($suiteName) {
         $this->suiteName = $suiteName;
     }
 
     /**
      * @return string
      */
-    public function getResourceProviderPayload()
-    {
-        return $this->resourceProviderPayload;
+    public function getResourceProviderPayloads() {
+        return $this->resourceProviderPayloads;
     }
 
     /**
-     * @param string $resourceProviderPayload
+     * @param string $resourceProviderPayloads
      */
-    public function setResourceProviderPayload($resourceProviderPayload)
-    {
-        $this->resourceProviderPayload = $resourceProviderPayload;
+    public function setResourceProviderPayloads($resourceProviderPayloads) {
+        $this->resourceProviderPayloads = $resourceProviderPayloads;
     }
 
 }

@@ -23,16 +23,21 @@ class Preset extends Endpoint {
 
     public function create(Request $request, Response $response) {
 
-        $this->assertParamsExist($request, ['serviceName', 'resourceProviderName', 'suiteName', 'resourceProviderPayload']);
+        $this->assertParamsExist($request, ['serviceNames', 'resourceProviderNames', 'suiteName', 'resourceProviderPayloads']);
 
-        $this->assertServiceExists($request->getParam('serviceName'));
-        $this->assertProviderExistsAndPayloadIsOk($request->getParam('resourceProviderName'), $request->getParam('resourceProviderPayload'));
+        $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
+        $services = explode(',', $request->getParam('serviceNames'));
+
+        $payLoads = json_decode($request->getParam('resourceProviderPayloads'), true);
+
+        $this->assertServicesExist($services);
+        $this->assertProvdersExistsAndPayloadsAreOk($resourceProviders, $payLoads);
 
         $preset = $this->presetService->create(
-            $request->getParam('serviceName'),
-            $request->getParam('resourceProviderName'),
+            $services,
+            $resourceProviders,
             $request->getParam('suiteName'),
-            $request->getParam('resourceProviderPayload')
+            $request->getParam('resourceProviderPayloads')
         );
 
         $apiResponse = new ApiResponse();
@@ -53,16 +58,24 @@ class Preset extends Endpoint {
         $apiResponse = new ApiResponse();
 
         $this->assertAttributesExist($request, ['id']);
-        $this->assertParamsExist($request, ['serviceName', 'resourceProviderName', 'suiteName', 'resourceProviderPayload']);
+        $this->assertParamsExist($request, ['serviceNames', 'resourceProviderNames', 'suiteName', 'resourceProviderPayloads']);
 
         $id = $request->getAttribute('id');
+        
+        $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
+        $services = explode(',', $request->getParam('serviceNames'));
+
+        $payLoads = json_decode($request->getParam('resourceProviderPayloads'), true);
+
+        $this->assertServicesExist($services);
+        $this->assertProvdersExistsAndPayloadsAreOk($resourceProviders, $payLoads);
 
         $preset = $this->presetService->update(
             $id,
-            $request->getParam('serviceName'),
-            $request->getParam('resourceProviderName'),
+            $services,
+            $resourceProviders,
             $request->getParam('suiteName'),
-            $request->getParam('resourceProviderPayload')
+            $request->getParam('resourceProviderPayloads')
         );
         if (!$preset) {
             throw new \Exception("Unknown preset with id: $id", 404);
@@ -103,18 +116,23 @@ class Preset extends Endpoint {
         return $this->response($response, $apiResponse);
     }
 
+    public function assertProvdersExistsAndPayloadsAreOk($providerNames, $payloads) {
+        foreach ($providerNames as $providerName) {
+            $this->assertProviderExistsAndPayloadIsOk($providerName, $payloads[$providerName]);
+        }
+    }
+
     public function assertProviderExistsAndPayloadIsOk($providerName, $payload) {
         $providers = ResourceProvider::getProviders();
         foreach ($providers as $className) {
             /** @var ResourceProvider $provder */
             $provder = new $className($this->container);
             if (mb_strtolower($provder->getName()) == mb_strtolower($providerName)) {
-                $provder->validatePayload(json_decode($payload, true));
+                $provder->validatePayload($payload);
                 return true;
             }
         }
         throw new \Exception("No such resourceProvider $providerName", 404);
     }
-
 
 }

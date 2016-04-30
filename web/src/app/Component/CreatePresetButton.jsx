@@ -159,9 +159,9 @@ export default class CreatePresetButton extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <Form horizontal>
-                            <FormGroup controlId="preset-name">
+                            <FormGroup>
                                 <Col sm={4}>Kontrolli nimi</Col>
-                                <Col sm={8}><FormControl type="text"/></Col>
+                                <Col sm={8}><FormControl id="preset-name" type="text"/></Col>
                             </FormGroup>
                             <FormGroup controlId="preset-name">
                                 <Col sm={4}>Tüüp</Col>

@@ -7,34 +7,33 @@ class PresetTest extends RegressionTestCase {
 
 
     public function testCreateGetNewPreset() {
-        $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset', []);
+        $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset', ['MockProvider-1.0' => []]);
         $preset = $this->API->getPreset($result['content']['id'])['content'];
-        $this->assertEquals('MockService-1.0', $preset['serviceName']);
-        $this->assertEquals('MockProvider-1.0', $preset['resourceProviderName']);
+        $this->assertEquals('MockService-1.0', $preset['serviceNames'][0]);
+        $this->assertEquals('MockProvider-1.0', $preset['resourceProviderNames'][0]);
         $this->assertEquals('testPreset', $preset['suiteName']);
-        $this->assertEquals('[]', $preset['resourceProviderPayload']);
+        $this->assertEquals('{"MockProvider-1.0":[]}', $preset['resourceProviderPayloads']);
     }
 
     public function testUpdatePreest() {
-        $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1', []);
-
-        $preset = $this->API->updatePreset($result['content']['id'], 'MockService-1.0', 'MockProvider-1.0', 'updated', ['updated'])['content'];
-        $this->assertEquals('MockService-1.0', $preset['serviceName']);
-        $this->assertEquals('MockProvider-1.0', $preset['resourceProviderName']);
+        $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1', ['MockProvider-1.0' => []]);
+        $preset = $this->API->updatePreset($result['content']['id'], 'MockService-1.0', 'MockProvider-1.0', 'updated', ['MockProvider-1.0' => ["test"]])['content'];
+        $this->assertEquals('MockService-1.0', $preset['serviceNames'][0]);
+        $this->assertEquals('MockProvider-1.0', $preset['resourceProviderNames'][0]);
         $this->assertEquals('updated', $preset['suiteName']);
-        $this->assertEquals('["updated"]', $preset['resourceProviderPayload']);
+        $this->assertEquals('{"MockProvider-1.0":["test"]}', $preset['resourceProviderPayloads']);
     }
 
     public function testDeletePreset() {
-        $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1', []);
+        $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1', ['MockProvider-1.0' => []]);
         $this->assertEquals(0, $result['error_code']);
         $result2 = $this->API->deletePreset($result['content']['id']);
         $this->assertEquals(404, $result2['error_code']);
     }
 
     public function testGetAllPresets() {
-        $result1 = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1', []);
-        $result2 = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset2', []);
+        $result1 = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1', ['MockProvider-1.0' => []]);
+        $result2 = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset2', ['MockProvider-1.0' => []]);
 
         $ids = array_map(function ($preset) {
             return $preset['id'];

@@ -9,8 +9,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class Endpoint
-{
+class Endpoint {
     /** @var  Container */
     protected $container;
     /** @var  array */
@@ -22,30 +21,32 @@ class Endpoint
      * Endpoint constructor.
      * @param Container $container
      */
-    public function __construct(Container $container)
-    {
+    public function __construct(Container $container) {
         $this->container = $container;
         $this->config = $container->get("settings");
         $this->logger = $container->get(Logger::class);
     }
 
-    public function response(Response $response, ApiResponse $apiResponse)
-    {
+    public function response(Response $response, ApiResponse $apiResponse) {
         return $this->container->view->render($response, json_decode(json_encode($apiResponse), 1));
     }
 
-    public function authenticate(Request $request)
-    {
+    public function authenticate(Request $request) {
 
     }
 
-    public function assertAttributesExist(Request $request, array $array)
-    {
+    public function assertAttributesExist(Request $request, array $array) {
         $attributes = $request->getAttributes();
         foreach ($array as $value) {
             if (!array_key_exists($value, $attributes)) {
                 throw new \Exception("Attribute: $value is missing from request");
             }
+        }
+    }
+
+    public function assertServicesExist(array $services) {
+        foreach ($services as $service) {
+            $this->assertServiceExists($service);
         }
     }
 
@@ -59,9 +60,8 @@ class Endpoint
         }
         throw new \Exception("Unknown service : $service", 404);
     }
-    
-    public function assertParamsExist(Request $request, array $array)
-    {
+
+    public function assertParamsExist(Request $request, array $array) {
         $params = $request->getParams();
         foreach ($array as $value) {
             if (!array_key_exists($value, $params)) {
