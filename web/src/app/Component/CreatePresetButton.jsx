@@ -83,7 +83,13 @@ export default class CreatePresetButton extends React.Component {
             resouceProviders.push(input.value);
         });
 
-        API.createPreset(plagiarismServices, resouceProviders, presetName, settings);
+        API.createPreset(plagiarismServices, resouceProviders, presetName, settings).success(_ => {
+            this.props.onNotify('success', presetName + ' lisatud');
+        }).error(_ => {
+            this.props.onNotify('error', 'Ei õnnestunud lisada :(');
+        }).done(_ => {
+            this.closePopup();
+        });
     }
 
     onResourceProviderSelect(element) {

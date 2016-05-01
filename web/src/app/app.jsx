@@ -6,7 +6,7 @@ import Index from './Component/Index.jsx';
 import CheckSuite from './Component/CheckSuite.jsx';
 import NotFound from './Component/NotFound.jsx';
 
-import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './Sass/style.scss';
 
 render((

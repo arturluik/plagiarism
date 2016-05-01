@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router'
 
 export default class CheckSuiteRow extends React.Component {
-
+    
     render() {
         return (
             <li className="list-group-item">

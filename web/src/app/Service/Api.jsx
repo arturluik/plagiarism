@@ -15,6 +15,10 @@ export default class API {
         );
     }
 
+    static runPreset(id) {
+        return API.post('plagiarism/preset/' + id + '/run');
+    }
+
     static getCheckSuite(id) {
         return API.get('/plagiarism/checksuite/' + id);
     }
