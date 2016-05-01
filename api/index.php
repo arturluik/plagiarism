@@ -33,5 +33,6 @@ $app->get('/plagiarism/preset/{id}', Preset::class . ':read');
 $app->post('/plagiarism/preset/{id}', Preset::class . ':update');
 $app->delete('/plagiarism/preset/{id}', Preset::class . ':delete');
 $app->get('/plagiarism/preset', Preset::class . ':all');
+$app->post('/plagiarism/preset/{id}/run', Preset::class . ':run');
 
 $app->run();

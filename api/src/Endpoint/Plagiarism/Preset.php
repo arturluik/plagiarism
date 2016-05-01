@@ -25,10 +25,10 @@ class Preset extends Endpoint {
         parent::__construct($container);
         $this->presetService = $this->container->get(\eu\luige\plagiarism\service\Preset::class);
         $this->checkService = $this->container->get(Check::class);
-        $this->checkSuiteService = $this->container->get(Check::class);
+        $this->checkSuiteService = $this->container->get(CheckSuite::class);
     }
 
-    public function start(Request $request, Response $response) {
+    public function run(Request $request, Response $response) {
 
         $this->assertAttributesExist($request, ['id']);
 
@@ -37,13 +37,20 @@ class Preset extends Endpoint {
         $checkSuite = $this->checkSuiteService->create($preset->getSuiteName());
 
         foreach ($preset->getServiceNames() as $serviceName) {
-            $checkSuite = $this->checkService->create(
+            $check = $this->checkService->create(
                 $preset->getResourceProviderNames(),
                 $serviceName,
                 $preset->getResourceProviderPayloads(),
                 $checkSuite
             );
         }
+
+        $apiResponse = new ApiResponse();
+        $apiResponse->setContent([
+            'id' => $checkSuite->getId()
+        ]);
+
+        return $this->response($response, $apiResponse);
     }
 
     public function create(Request $request, Response $response) {

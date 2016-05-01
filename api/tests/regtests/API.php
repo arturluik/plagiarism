@@ -19,6 +19,10 @@ class API {
         ]);
     }
 
+    public function runPreset($id) {
+        return $this->post("/api/plagiarism/preset/$id/run");
+    }
+
     public function createCheckSuite($name, $resourceProviderNames, $serviceNames, $resourceProviderPayloads) {
 
         return $this->put("/api/plagiarism/checksuite", [

@@ -14,6 +14,15 @@ class PresetTest extends RegressionTestCase {
         $this->assertEquals('testPreset', $preset['suiteName']);
         $this->assertEquals(json_decode('{"MockProvider-1.0":[]}',1), $preset['resourceProviderPayloads']);
     }
+    
+    public function testPresetRun() {
+        $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1-run', ['MockProvider-1.0' => []]);
+        $this->assertEquals(0, $result['error_code']);
+        $result2 = $this->API->runPreset($result['content']['id']);
+        sleep(2);
+        $result3 = $this->API->getCheckSuite($result2['content']['id']);
+        $this->assertEquals(0, $result3['error_code']);
+    }
 
     public function testUpdatePreest() {
         $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset1', ['MockProvider-1.0' => []]);

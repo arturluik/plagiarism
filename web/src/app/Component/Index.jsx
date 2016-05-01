@@ -69,8 +69,6 @@ class Preset extends React.Component {
             <li className="list-group-item">
                 {this.props.name}
                 <a className="btn-xs btn-success pull-right">Start</a>
-                &nbsp;
-                <a className="btn-xs btn-danger pull-right">Kustuta</a>
             </li>
         );
     }
