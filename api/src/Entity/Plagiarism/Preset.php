@@ -14,9 +14,25 @@ class Preset extends Entity {
     protected $resourceProviderNames;
     /** @var  string @Column(type="string") */
     protected $suiteName;
-    /** @var  string[] @Column (type="json_array") */
+    /** @var  array @Column(type="json_array") */
     protected $resourceProviderPayloads;
+    /** @var  array @column(type="json_array") */
+    protected $plagiarismServicePayloads;
 
+    /**
+     * @return array
+     */
+    public function getPlagiarismServicePayloads() {
+        return $this->plagiarismServicePayloads;
+    }
+
+    /**
+     * @param array $plagiarismServicePayloads
+     */
+    public function setPlagiarismServicePayloads($plagiarismServicePayloads) {
+        $this->plagiarismServicePayloads = $plagiarismServicePayloads;
+    }
+   
     /**
      * @return mixed
      */

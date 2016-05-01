@@ -39,6 +39,7 @@ export default class Index extends React.Component {
     }
 
     datasetChanged() {
+        console.info('Dataset changed');
         API.getCheckSuites().success(data => {
             this.updateState('checksSuites', data.content.map((e => {
                 return <CheckSuiteRow checkSuite={e} key={e.id} onNotify={this.notify.bind(this)}/>
@@ -46,7 +47,8 @@ export default class Index extends React.Component {
         });
         API.getAllPresets().success(data => {
             this.updateState('presets', data.content.map((e, i) => {
-                return <PresetRow key={i} preset={e} onNotify={this.notify.bind(this)}></PresetRow>
+                return <PresetRow key={i} preset={e} onNotify={this.notify.bind(this)}
+                                  onSuccess={this.datasetChanged.bind(this)}></PresetRow>
             }));
         });
     }
@@ -77,7 +79,8 @@ export default class Index extends React.Component {
                         <Panel bsStyle={"danger"} header={'Eeldefineeritud kontrollid'}>
                             {this.state.presets}
                             <span class="pull-right">
-                                <CreatePresetButton onNotify={this.notify.bind(this)}/>
+                                <CreatePresetButton onNotify={this.notify.bind(this)}
+                                                    onSuccess={this.datasetChanged.bind(this)}/>
                             </span>
                         </Panel>
                     </Col>

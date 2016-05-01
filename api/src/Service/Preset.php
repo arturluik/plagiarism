@@ -17,13 +17,14 @@ class Preset extends Service {
         $this->presetRepository = $this->entityManager->getRepository(\eu\luige\plagiarism\entity\Preset::class);
     }
 
-    public function update($id, $serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
+    public function update($id, $serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads, $plagiarismServiciePayloads) {
         $preset = $this->get($id);
         if (!$preset) {
             return null;
         }
         $preset->setResourceProviderNames($resourceProviderNames);
         $preset->setResourceProviderPayloads($resourceProviderPayloads);
+        $preset->setPlagiarismServicePayloads($plagiarismServiciePayloads);
         $preset->setServiceNames($serviceNames);
         $preset->setSuiteName($suiteName);
 
@@ -33,10 +34,11 @@ class Preset extends Service {
         return $preset;
     }
 
-    public function create($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
+    public function create($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads, $plagiarismServicePayloads) {
         $preset = new \eu\luige\plagiarism\entity\Preset();
         $preset->setResourceProviderNames($resourceProviderNames);
         $preset->setResourceProviderPayloads($resourceProviderPayloads);
+        $preset->setPlagiarismServicePayloads($plagiarismServicePayloads);
         $preset->setServiceNames($serviceNames);
         $preset->setSuiteName($suiteName);
 

@@ -21,10 +21,26 @@ class Check extends Entity {
     /** @var  CheckSuite @ManyToOne(targetEntity="CheckSuite", inversedBy="checks") */
     protected $checkSuite;
     /** @var  array @Column(type="json_array") */
-    protected $payload;
+    protected $resourceProviderPayload;
+    /** @var  array @Column(type="json_array") */
+    protected $plagiarismServicePayload;
     /** @var  string @Column(type="string") */
     protected $status;
 
+    /**
+     * @return array
+     */
+    public function getPlagiarismServicePayload() {
+        return $this->plagiarismServicePayload;
+    }
+
+    /**
+     * @param array $plagiarismServicePayload
+     */
+    public function setPlagiarismServicePayload($plagiarismServicePayload) {
+        $this->plagiarismServicePayload = $plagiarismServicePayload;
+    }
+    
     function jsonSerialize() {
         $parent = parent::jsonSerialize();
         unset($parent['checkSuite']);
@@ -52,7 +68,7 @@ class Check extends Entity {
     public function setFinished($finished) {
         $this->finished = $finished;
     }
-    
+
     /**
      * @return Similarity[]
      */
@@ -112,15 +128,15 @@ class Check extends Entity {
     /**
      * @return array
      */
-    public function getPayload() {
-        return $this->payload;
+    public function getResourceProviderPayload() {
+        return $this->resourceProviderPayload;
     }
 
     /**
-     * @param array $payload
+     * @param array $resourceProviderPayload
      */
-    public function setPayload($payload) {
-        $this->payload = $payload;
+    public function setResourceProviderPayload($resourceProviderPayload) {
+        $this->resourceProviderPayload = $resourceProviderPayload;
     }
 
     /**

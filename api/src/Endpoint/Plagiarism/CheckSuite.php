@@ -76,7 +76,7 @@ class CheckSuite extends Endpoint {
     public function create(Request $request, Response $response) {
         $apiResponse = new ApiResponse();
 
-        $this->assertParamsExist($request, ['name', 'resourceProviderNames', 'serviceNames', 'resourceProviderPayloads']);
+        $this->assertParamsExist($request, ['name', 'resourceProviderNames', 'serviceNames', 'resourceProviderPayloads', 'plagiarismServicePayloads']);
 
         $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
         $services = explode(',', $request->getParam('serviceNames'));
@@ -101,6 +101,7 @@ class CheckSuite extends Endpoint {
                 $resourceProviders,
                 $service,
                 $payload,
+                json_decode($request->getParam('plagiarismServicePayloads'), true),
                 $suite
             );
         }

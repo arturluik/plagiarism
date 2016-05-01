@@ -99,14 +99,15 @@ class Check extends Service {
     /**
      * @param string[] $resourceProviders
      * @param string $plagiarismService
-     * @param array $payload
+     * @param array $resourceProviderPayload
      * @param CheckSuite $checkSuite
      */
-    public function create($resourceProviders, $plagiarismService, $payload, $checkSuite) {
+    public function create($resourceProviders, $plagiarismService, $resourceProviderPayload, $plagiarismServicePayload, $checkSuite) {
         $check = new \eu\luige\plagiarism\entity\Check();
         $check->setResourceProviderNames($resourceProviders);
         $check->setPlagiarismServiceName($plagiarismService);
-        $check->setPayload($payload);
+        $check->setResourceProviderPayload($resourceProviderPayload);
+        $check->setPlagiarismServicePayload($plagiarismServicePayload);
         $check->setCheckSuite($checkSuite);
         $check->setStatus(self::CHECK_STATUS_PENDING);
 

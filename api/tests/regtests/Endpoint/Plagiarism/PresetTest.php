@@ -8,6 +8,7 @@ class PresetTest extends RegressionTestCase {
 
     public function testCreateGetNewPreset() {
         $result = $this->API->createPreset('MockService-1.0', 'MockProvider-1.0', 'testPreset', ['MockProvider-1.0' => []]);
+        var_dump($result);
         $preset = $this->API->getPreset($result['content']['id'])['content'];
         $this->assertEquals('MockService-1.0', $preset['serviceNames'][0]);
         $this->assertEquals('MockProvider-1.0', $preset['resourceProviderNames'][0]);

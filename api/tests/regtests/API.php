@@ -1,6 +1,7 @@
 <?php
 namespace tests\eu\luige\plagiarism;
 
+use eu\luige\plagiarism\mimetype\MimeType;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -29,7 +30,8 @@ class API {
             'name' => $name,
             'resourceProviderNames' => $resourceProviderNames,
             'serviceNames' => $serviceNames,
-            'resourceProviderPayloads' => json_encode($resourceProviderPayloads)
+            'resourceProviderPayloads' => json_encode($resourceProviderPayloads),
+            'plagiarismServicePayloads' => json_encode(['mimeType' => MimeType::JAVA])
         ]);
     }
 
@@ -70,7 +72,8 @@ class API {
             'serviceNames' => $serviceNames,
             'resourceProviderNames' => $resourceProviderNames,
             'suiteName' => $suiteName,
-            'resourceProviderPayloads' => json_encode($resourceProviderPayloads)
+            'resourceProviderPayloads' => json_encode($resourceProviderPayloads),
+            'plagiarismServicePayloads' => json_encode(['mimeType' => MimeType::JAVA])
         ]);
     }
 
@@ -79,7 +82,8 @@ class API {
             'serviceNames' => $serviceNames,
             'resourceProviderNames' => $resourceProviderNames,
             'suiteName' => $suiteName,
-            'resourceProviderPayloads' => json_encode($resourceProviderPayloads)
+            'resourceProviderPayloads' => json_encode($resourceProviderPayloads),
+            'plagiarismServicePayloads' => json_encode(['mimeType' => MimeType::JAVA])
         ]);
     }
 

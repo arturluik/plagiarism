@@ -41,6 +41,7 @@ class Preset extends Endpoint {
                 $preset->getResourceProviderNames(),
                 $serviceName,
                 $preset->getResourceProviderPayloads(),
+                $preset->getPlagiarismServicePayloads(),
                 $checkSuite
             );
         }
@@ -62,7 +63,8 @@ class Preset extends Endpoint {
             $services,
             $resourceProviders,
             $request->getParam('suiteName'),
-            json_decode($request->getParam('resourceProviderPayloads'), true)
+            json_decode($request->getParam('resourceProviderPayloads'), true),
+            json_decode($request->getParam('plagiarismServicePayloads'), true)
         );
 
         $apiResponse = new ApiResponse();
@@ -95,7 +97,8 @@ class Preset extends Endpoint {
             $services,
             $resourceProviders,
             $request->getParam('suiteName'),
-            json_decode($request->getParam('resourceProviderPayloads'), 1)
+            json_decode($request->getParam('resourceProviderPayloads'), 1),
+            json_decode($request->getParam('plagiarismServicePayloads'), 1)
         );
         if (!$preset) {
             throw new \Exception("Unknown preset with id: $id", 404);

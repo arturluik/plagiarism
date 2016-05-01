@@ -83,8 +83,9 @@ export default class CreatePresetButton extends React.Component {
             resouceProviders.push(input.value);
         });
 
-        API.createPreset(plagiarismServices, resouceProviders, presetName, settings).success(_ => {
+        API.createPreset(plagiarismServices, resouceProviders, presetName, settings, {'mimeType': mimeType}).success(_ => {
             this.props.onNotify('success', presetName + ' lisatud');
+            this.props.onSuccess();
         }).error(_ => {
             this.props.onNotify('error', 'Ei õnnestunud lisada :(');
         }).done(_ => {

@@ -4,13 +4,14 @@ import $ from 'jquery';
 export default class API {
 
 
-    static createPreset(serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads) {
+    static createPreset(serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads, plagiarismServicePayloads) {
         return API.put('/plagiarism/preset',
             {
                 'serviceNames': serviceNames.join(''),
                 'resourceProviderNames': resourceProviderNames.join(','),
                 'suiteName': suiteName,
-                'resourceProviderPayloads': JSON.stringify(resourceProviderPayloads)
+                'resourceProviderPayloads': JSON.stringify(resourceProviderPayloads),
+                'plagiarismServicePayloads': JSON.stringify(plagiarismServicePayloads)
             }
         );
     }
@@ -23,12 +24,13 @@ export default class API {
         return API.get('/plagiarism/checksuite/' + id);
     }
 
-    static updatePreset(id, serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads) {
+    static updatePreset(id, serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads, plagiarismServicePayloads) {
         return API.post('/plagiarism/preset/' + id, {
                 'serviceNames': serviceNames.implode('.'),
                 'resourceProviderNames': resourceProviderNames.implode(','),
                 'suiteName': suiteName,
-                'resourceProviderPayloads': JSON.stringify(resourceProviderPayloads)
+                'resourceProviderPayloads': JSON.stringify(resourceProviderPayloads),
+                'plagiarismServicePayloads': JSON.stringify(plagiarismServicePayloads)
             }
         );
     }
