@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/lib/Col';
 import Panel from 'react-bootstrap/lib/Panel';
 
 import CreatePresetButton from './CreatePresetButton.jsx';
+import CheckSuiteRow from './CheckSuiteRow.jsx';
 
 export default class Index extends React.Component {
 
@@ -15,7 +16,7 @@ export default class Index extends React.Component {
         super(props, context);
 
         this.state = {
-            checks: [],
+            checksSuites: [],
             presets: []
         };
     };
@@ -26,8 +27,8 @@ export default class Index extends React.Component {
     }
 
     datasetChanged() {
-        API.getChecks().success(data => {
-            this.updateState('checks', data.content.map((e => <CheckRow check={e} key={e.messageId}/>)));
+        API.getCheckSuites().success(data => {
+            this.updateState('checksSuites', data.content.map((e => <CheckSuiteRow checkSuite={e} key={e.id}/>)));
         });
         API.getAllPresets().success(data => {
             this.updateState('presets', data.content.map((e, i) => <Preset key={i} name={e.suiteName}></Preset>));
@@ -50,9 +51,12 @@ export default class Index extends React.Component {
                     <Col sm={6}>
                         <Panel bsStyle={"danger"} header={'Eeldefineeritud kontrollid'}>
                             {this.state.presets}
+                            <span class="pull-right">
+                                <CreatePresetButton/>
+                            </span>
                         </Panel>
                     </Col>
-                    <CheckSection checkRows={this.state.checks}/>
+                    <CheckSection checkRows={this.state.checksSuites}/>
                 </div>
             </div>
         );
@@ -104,16 +108,3 @@ class Setting extends React.Component {
     }
 }
 
-class CheckRow extends React.Component {
-
-    render() {
-        return (
-            <li className="list-group-item">
-                {this.props.check.name} &
-                {this.props.check.providerName} &
-                {this.props.check.serviceName}
-                <a className="btn-xs btn-primary pull-right">watch</a>
-            </li>
-        )
-    }
-} 

@@ -24,14 +24,14 @@ class CheckTest extends RegressionTestCase {
         $this->assertEquals('status_success', $result['content']['status']);
     }
 
-    public function testMossWithGit() {
-        $response = $this->API->createCheckSuite('Simple moss and git test', 'git-1.0', "moss-1.0", [
-            'git-1.0' => [
-                "authMethod" => "noauth",
-                "clone" => [
-                    "https://github.com/Tomatipasta/plagiarism.git"
-                ]
-            ]
-        ]);
-    }
+//    public function testMossWithGit() {
+//        $response = $this->API->createCheckSuite('Simple moss and git test', 'git-1.0', "moss-1.0", [
+//            'git-1.0' => [
+//                "authMethod" => "noauth",
+//                "clone" => [
+//                    "https://github.com/Tomatipasta/plagiarism.git"
+//                ]
+//            ]
+//        ]);
+//    }
 }

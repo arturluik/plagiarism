@@ -15,7 +15,23 @@ class CheckSuite extends Entity {
     protected $checks;
     /** @var User @ManyToOne(targetEntity="User") */
     protected $user;
+    /** @var  \DateTime @Column(type="datetime") */
+    protected $created;
 
+    /**
+     * @return \DateTime
+     */
+    public function getCreated() {
+        return $this->created;
+    }
+
+    /**
+     * @param \DateTime $created
+     */
+    public function setCreated($created) {
+        $this->created = $created;
+    }
+   
     /**
      * @return string
      */
@@ -29,7 +45,7 @@ class CheckSuite extends Entity {
     public function setName($name) {
         $this->name = $name;
     }
-    
+
     /**
      * @return mixed
      */

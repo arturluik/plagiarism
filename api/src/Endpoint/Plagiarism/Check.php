@@ -28,12 +28,10 @@ class Check extends Endpoint {
         $this->assertAttributesExist($request, ['id']);
 
         $entity = $this->checkService->get($request->getAttribute('id'));
-
         $apiResponse->setContent(
             [
                 'id' => $entity->getId(),
                 'finished' => $entity->getFinished(),
-                'created' => $entity->getCreated(),
                 'status' => $entity->getStatus(),
                 'plagiarismService' => $entity->getPlagiarismServiceName(),
                 'resourceProviders' => $entity->getResourceProviderNames(),
@@ -54,15 +52,6 @@ class Check extends Endpoint {
                 }, $entity->getSimilarities()->toArray())
             ]
         );
-        return $this->response($response, $apiResponse);
-    }
-
-    public function all(Request $request, Response $response) {
-        $apiResponse = new ApiResponse();
-        $apiResponse->setContent(
-            $this->checkService->all()
-        );
-
         return $this->response($response, $apiResponse);
     }
 }

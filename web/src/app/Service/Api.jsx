@@ -15,6 +15,10 @@ export default class API {
         );
     }
 
+    static getCheckSuite(id) {
+        return API.get('/plagiarism/checksuite/' + id);
+    }
+
     static updatePreset(id, serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads) {
         return API.post('/plagiarism/preset/' + id, {
                 'serviceNames': serviceNames.implode('.'),
@@ -53,8 +57,8 @@ export default class API {
         return API.get('/plagiarism/resourceprovider');
     }
 
-    static getChecks() {
-        return API.get("/plagiarism/check");
+    static getCheckSuites() {
+        return API.get("/plagiarism/checksuite");
     }
 
     static put(resource, data) {

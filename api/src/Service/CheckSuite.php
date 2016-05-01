@@ -27,6 +27,9 @@ class CheckSuite extends Service {
 
     public function get($id) {
         $result = $this->checkRepository->findOneBy(['id' => $id]);
+        if (!$result) {
+            throw new \Exception("No such checkSuite: $id", 404);
+        }
         $this->loadDependencies($result);
         return $result;
     }
@@ -47,6 +50,7 @@ class CheckSuite extends Service {
         $checkSuite = new \eu\luige\plagiarism\entity\CheckSuite();
         $checkSuite->setUser(null);
         $checkSuite->setName($name);
+        $checkSuite->setCreated(new \DateTime());
 
         $this->entityManager->persist($checkSuite);
         $this->entityManager->flush();

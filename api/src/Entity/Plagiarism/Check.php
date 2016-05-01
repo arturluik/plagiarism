@@ -12,8 +12,6 @@ class Check extends Entity {
     protected $id;
     /** @var  \DateTime @Column(type="datetime", nullable=true) */
     protected $finished;
-    /** @var  \DateTime @Column(type="datetime") */
-    protected $created;
     /** @var  Similarity[] @OneToMany(targetEntity="Similarity", mappedBy="check", cascade={"persist"}) */
     protected $similarities;
     /** @var  string @Column(type="string") */
@@ -54,21 +52,7 @@ class Check extends Entity {
     public function setFinished($finished) {
         $this->finished = $finished;
     }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreated() {
-        return $this->created;
-    }
-
-    /**
-     * @param \DateTime $created
-     */
-    public function setCreated($created) {
-        $this->created = $created;
-    }
-
+    
     /**
      * @return Similarity[]
      */

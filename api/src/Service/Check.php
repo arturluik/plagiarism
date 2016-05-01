@@ -109,7 +109,6 @@ class Check extends Service {
         $check->setPayload($payload);
         $check->setCheckSuite($checkSuite);
         $check->setStatus(self::CHECK_STATUS_PENDING);
-        $check->setCreated(new \DateTime());
 
         $this->entityManager->persist($check);
         $this->entityManager->flush();

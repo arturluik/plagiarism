@@ -10,12 +10,6 @@ require __DIR__ . '/bootstrap.php';
 
 
 /**
- * @api {get} /plagiarism/check Get all tasks ever executed
- * @apiVersion 1.0.0
- * @apiGroup Plagiarism
- */
-$app->get('/plagiarism/check', Check::class . ':all');
-/**
  * @api {get} /plagiarism/check/:id Get detailed check information
  * @apiVersion 1.0.0
  * @apiGroup Plagiarism

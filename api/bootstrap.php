@@ -94,3 +94,6 @@ $container[\eu\luige\plagiarism\service\CheckSuite::class] = function ($containe
 $container[\eu\luige\plagiarism\service\Resource::class] = function ($container) {
     return new \eu\luige\plagiarism\service\Resource($container);
 };
+$container[\eu\luige\plagiarism\service\Similarity::class] = function ($container) {
+    return new \eu\luige\plagiarism\service\Similarity($container);
+};
