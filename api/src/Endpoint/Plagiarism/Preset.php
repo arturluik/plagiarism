@@ -6,15 +6,17 @@ use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\service\Check;
+use eu\luige\plagiarism\service\CheckSuite;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 class Preset extends Endpoint {
-
     /** @var  \eu\luige\plagiarism\service\Preset */
     private $presetService;
     /** @var  Check */
     private $checkService;
+    /** @var  CheckSuite */
+    private $checkSuiteService;
 
     /**
      * Preset constructor.
@@ -23,11 +25,25 @@ class Preset extends Endpoint {
         parent::__construct($container);
         $this->presetService = $this->container->get(\eu\luige\plagiarism\service\Preset::class);
         $this->checkService = $this->container->get(Check::class);
+        $this->checkSuiteService = $this->container->get(Check::class);
     }
 
     public function start(Request $request, Response $response) {
 
         $this->assertAttributesExist($request, ['id']);
+
+        $preset = $this->presetService->get($request->getAttribute('id'));
+
+        $checkSuite = $this->checkSuiteService->create($preset->getSuiteName());
+
+        foreach ($preset->getServiceNames() as $serviceName) {
+            $checkSuite = $this->checkService->create(
+                $preset->getResourceProviderNames(),
+                $serviceName,
+                $preset->getResourceProviderPayloads(),
+                $checkSuite
+            );
+        }
     }
 
     public function create(Request $request, Response $response) {
@@ -39,7 +55,7 @@ class Preset extends Endpoint {
             $services,
             $resourceProviders,
             $request->getParam('suiteName'),
-            $request->getParam('resourceProviderPayloads')
+            json_decode($request->getParam('resourceProviderPayloads'), true)
         );
 
         $apiResponse = new ApiResponse();
@@ -72,7 +88,7 @@ class Preset extends Endpoint {
             $services,
             $resourceProviders,
             $request->getParam('suiteName'),
-            $request->getParam('resourceProviderPayloads')
+            json_decode($request->getParam('resourceProviderPayloads'), 1)
         );
         if (!$preset) {
             throw new \Exception("Unknown preset with id: $id", 404);

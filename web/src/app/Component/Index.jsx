@@ -71,8 +71,6 @@ class Preset extends React.Component {
                 <a className="btn-xs btn-success pull-right">Start</a>
                 &nbsp;
                 <a className="btn-xs btn-danger pull-right">Kustuta</a>
-                &nbsp;
-                <a className="btn-xs btn-primary pull-right">Settings</a>
             </li>
         );
     }

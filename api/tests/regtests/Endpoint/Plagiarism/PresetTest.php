@@ -12,7 +12,7 @@ class PresetTest extends RegressionTestCase {
         $this->assertEquals('MockService-1.0', $preset['serviceNames'][0]);
         $this->assertEquals('MockProvider-1.0', $preset['resourceProviderNames'][0]);
         $this->assertEquals('testPreset', $preset['suiteName']);
-        $this->assertEquals('{"MockProvider-1.0":[]}', $preset['resourceProviderPayloads']);
+        $this->assertEquals(json_decode('{"MockProvider-1.0":[]}',1), $preset['resourceProviderPayloads']);
     }
 
     public function testUpdatePreest() {
@@ -21,7 +21,7 @@ class PresetTest extends RegressionTestCase {
         $this->assertEquals('MockService-1.0', $preset['serviceNames'][0]);
         $this->assertEquals('MockProvider-1.0', $preset['resourceProviderNames'][0]);
         $this->assertEquals('updated', $preset['suiteName']);
-        $this->assertEquals('{"MockProvider-1.0":["test"]}', $preset['resourceProviderPayloads']);
+        $this->assertEquals(json_decode('{"MockProvider-1.0":["test"]}',1), $preset['resourceProviderPayloads']);
     }
 
     public function testDeletePreset() {

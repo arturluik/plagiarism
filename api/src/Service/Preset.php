@@ -33,10 +33,10 @@ class Preset extends Service {
         return $preset;
     }
 
-    public function create($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayload) {
+    public function create($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
         $preset = new \eu\luige\plagiarism\entity\Preset();
         $preset->setResourceProviderNames($resourceProviderNames);
-        $preset->setResourceProviderPayloads($resourceProviderPayload);
+        $preset->setResourceProviderPayloads($resourceProviderPayloads);
         $preset->setServiceNames($serviceNames);
         $preset->setSuiteName($suiteName);
 
@@ -62,8 +62,18 @@ class Preset extends Service {
         return $this->pagedResultSet($this->presetRepository, $page);
     }
 
+    /**
+     * @param $id
+     * @return \eu\luige\plagiarism\entity\Preset
+     * @throws \Exception
+     */
     public function get($id) {
-        return $this->presetRepository->findOneBy(['id' => $id]);
+        $preset = $this->presetRepository->findOneBy(['id' => $id]);
+        if (!$preset) {
+            throw new \Exception("No such preset: $id", 404);
+        }
+
+        return $preset;
     }
 }
 

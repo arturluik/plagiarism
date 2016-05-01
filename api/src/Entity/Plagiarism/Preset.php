@@ -14,7 +14,7 @@ class Preset extends Entity {
     protected $resourceProviderNames;
     /** @var  string @Column(type="string") */
     protected $suiteName;
-    /** @var  string @Column (type="string") */
+    /** @var  string[] @Column (type="json_array") */
     protected $resourceProviderPayloads;
 
     /**
@@ -67,14 +67,14 @@ class Preset extends Entity {
     }
 
     /**
-     * @return string
+     * @return string[]
      */
     public function getResourceProviderPayloads() {
         return $this->resourceProviderPayloads;
     }
 
     /**
-     * @param string $resourceProviderPayloads
+     * @param string[] $resourceProviderPayloads
      */
     public function setResourceProviderPayloads($resourceProviderPayloads) {
         $this->resourceProviderPayloads = $resourceProviderPayloads;
