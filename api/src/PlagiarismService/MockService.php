@@ -6,6 +6,7 @@ namespace eu\luige\plagiarism\plagiarismservice;
 
 use eu\luige\plagiarism\entity\Similarity;
 use eu\luige\plagiarism\mimetype\MimeType;
+use eu\luige\plagiarism\similarity\SimilarFileLines;
 
 class MockService extends PlagiarismService {
 
@@ -28,6 +29,10 @@ class MockService extends PlagiarismService {
         $similarity->setSecondResource($resources[1]);
         $similarity->setSimilarityPercentage(10);
 
+        $similarFileLines = new SimilarFileLines();
+        $similarFileLines->setFirstFileLines([10, 14]);
+        $similarFileLines->setSecondFileLines([5, 14]);
+        $similarity->setSimilarFileLines([$similarFileLines]);
         return [
             $similarity
         ];

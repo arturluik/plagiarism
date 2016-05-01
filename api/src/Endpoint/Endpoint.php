@@ -4,6 +4,8 @@ namespace eu\luige\plagiarism\endpoint;
 
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
+use eu\luige\plagiarism\resourceprovider\ResourceProvider;
+use eu\luige\plagiarism\service\Check;
 use Monolog\Logger;
 use Slim\Container;
 use Slim\Http\Request;
@@ -16,6 +18,8 @@ class Endpoint {
     protected $config;
     /** @var  Logger */
     protected $logger;
+    /** @var  Check */
+    private $checkService;
 
     /**
      * Endpoint constructor.
@@ -25,6 +29,7 @@ class Endpoint {
         $this->container = $container;
         $this->config = $container->get("settings");
         $this->logger = $container->get(Logger::class);
+        $this->checkService = $container->get(Check::class);
     }
 
     public function response(Response $response, ApiResponse $apiResponse) {
@@ -44,23 +49,6 @@ class Endpoint {
         }
     }
 
-    public function assertServicesExist(array $services) {
-        foreach ($services as $service) {
-            $this->assertServiceExists($service);
-        }
-    }
-
-    public function assertServiceExists(string $service) {
-        $services = PlagiarismService::getServices();
-        foreach ($services as $serviceClass) {
-            /** @var PlagiarismService $serviceInstance */
-            $serviceInstance = new $serviceClass($this->container);
-            if (mb_strtolower($serviceInstance->getName()) === mb_strtolower($service)) return $serviceInstance;
-
-        }
-        throw new \Exception("Unknown service : $service", 404);
-    }
-
     public function assertParamsExist(Request $request, array $array) {
         $params = $request->getParams();
         foreach ($array as $value) {
@@ -69,5 +57,19 @@ class Endpoint {
             }
         }
     }
+
+    public function assertResourceProvidersExist(array $resourceProviderNames) {
+        foreach ($resourceProviderNames as $resourceProviderName) {
+            $this->checkService->getResourceProviderByName($resourceProviderName);
+        }
+    }
+
+    public function assertServicesExist(array $services) {
+        foreach ($services as $service) {
+            $this->checkService->getPlagiarismServiceByName($service);
+        }
+    }
+
+
 
 }

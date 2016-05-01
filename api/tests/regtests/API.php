@@ -19,6 +19,24 @@ class API {
         ]);
     }
 
+    public function createCheckSuite($name, $resourceProviderNames, $serviceNames, $resourceProviderPayloads) {
+
+        return $this->put("/api/plagiarism/checksuite", [
+            'name' => $name,
+            'resourceProviderNames' => $resourceProviderNames,
+            'serviceNames' => $serviceNames,
+            'resourceProviderPayloads' => json_encode($resourceProviderPayloads)
+        ]);
+    }
+
+    public function getAllCheckSuites() {
+        return $this->get("/api/plagiarism/checksuite");
+    }
+
+    public function getCheckSuite($id) {
+        return $this->get("/api/plagiarism/checksuite/$id");
+    }
+
     public function getSupportedMimeTypes() {
         return $this->get('/api/plagiarism/supportedmimetypes');
     }
@@ -74,14 +92,10 @@ class API {
         return $this->get("/api/plagiarism/check/$id");
     }
 
-    public function check($service, $provider, array $payload, $name = "test") {
-        return $this->put('/api/plagiarism/check', [
-            'payload' => json_encode($payload),
-            'service' => $service,
-            'resource_provider' => $provider,
-            'name' => $name
-        ]);
+    public function getChecks() {
+        return $this->get('/api/plagiarism/check');
     }
+
 
     private function get($resource, $body = []) {
         return $this->httpWrapper('get', $resource, $body);

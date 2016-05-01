@@ -23,7 +23,7 @@ class MossTest extends \PHPUnit_Framework_TestCase {
             new File($example1),
             new File($example2)
         ];
-        $similarities = $this->moss->getSimilaritiesFromResult($resources, "httsp://moss.stanford.edu/results/916056439/");
+        $similarities = $this->moss->getSimilaritiesFromResult($resources, "http://moss.stanford.edu/results/916056439/");
 
         $this->assertEquals($example1, $similarities[0]->getFirstResource()->getPath());
         $this->assertEquals($example2, $similarities[0]->getSecondResource()->getPath());

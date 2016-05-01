@@ -5,6 +5,7 @@ namespace eu\luige\plagiarism\endpoint;
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
+use eu\luige\plagiarism\service\Check;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -12,6 +13,8 @@ class Preset extends Endpoint {
 
     /** @var  \eu\luige\plagiarism\service\Preset */
     private $presetService;
+    /** @var  Check */
+    private $checkService;
 
     /**
      * Preset constructor.
@@ -19,19 +22,18 @@ class Preset extends Endpoint {
     public function __construct($container) {
         parent::__construct($container);
         $this->presetService = $this->container->get(\eu\luige\plagiarism\service\Preset::class);
+        $this->checkService = $this->container->get(Check::class);
+    }
+
+    public function start(Request $request, Response $response) {
+
+        $this->assertAttributesExist($request, ['id']);
     }
 
     public function create(Request $request, Response $response) {
-
-        $this->assertParamsExist($request, ['serviceNames', 'resourceProviderNames', 'suiteName', 'resourceProviderPayloads']);
-
+        $this->validateRequest($request);
         $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
         $services = explode(',', $request->getParam('serviceNames'));
-
-        $payLoads = json_decode($request->getParam('resourceProviderPayloads'), true);
-
-        $this->assertServicesExist($services);
-        $this->assertProvdersExistsAndPayloadsAreOk($resourceProviders, $payLoads);
 
         $preset = $this->presetService->create(
             $services,
@@ -58,17 +60,12 @@ class Preset extends Endpoint {
         $apiResponse = new ApiResponse();
 
         $this->assertAttributesExist($request, ['id']);
-        $this->assertParamsExist($request, ['serviceNames', 'resourceProviderNames', 'suiteName', 'resourceProviderPayloads']);
+        $this->validateRequest($request);
 
         $id = $request->getAttribute('id');
-        
+
         $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
         $services = explode(',', $request->getParam('serviceNames'));
-
-        $payLoads = json_decode($request->getParam('resourceProviderPayloads'), true);
-
-        $this->assertServicesExist($services);
-        $this->assertProvdersExistsAndPayloadsAreOk($resourceProviders, $payLoads);
 
         $preset = $this->presetService->update(
             $id,
@@ -116,23 +113,22 @@ class Preset extends Endpoint {
         return $this->response($response, $apiResponse);
     }
 
-    public function assertProvdersExistsAndPayloadsAreOk($providerNames, $payloads) {
-        foreach ($providerNames as $providerName) {
-            $this->assertProviderExistsAndPayloadIsOk($providerName, $payloads[$providerName] ?? []);
+    public function validateRequest(Request $request) {
+        $this->assertParamsExist($request, ['serviceNames', 'resourceProviderNames', 'suiteName', 'resourceProviderPayloads']);
+
+        $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
+        $services = explode(',', $request->getParam('serviceNames'));
+
+        $this->assertServicesExist($services);
+        $this->assertResourceProvidersExist($resourceProviders);
+
+        $payloads = json_decode($request->getParam('resourceProviderPayloads'), true);
+        if (json_last_error()) {
+            throw new \Exception('Payload json parse error');
+        }
+
+        foreach ($resourceProviders as $resourceProvider) {
+            $this->checkService->validateResourceProviderPayload($resourceProvider, $payloads[$resourceProvider] ?? []);
         }
     }
-
-    public function assertProviderExistsAndPayloadIsOk($providerName, $payload) {
-        $providers = ResourceProvider::getProviders();
-        foreach ($providers as $className) {
-            /** @var ResourceProvider $provder */
-            $provder = new $className($this->container);
-            if (mb_strtolower($provder->getName()) == mb_strtolower($providerName)) {
-                $provder->validatePayload($payload);
-                return true;
-            }
-        }
-        throw new \Exception("No such resourceProvider $providerName", 404);
-    }
-
 }

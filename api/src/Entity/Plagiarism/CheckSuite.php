@@ -5,54 +5,64 @@ namespace eu\luige\plagiarism\entity;
  * @Entity
  * @Table(name="plagiarism_checksuite")
  */
-class CheckSuite extends Entity
-{
+class CheckSuite extends Entity {
 
     /** @Id @Column(type="integer") @GeneratedValue * */
     protected $id;
+    /** @var  string @Column(type="string") */
+    protected $name;
     /** @var  Check[] @OneToMany(targetEntity="Check", mappedBy="checkSuite") */
     protected $checks;
     /** @var User @ManyToOne(targetEntity="User") */
     protected $user;
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getId()
-    {
-        return $this->id;
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name) {
+        $this->name = $name;
     }
     
     /**
+     * @return mixed
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
      * @return Check[]
      */
-    public function getChecks()
-    {
+    public function getChecks() {
         return $this->checks;
     }
 
     /**
      * @param Check[] $checks
      */
-    public function setChecks($checks)
-    {
+    public function setChecks($checks) {
         $this->checks = $checks;
     }
 
     /**
      * @return User
      */
-    public function getUser()
-    {
+    public function getUser() {
         return $this->user;
     }
 
     /**
      * @param User $user
      */
-    public function setUser($user)
-    {
+    public function setUser($user) {
         $this->user = $user;
     }
-    
+
 }

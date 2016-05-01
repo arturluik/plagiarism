@@ -88,3 +88,9 @@ $container[\eu\luige\plagiarism\service\Cache::class] = function ($container) {
 $container[\eu\luige\plagiarism\service\Preset::class] = function ($container) {
     return new \eu\luige\plagiarism\service\Preset($container);
 };
+$container[\eu\luige\plagiarism\service\CheckSuite::class] = function ($container) {
+    return new \eu\luige\plagiarism\service\CheckSuite($container);
+};
+$container[\eu\luige\plagiarism\service\Resource::class] = function ($container) {
+    return new \eu\luige\plagiarism\service\Resource($container);
+};

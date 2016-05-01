@@ -33,4 +33,13 @@ abstract class Service {
         return $repository->findBy([], ['id' => 'DESC'], $this->config['default_paging_size'], ($page - 1) * $this->config['default_paging_size']);
     }
 
+    public function makeSureDatabaseConnectionIsOpened() {
+        if (!$this->entityManager->isOpen()) {
+            $this->entityManager = $this->entityManager->create(
+                $this->entityManager->getConnection(),
+                $this->entityManager->getConfiguration()
+            );
+        }
+    }
+
 }

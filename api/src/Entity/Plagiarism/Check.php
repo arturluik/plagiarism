@@ -6,135 +6,151 @@ namespace eu\luige\plagiarism\entity;
  * @Entity
  * @Table(name="plagiarism_check")
  */
-class Check extends Entity
-{
+class Check extends Entity {
+
     /** @Id @Column(type="integer") @GeneratedValue * */
     protected $id;
-    /** @var  int @Column(type="datetime") */
+    /** @var  \DateTime @Column(type="datetime", nullable=true) */
     protected $finished;
-    /** @var  string  @Column(type="string", name="message_id") */
-    protected $messageId;
-    /** @var  string @Column(type="string") */
-    protected $name;
+    /** @var  \DateTime @Column(type="datetime") */
+    protected $created;
     /** @var  Similarity[] @OneToMany(targetEntity="Similarity", mappedBy="check", cascade={"persist"}) */
     protected $similarities;
     /** @var  string @Column(type="string") */
-    protected $serviceName;
-    /** @var  string @Column(type="string") */
-    protected $providerName;
+    protected $plagiarismServiceName;
+    /** @var  string[] @Column(type="json_array") */
+    protected $resourceProviderNames;
     /** @var  CheckSuite @ManyToOne(targetEntity="CheckSuite", inversedBy="checks") */
     protected $checkSuite;
+    /** @var  array @Column(type="json_array") */
+    protected $payload;
+    /** @var  string @Column(type="string") */
+    protected $status;
 
-    /**
-     * @return string
-     */
-    public function getProviderName()
-    {
-        return $this->providerName;
+    function jsonSerialize() {
+        $parent = parent::jsonSerialize();
+        unset($parent['checkSuite']);
+        return $parent;
     }
 
-    /**
-     * @param string $providerName
-     */
-    public function setProviderName($providerName)
-    {
-        $this->providerName = $providerName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMessageId()
-    {
-        return $this->messageId;
-    }
-
-    /**
-     * @param string $messageId
-     */
-    public function setMessageId($messageId)
-    {
-        $this->messageId = $messageId;
-    }
 
     /**
      * @return mixed
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
-     * @return int
+     * @return \DateTime
      */
-    public function getFinished()
-    {
+    public function getFinished() {
         return $this->finished;
     }
 
     /**
-     * @param int $finished
+     * @param \DateTime $finished
      */
-    public function setFinished($finished)
-    {
+    public function setFinished($finished) {
         $this->finished = $finished;
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
-    public function getName()
-    {
-        return $this->name;
+    public function getCreated() {
+        return $this->created;
     }
 
     /**
-     * @param string $name
+     * @param \DateTime $created
      */
-    public function setName($name)
-    {
-        $this->name = $name;
+    public function setCreated($created) {
+        $this->created = $created;
     }
 
     /**
      * @return Similarity[]
      */
-    public function getSimilarities()
-    {
+    public function getSimilarities() {
         return $this->similarities;
     }
 
     /**
-     * @param  Similarity[] $similarities
+     * @param Similarity[] $similarities
      */
-    public function setSimilarities($similarities)
-    {
+    public function setSimilarities($similarities) {
         $this->similarities = $similarities;
     }
 
     /**
      * @return string
      */
-    public function getServiceName()
-    {
-        return $this->serviceName;
+    public function getPlagiarismServiceName() {
+        return $this->plagiarismServiceName;
     }
 
     /**
-     * @param string $serviceName
+     * @param string $plagiarismServiceName
      */
-    public function setServiceName($serviceName)
-    {
-        $this->serviceName = $serviceName;
+    public function setPlagiarismServiceName($plagiarismServiceName) {
+        $this->plagiarismServiceName = $plagiarismServiceName;
     }
 
-    function jsonSerialize()
-    {
-        // Check id is not important, but doctrine needs it
-        // Check id is actually equivalent to messageId
-        $vars = parent::jsonSerialize();
-        unset($vars['id']);
-        return $vars;
+    /**
+     * @return string[]
+     */
+    public function getResourceProviderNames() {
+        return $this->resourceProviderNames;
     }
+
+    /**
+     * @param string[] $resourceProviderNames
+     */
+    public function setResourceProviderNames($resourceProviderNames) {
+        $this->resourceProviderNames = $resourceProviderNames;
+    }
+
+    /**
+     * @return CheckSuite
+     */
+    public function getCheckSuite() {
+        return $this->checkSuite;
+    }
+
+    /**
+     * @param CheckSuite $checkSuite
+     */
+    public function setCheckSuite($checkSuite) {
+        $this->checkSuite = $checkSuite;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPayload() {
+        return $this->payload;
+    }
+
+    /**
+     * @param array $payload
+     */
+    public function setPayload($payload) {
+        $this->payload = $payload;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status) {
+        $this->status = $status;
+    }
+
 }

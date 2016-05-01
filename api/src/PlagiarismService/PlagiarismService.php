@@ -3,14 +3,7 @@
 namespace eu\luige\plagiarism\plagiarismservice;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
-use eu\luige\plagiarism\entity\Check;
-use eu\luige\plagiarism\entity\Resource as ResourceEntity;
-use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\similarity\Similarity;
-use eu\luige\plagiarism\entity\Similarity as SimilarityEntity;
-use eu\luige\plagiarism\resource\File;
-use eu\luige\plagiarism\resource\Resource;
 use Monolog\Logger;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -25,10 +18,10 @@ abstract class PlagiarismService {
     protected $logger;
     /** @var  EntityManager */
     private $entityManager;
-    /** @var  EntityRepository */
-    private $resourceRepository;
     /** @var  array */
     protected $config;
+    /** @var  \eu\luige\plagiarism\service\Check */
+    private $checkService;
 
     /**
      * PlagiarismService constructor.
@@ -38,8 +31,8 @@ abstract class PlagiarismService {
         $this->container = $container;
         $this->logger = $container->get(Logger::class);
         $this->entityManager = $container->get(EntityManager::class);
-        $this->resourceRepository = $this->entityManager->getRepository(ResourceEntity::class);
         $this->config = $container->get("settings");
+        $this->checkService = $this->container->get(\eu\luige\plagiarism\service\Check::class);
     }
 
     public function work() {
@@ -48,20 +41,29 @@ abstract class PlagiarismService {
         $channel = $this->connection->channel();
         $channel->queue_declare($this->getQueueName(), false, true, false, false);
         $channel->basic_consume($this->getQueueName(), '', false, false, false, false, function (AMQPMessage $message) {
-            $this->logger->info("Worker {$this->getName()} got message $message->body");
+            $this->logger->info("Worker {$this->getName()} got message {$message->body}");
             try {
                 $json = json_decode($message->body, true);
-                /** @var ResourceProvider $provider */
-                $provider = new $json['resource_provider']($this->container);
-                /** @var PlagiarismService $service */
-                $service = new $json['plagiarism_service']($this->container);
+                $checkId = $json['checkId'];
 
-                $this->logger->info("Using {$json['resource_provider']} as a provider with payload {$json['payload']}
-                                     and {$json['plagiarism_service']} as service");
+                $check = $this->checkService->get($checkId);
 
-                $similarities = $service->compare($provider->getResources(json_decode($json['payload'], true)));
-                $this->persistSimilarities($similarities, $service, $provider, $json['id']);
-                $this->logger->info("Message $message->body finished");
+                $this->logger->info("Starting worker with check $check");
+
+                $resources = [];
+                foreach ($check->getResourceProviderNames() as $resourceProviderName) {
+                    $resourceProvider = $this->checkService->getResourceProviderByName($resourceProviderName);
+                    $payload = $check->getPayload()[$resourceProviderName] ?? [];
+                    $jsonpayload = json_encode($payload);
+                    $this->logger->info("Using $resourceProviderName with payload $jsonpayload");
+                    $resources = array_merge($resources, $resourceProvider->getResources($payload));
+                }
+
+                $service = $this->checkService->getPlagiarismServiceByName($check->getPlagiarismServiceName());
+                $similarities = $service->compare($resources);
+
+                $this->checkService->onCheckFinished($check, $similarities);
+                $this->logger->info("Message {$message->body} finished");
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             } catch (\Throwable $e) {
                 $this->logger->error("Worker error: {$e->getMessage()}", ['error' => $e]);
@@ -69,68 +71,6 @@ abstract class PlagiarismService {
         });
         while (true) {
             $channel->wait();
-        }
-    }
-
-    /**
-     * @param Similarity[] $similarities
-     */
-    private function persistSimilarities(array $similarities, PlagiarismService $plagiarismService, ResourceProvider $resourceProvider, $messageId) {
-        if (!$this->entityManager->isOpen()) {
-            $this->entityManager = $this->entityManager->create(
-                $this->entityManager->getConnection(),
-                $this->entityManager->getConfiguration()
-            );
-        }
-
-        $check = new Check();
-        $check->setName("test check");
-        $check->setFinished(new \DateTime());
-        $check->setServiceName($plagiarismService->getName());
-        $check->setProviderName($resourceProvider->getName());
-        $check->setMessageId($messageId);
-
-        $similarityEntities = [];
-
-        foreach ($similarities as $similarity) {
-            try {
-                $similarityEntity = new SimilarityEntity();
-
-                $similarityEntity->setFirstResource($this->createOrGetResource($similarity->getFirstResource()));
-                $similarityEntity->setSecondResource($this->createOrGetResource($similarity->getSecondResource()));
-
-                $similarityEntity->setSimilarityPercentage($similarity->getSimilarityPercentage());
-                $similarityEntity->setCheck($check);
-
-                $similarityEntities[] = $similarityEntity;
-            } catch (\Exception $e) {
-                $this->logger->error('similarity save error', ['error' => $e]);
-            }
-        }
-
-        $check->setSimilarities($similarityEntities);
-        $this->entityManager->persist($check);
-        $this->entityManager->flush();
-    }
-
-
-    private function createOrGetResource(Resource $resource) {
-        if ($resource instanceof File) {
-            $hash = hash('sha256', $resource->getContent());
-            /** @var Resource $result */
-            $result = $this->resourceRepository->findOneBy(['hash' => $hash]);
-            if (!$result) {
-                $resourceEntity = new ResourceEntity();
-                $resourceEntity->setContent($resource->getContent());
-                $resourceEntity->setHash($hash);
-                $resourceEntity->setName($resource->getFileName());
-                $this->entityManager->persist($resourceEntity);
-                return $resourceEntity;
-            } else {
-                return $result;
-            }
-        } else {
-            $this->logger->error("Unexpected resource found");
         }
     }
 

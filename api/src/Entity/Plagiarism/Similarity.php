@@ -7,19 +7,18 @@ namespace eu\luige\plagiarism\entity;
  * @Entity
  * @Table(name="plagiarism_similarity")
  */
-class Similarity extends Entity
-{
+class Similarity extends Entity {
     /** @Id @Column(type="integer") @GeneratedValue * */
     protected $id;
     /**
      * @var Resource
-     * @ManyToOne(targetEntity="Resource")
+     * @ManyToOne(targetEntity="Resource", fetch="EAGER")
      * @JoinColumn(name="first_resource_id", referencedColumnName="id")
      * */
     protected $firstResource;
     /**
      * @var Resource
-     * @ManyToOne(targetEntity="Resource")
+     * @ManyToOne(targetEntity="Resource", fetch="EAGER")
      * @JoinColumn(name="second_resource_id", referencedColumnName="id")
      */
     protected $secondResource;
@@ -27,94 +26,83 @@ class Similarity extends Entity
     protected $similarityPercentage;
     /** @var Check @ManyToOne(targetEntity="Check", inversedBy="similarities") */
     protected $check;
-    /** @var  SimilarResourceLines[] @OneToMany(targetEntity="SimilarResourceLines", mappedBy="Similarity", cascade={"persist"}) */
+    /** @var  SimilarResourceLines[] @OneToMany(targetEntity="SimilarResourceLines", mappedBy="similarity", cascade={"persist"}) */
     protected $similarResourceLines;
 
     /**
      * @return mixed
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
-     * @return \eu\luige\plagiarism\entity\Resource
+     * @return Resource
      */
-    public function getFirstResource()
-    {
+    public function getFirstResource() {
         return $this->firstResource;
     }
 
     /**
-     * @param \eu\luige\plagiarism\entity\Resource $firstResource
+     * @param Resource $firstResource
      */
-    public function setFirstResource($firstResource)
-    {
+    public function setFirstResource($firstResource) {
         $this->firstResource = $firstResource;
     }
 
     /**
-     * @return \eu\luige\plagiarism\entity\Resource
+     * @return Resource
      */
-    public function getSecondResource()
-    {
+    public function getSecondResource() {
         return $this->secondResource;
     }
 
     /**
-     * @param \eu\luige\plagiarism\entity\Resource $secondResource
+     * @param Resource $secondResource
      */
-    public function setSecondResource($secondResource)
-    {
+    public function setSecondResource($secondResource) {
         $this->secondResource = $secondResource;
     }
 
     /**
      * @return float
      */
-    public function getSimilarityPercentage()
-    {
+    public function getSimilarityPercentage() {
         return $this->similarityPercentage;
     }
 
     /**
      * @param float $similarityPercentage
      */
-    public function setSimilarityPercentage($similarityPercentage)
-    {
+    public function setSimilarityPercentage($similarityPercentage) {
         $this->similarityPercentage = $similarityPercentage;
     }
 
     /**
      * @return Check
      */
-    public function getCheck()
-    {
+    public function getCheck() {
         return $this->check;
     }
 
     /**
      * @param Check $check
      */
-    public function setCheck($check)
-    {
+    public function setCheck($check) {
         $this->check = $check;
     }
 
     /**
      * @return SimilarResourceLines[]
      */
-    public function getSimilarResourceLines()
-    {
+    public function getSimilarResourceLines() {
         return $this->similarResourceLines;
     }
 
     /**
      * @param SimilarResourceLines[] $similarResourceLines
      */
-    public function setSimilarResourceLines($similarResourceLines)
-    {
+    public function setSimilarResourceLines($similarResourceLines) {
         $this->similarResourceLines = $similarResourceLines;
     }
 
