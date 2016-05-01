@@ -62,13 +62,14 @@ class CheckSuite extends Endpoint {
     public function all(Request $request, Response $response) {
 
         $apiResponse = new ApiResponse();
+        $apiResponse->setTotalPages($this->checkSuiteService->totalPages());
         $apiResponse->setContent(array_map(function (\eu\luige\plagiarism\entity\CheckSuite $checkSuite) {
             return [
                 'id' => $checkSuite->getId(),
                 'name' => $checkSuite->getName(),
                 'created' => $checkSuite->getCreated()
             ];
-        }, $this->checkSuiteService->all()));
+        }, $this->checkSuiteService->all($request->getParam('page') ?? 1)));
 
         return $this->response($response, $apiResponse);
     }

@@ -17,7 +17,7 @@ export default class API {
     }
 
     static runPreset(id) {
-        return API.post('plagiarism/preset/' + id + '/run');
+        return API.post('/plagiarism/preset/' + id + '/run');
     }
 
     static getCheckSuite(id) {
@@ -63,8 +63,8 @@ export default class API {
         return API.get('/plagiarism/resourceprovider');
     }
 
-    static getCheckSuites() {
-        return API.get("/plagiarism/checksuite");
+    static getCheckSuites(page) {
+        return API.get("/plagiarism/checksuite", {'page': page});
     }
 
     static put(resource, data) {

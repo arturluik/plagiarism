@@ -34,6 +34,10 @@ class Preset extends Service {
         return $preset;
     }
 
+    public function totalPages() {
+        return ceil(count($this->presetRepository->findAll()) / $this->config['default_paging_size']);
+    }
+
     public function create($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads, $plagiarismServicePayloads) {
         $preset = new \eu\luige\plagiarism\entity\Preset();
         $preset->setResourceProviderNames($resourceProviderNames);

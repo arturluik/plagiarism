@@ -76,7 +76,8 @@ class Preset extends Endpoint {
     public function all(Request $request, Response $response) {
 
         $apiResponse = new ApiResponse();
-        $apiResponse->setContent($this->presetService->all());
+        $apiResponse->setTotalPages($this->presetService->totalPages());
+        $apiResponse->setContent($this->presetService->all($request->getParam('page') ?? 1));
 
         return $this->response($response, $apiResponse);
     }

@@ -17,6 +17,10 @@ class CheckSuite extends Service {
         $this->checkRepository = $this->entityManager->getRepository(\eu\luige\plagiarism\entity\CheckSuite::class);
     }
 
+    public function totalPages() {
+        return ceil(count($this->checkRepository->findAll()) / $this->config['default_paging_size']);
+    }
+
     public function all($page = 1) {
         $result = $this->pagedResultSet($this->checkRepository, $page);
         foreach ($result as $checkSuite) {
