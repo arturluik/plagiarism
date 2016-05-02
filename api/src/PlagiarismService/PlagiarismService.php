@@ -4,6 +4,7 @@ namespace eu\luige\plagiarism\plagiarismservice;
 
 use Doctrine\ORM\EntityManager;
 use eu\luige\plagiarism\resource\File;
+use eu\luige\plagiarism\service\Check;
 use Monolog\Logger;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -47,12 +48,11 @@ abstract class PlagiarismService {
         $channel->queue_declare($this->getQueueName(), false, true, false, false);
         $channel->basic_consume($this->getQueueName(), '', false, false, false, false, function (AMQPMessage $message) {
             $this->logger->info("Worker {$this->getName()} got message {$message->body}");
+            $json = json_decode($message->body, true);
+            $checkId = $json['checkId'];
+            $check = $this->checkService->get($checkId);
+            $similarities = [];
             try {
-                $json = json_decode($message->body, true);
-                $checkId = $json['checkId'];
-
-                $check = $this->checkService->get($checkId);
-
                 $this->logger->info("Starting worker with check $check");
 
                 $resources = [];
@@ -67,12 +67,13 @@ abstract class PlagiarismService {
                 $service = $this->checkService->getPlagiarismServiceByName($check->getPlagiarismServiceName());
                 $similarities = $service->compare($resources, $check->getPlagiarismServicePayload());
 
-                $this->checkService->onCheckFinished($check, $similarities);
                 $this->logger->info("Message {$message->body} finished");
-                $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             } catch (\Throwable $e) {
+                $check->setStatus(Check::CHECK_STATUS_ERROR);
                 $this->logger->error("Worker error: {$e->getMessage()}", ['error' => $e]);
             }
+            $this->checkService->onCheckFinished($check, $similarities);
+            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
         });
         while (true) {
             $channel->wait();

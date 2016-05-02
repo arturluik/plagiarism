@@ -71,18 +71,27 @@ class Moss extends PlagiarismService {
 
             $matchURL = $a[0]->getAttribute('href');
 
+            $this->logger->debug("$firstLink vs $secondPercentage percentage: $firstPercentage and $secondPercentage");
+
             $firstResource = $this->findResourceByPath($resources, $firstLink);
             $secondResource = $this->findResourceByPath($resources, $secondLink);
 
-            if ($firstResource && $secondResource) {
-                $similarity = new Similarity();
-                $similarity->setFirstResource($firstResource);
-                $similarity->setSecondResource($secondResource);
-                $similarity->setSimilarityPercentage(max(intval($firstPercentage), intval($secondPercentage)));
-                $similarity->setSimilarFileLines($this->getSimilarLinesFromMatch($matchURL));
-                $similarities[] = $similarity;
+            $this->logger->debug("$firstLink  == {$firstResource->getFileName()}");
+            $this->logger->debug("$secondLink == {$secondResource->getFileName()}");
+
+            if (!$firstPercentage || !$secondResource) {
+                $this->logger->error("Didnt find match for $firstLink or $secondLink", [$firstResource, $secondResource]);
             }
+
+            $similarity = new Similarity();
+            $similarity->setFirstResource($firstResource);
+            $similarity->setSecondResource($secondResource);
+            $similarity->setSimilarityPercentage(max(intval($firstPercentage), intval($secondPercentage)));
+            $similarity->setSimilarFileLines($this->getSimilarLinesFromMatch($matchURL));
+            $similarities[] = $similarity;
         }
+        $this->logger->info("Moss found " . count($similarities) . " similarities");
+
         return $similarities;
     }
 
@@ -94,6 +103,9 @@ class Moss extends PlagiarismService {
         // Similar rows are inside the iframe
         /** @var \simple_html_dom $result */
         $result = \file_get_html(str_replace('.html', '-top.html', $matchURL));
+        if (!$result) {
+            throw new \Exception("Unparsable response from moss: $matchURL");
+        }
         /** @var \simple_html_dom_node[] $tableRows */
         $tableRows = $result->find('table tr');
 

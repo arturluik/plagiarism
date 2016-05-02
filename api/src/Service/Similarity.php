@@ -47,7 +47,7 @@ class Similarity extends Service {
         }
 
         usort($scoredSimilarities, function ($a, $b) {
-            return $a <=> $b;
+            return $b <=> $a;
         });
 
         return $scoredSimilarities;

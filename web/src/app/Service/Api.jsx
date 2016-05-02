@@ -7,7 +7,7 @@ export default class API {
     static createPreset(serviceNames, resourceProviderNames, suiteName, resourceProviderPayloads, plagiarismServicePayloads) {
         return API.put('/plagiarism/preset',
             {
-                'serviceNames': serviceNames.join(''),
+                'serviceNames': serviceNames.join(','),
                 'resourceProviderNames': resourceProviderNames.join(','),
                 'suiteName': suiteName,
                 'resourceProviderPayloads': JSON.stringify(resourceProviderPayloads),
