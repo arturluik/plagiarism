@@ -20,6 +20,10 @@ class API {
         ]);
     }
 
+    public function getSimilarity($id) {
+        return $this->get("/api/plagiarism/similarity/$id");
+    }
+
     public function runPreset($id) {
         return $this->post("/api/plagiarism/preset/$id/run");
     }

@@ -10,7 +10,7 @@ import ListGroup from 'react-bootstrap/lib/ListGroup';
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 import Button from 'react-bootstrap/lib/Button';
 import Label from 'react-bootstrap/lib/Label';
-
+import {Link} from 'react-router';
 
 export default class CheckSuite extends React.Component {
 
@@ -55,7 +55,7 @@ export default class CheckSuite extends React.Component {
                 <ListGroupItem key={similarity.id}>
                     {similarity.firstResource} and {similarity.secondResource}
                     ({similarity.weight}%)
-                    <Button bsStyle="success" bsSize="xs" className="pull-right">Vaata</Button>
+                    <Link className="pull-right" to={`/similarity/${similarity.id}`}>Vaata</Link>
                 </ListGroupItem>
             )
         }));

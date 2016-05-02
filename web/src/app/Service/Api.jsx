@@ -16,6 +16,10 @@ export default class API {
         );
     }
 
+    static getSimilarity(id) {
+        return API.get('/plagiarism/similarity/' + id);
+    }
+
     static runPreset(id) {
         return API.post('/plagiarism/preset/' + id + '/run');
     }

@@ -103,9 +103,6 @@ class Moss extends PlagiarismService {
         // Similar rows are inside the iframe
         /** @var \simple_html_dom $result */
         $result = \file_get_html(str_replace('.html', '-top.html', $matchURL));
-        if (!$result) {
-            throw new \Exception("Unparsable response from moss: $matchURL");
-        }
         /** @var \simple_html_dom_node[] $tableRows */
         $tableRows = $result->find('table tr');
 

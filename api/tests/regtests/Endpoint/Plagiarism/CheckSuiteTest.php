@@ -7,7 +7,6 @@ class CheckSuiteTest extends RegressionTestCase {
 
     public function testGetCreateTestSuite() {
         $result = $this->API->createCheckSuite('Testing-Suite-1.0', 'MockProvider-1.0', 'MockService-1.0', []);
-        var_dump($result);
         $this->assertFieldsExistInResponse($result, ['id']);
 
         $result2 = $this->API->getCheckSuite($result['content']['id']);

@@ -5,6 +5,7 @@ use eu\luige\plagiarism\endpoint\CheckSuite;
 use eu\luige\plagiarism\endpoint\PlagiarismService;
 use eu\luige\plagiarism\endpoint\Preset;
 use eu\luige\plagiarism\endpoint\ResourceProvider;
+use eu\luige\plagiarism\endpoint\Similarity;
 
 require __DIR__ . '/bootstrap.php';
 
@@ -35,4 +36,5 @@ $app->delete('/plagiarism/preset/{id}', Preset::class . ':delete');
 $app->get('/plagiarism/preset', Preset::class . ':all');
 $app->post('/plagiarism/preset/{id}/run', Preset::class . ':run');
 
+$app->get('/plagiarism/similarity/{id}', Similarity::class . ':get');
 $app->run();
