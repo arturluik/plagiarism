@@ -23,7 +23,7 @@ class MockService extends PlagiarismService {
      * @param Resource[] $resources
      * @return Similarity[]
      */
-    public function compare(array $resources) {
+    public function compare(array $resources, array $payload) {
         $similarity = new \eu\luige\plagiarism\similarity\Similarity();
         $similarity->setFirstResource($resources[0]);
         $similarity->setSecondResource($resources[1]);

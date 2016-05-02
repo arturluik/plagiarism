@@ -12,7 +12,6 @@ export default class PaginationAdvanced extends React.Component {
     }
 
     handleSelect(eventKey) {
-        console.log(eventKey);
         this.props.onPageChange(eventKey);
         this.setState({
             activePage: eventKey

@@ -3,6 +3,8 @@
 namespace eu\luige\plagiarism\similarity;
 
 
+use eu\luige\plagiarism\resource\Resource;
+
 class Similarity
 {
     /** @var  Resource */

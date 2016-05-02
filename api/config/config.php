@@ -7,6 +7,7 @@ return [
         'displayErrorDetails' => true,
         'temp_folder' => '/tmp',
         'default_paging_size' => 15,
+        'app_root' => __DIR__ . '/../',
         'amqp' => [
             'server' => 'localhost',
             'port' => 5672,
@@ -40,6 +41,7 @@ return [
         ],
         'workers' => [
             \eu\luige\plagiarism\plagiarismservice\Moss::class => 2,
-            \eu\luige\plagiarism\plagiarismservice\MockService::class => 2
+            \eu\luige\plagiarism\plagiarismservice\MockService::class => 2,
+            \eu\luige\plagiarism\plagiarismservice\JPlag::class => 2
         ]
     ]];

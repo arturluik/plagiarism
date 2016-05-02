@@ -12,17 +12,11 @@ use Slim\Container;
 
 class Moss extends PlagiarismService {
 
-    /** @var  string */
-    private $temp;
-    /** @var  string */
-    private $createdTempFolder;
-
     /**
      * Moss constructor.
      */
     public function __construct(Container $container) {
         parent::__construct($container);
-        $this->temp = $this->config['temp_folder'];
         require_once __DIR__ . '/../../deps/Phhere/MOSS-PHP/moss.php';
     }
 
@@ -31,12 +25,13 @@ class Moss extends PlagiarismService {
      * @param Resource[] $resources
      * @return Similarity[]
      */
-    public function compare(array $resources) {
-        $this->logger->info("Moss {$this->getName()} started with " . count($resources) . " resources");
+    public function compare(array $resources, array $payload) {
+        $jsonPayload = json_encode($payload);
+        $this->logger->info("Moss {$this->getName()} started with " . count($resources) . " resources payload: $jsonPayload");
         $mimeTypeFilter = new MimeTypeFilter([MimeType::JAVA]);
         $resources = $mimeTypeFilter->apply($resources);
         $this->logger->info("After filtering: " . count($resources) . " resources");
-        $this->copyResources($resources);
+        $this->copyResourcesToTempFolder($resources);
         $moss = new \MOSS($this->config['moss']['key']);
         $moss->setLanguage('java');
 
@@ -137,27 +132,6 @@ class Moss extends PlagiarismService {
     private function getLinkAndPercentage($text) : array {
         preg_match('/(.*)\((\d+)%\)/', $text, $result);
         return [trim($result[1]), trim($result[2])];
-    }
-
-    /**
-     * @param Resource[] $resources
-     */
-    public function copyResources(array $resources) {
-        $tempFolder = $this->getTempFolder();
-        $this->logger->info("Copying " . count($resources) . " resources to $tempFolder");
-        foreach ($resources as $resource) {
-            if ($resource instanceof File) {
-                copy($resource->getPath(), "$tempFolder/{$resource->getMimeType()}");
-            }
-        }
-    }
-
-    public function getTempFolder() : string {
-        if (!$this->createdTempFolder) {
-            $this->createdTempFolder = "{$this->temp}/" . uniqid('moss_temp_folder');
-            mkdir($this->createdTempFolder, 0777, true);
-        }
-        return $this->createdTempFolder;
     }
 
     /**

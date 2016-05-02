@@ -3,7 +3,7 @@
 namespace eu\luige\plagiarism\plagiarismservice;
 
 use Doctrine\ORM\EntityManager;
-use eu\luige\plagiarism\similarity\Similarity;
+use eu\luige\plagiarism\resource\File;
 use Monolog\Logger;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -22,6 +22,10 @@ abstract class PlagiarismService {
     protected $config;
     /** @var  \eu\luige\plagiarism\service\Check */
     private $checkService;
+    /** @var  string */
+    protected $createdTempFolder;
+    /** @var  string */
+    protected $temp;
 
     /**
      * PlagiarismService constructor.
@@ -32,6 +36,7 @@ abstract class PlagiarismService {
         $this->logger = $container->get(Logger::class);
         $this->entityManager = $container->get(EntityManager::class);
         $this->config = $container->get("settings");
+        $this->temp = $this->config['temp_folder'];
         $this->checkService = $this->container->get(\eu\luige\plagiarism\service\Check::class);
     }
 
@@ -60,7 +65,7 @@ abstract class PlagiarismService {
                 }
 
                 $service = $this->checkService->getPlagiarismServiceByName($check->getPlagiarismServiceName());
-                $similarities = $service->compare($resources);
+                $similarities = $service->compare($resources, $check->getPlagiarismServicePayload());
 
                 $this->checkService->onCheckFinished($check, $similarities);
                 $this->logger->info("Message {$message->body} finished");
@@ -113,8 +118,45 @@ abstract class PlagiarismService {
 
     /**
      * @param Resource[] $resources
-     * @return Similarity[]
+     * @param array $payload
+     * @return \eu\luige\plagiarism\similarity\Similarity[]
      */
-    abstract public function compare(array $resources);
+    abstract public function compare(array $resources, array $payload);
+
+
+    /**
+     * @param Resource[] $resources
+     * @param $uniqueId
+     */
+    public function getResourceByUniqueId(array $resources, $uniqueId) {
+        foreach ($resources as $resource) {
+            if ($resource instanceof File) {
+                if (trim($resource->getFileName()) == trim($uniqueId)) {
+                    return $resource;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Resource[] $resources
+     */
+    public function copyResourcesToTempFolder(array $resources) {
+        $tempFolder = $this->getTempFolder();
+        $this->logger->info("Copying " . count($resources) . " resources to $tempFolder");
+        foreach ($resources as $resource) {
+            if ($resource instanceof File) {
+                copy($resource->getPath(), "$tempFolder/{$resource->getFileName()}");
+            }
+        }
+    }
+
+    public function getTempFolder() {
+        if (!$this->createdTempFolder) {
+            $this->createdTempFolder = "{$this->temp}/" . uniqid($this->getName());
+            mkdir($this->createdTempFolder, 0777, true);
+        }
+        return $this->createdTempFolder;
+    }
 
 }

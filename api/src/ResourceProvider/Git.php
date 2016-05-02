@@ -35,7 +35,7 @@ class Git extends ResourceProvider {
     public function validatePayload(array $payload) {
         $this->fieldsMustExistInArray($payload, ['authMethod', 'clone']);
 
-        if (isset($payload['directoryPattern'])) {
+        if (isset($payload['directoryPattern']) && trim($payload['directoryPattern'])) {
             $this->patternMatcher->validatePattern(trim($payload['directoryPattern']));
         }
 
@@ -84,7 +84,7 @@ class Git extends ResourceProvider {
      */
     public function getPayloadProperties() {
         return [
-            new SelectProperty('authMethod', 'Autentimismeetod', ['privateKey' => 'avalik võti', 'password' => 'parooliga'], true,
+            new SelectProperty('authMethod', 'Autentimismeetod', ['privateKey' => 'avalik võti', 'password' => 'parooliga', 'noAuth' => 'Puudub'], true,
                 'Giti kasutajatuvastusmeetod, mille abil tõmmatakse alla repositooriumi sisu'),
             new PayloadProperty('textarea', 'clone', 'Repositooriumid', false, 'Giti repositooriumite URId, kui neid on rohkem, siis eraldada komaga'),
             new PayloadProperty('text', 'username', 'Kasutajatunnus', false, 'Kasutajatunnus giti autentimiseks'),
