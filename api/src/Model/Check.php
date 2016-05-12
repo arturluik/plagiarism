@@ -1,5 +1,5 @@
 <?php
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
 use Doctrine\ORM\EntityRepository;
 use eu\luige\plagiarism\datastructure\TaskMessage;
@@ -11,7 +11,7 @@ use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Slim\Container;
 
-class Check extends Service {
+class Check extends Model {
 
     const CHECK_STATUS_ERROR = 'status_error';
     const CHECK_STATUS_SUCCESS = 'status_success';
@@ -23,7 +23,7 @@ class Check extends Service {
     protected $channel;
     /** @var  EntityRepository */
     protected $checkRepository;
-    /** @var  \eu\luige\plagiarism\service\Resource */
+    /** @var  \eu\luige\plagiarism\model\Resource */
     protected $resourceService;
 
     /**

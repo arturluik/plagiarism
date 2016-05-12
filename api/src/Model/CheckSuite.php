@@ -1,10 +1,10 @@
 <?php
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
 use Doctrine\ORM\EntityRepository;
 use Slim\Container;
 
-class CheckSuite extends Service {
+class CheckSuite extends Model {
 
     /** @var  EntityRepository */
     private $checkRepository;

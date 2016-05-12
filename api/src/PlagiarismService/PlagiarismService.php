@@ -4,7 +4,7 @@ namespace eu\luige\plagiarism\plagiarismservice;
 
 use Doctrine\ORM\EntityManager;
 use eu\luige\plagiarism\resource\File;
-use eu\luige\plagiarism\service\Check;
+use eu\luige\plagiarism\model\Check;
 use Monolog\Logger;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -21,7 +21,7 @@ abstract class PlagiarismService {
     private $entityManager;
     /** @var  array */
     protected $config;
-    /** @var  \eu\luige\plagiarism\service\Check */
+    /** @var  \eu\luige\plagiarism\model\Check */
     private $checkService;
     /** @var  string */
     protected $createdTempFolder;
@@ -38,7 +38,7 @@ abstract class PlagiarismService {
         $this->entityManager = $container->get(EntityManager::class);
         $this->config = $container->get("settings");
         $this->temp = $this->config['temp_folder'];
-        $this->checkService = $this->container->get(\eu\luige\plagiarism\service\Check::class);
+        $this->checkService = $this->container->get(\eu\luige\plagiarism\model\Check::class);
     }
 
     public function work() {

@@ -10,8 +10,8 @@ use Slim\Http\Response;
 
 class Check extends Endpoint {
 
-    /** @var  \eu\luige\plagiarism\service\Check */
-    protected $checkService;
+    /** @var  \eu\luige\plagiarism\model\Check */
+    protected $checkModel;
 
     /**
      * Check constructor.
@@ -19,7 +19,7 @@ class Check extends Endpoint {
      */
     public function __construct(Container $container) {
         parent::__construct($container);
-        $this->checkService = $container->get(\eu\luige\plagiarism\service\Check::class);
+        $this->checkModel = $container->get(\eu\luige\plagiarism\model\Check::class);
     }
 
 
@@ -27,7 +27,7 @@ class Check extends Endpoint {
         $apiResponse = new ApiResponse();
         $this->assertAttributesExist($request, ['id']);
 
-        $entity = $this->checkService->get($request->getAttribute('id'));
+        $entity = $this->checkModel->get($request->getAttribute('id'));
         $apiResponse->setContent(
             [
                 'id' => $entity->getId(),

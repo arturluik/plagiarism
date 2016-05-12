@@ -5,7 +5,7 @@ namespace eu\luige\plagiarism\resourceprovider;
 use eu\luige\plagiarism\datastructure\PayloadProperty;
 use eu\luige\plagiarism\datastructure\SelectProperty;
 use eu\luige\plagiarism\resource\File;
-use eu\luige\plagiarism\service\PathPatternMatcher;
+use eu\luige\plagiarism\model\PathPatternMatcher;
 use GitWrapper\GitWrapper;
 use Slim\Container;
 

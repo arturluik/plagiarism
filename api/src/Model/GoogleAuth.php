@@ -1,10 +1,10 @@
 <?php
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
 
 use GuzzleHttp\Client;
 
-class GoogleAuth extends Service
+class GoogleAuth extends Model
 {
     public function authenticate($email, $token)
     {

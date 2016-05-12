@@ -1,11 +1,11 @@
 <?php
 
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
 use Predis\Client;
 use Slim\Container;
 
-class Cache extends Service
+class Cache extends Model
 {
 
     /** @var  Client */

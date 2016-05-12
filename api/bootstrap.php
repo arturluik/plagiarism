@@ -76,24 +76,24 @@ $container[Check::class] = function ($container) {
 $container[EntityManager::class] = function () use ($entityManager) {
     return $entityManager;
 };
-$container[\eu\luige\plagiarism\service\Check::class] = function ($container) {
-    return new \eu\luige\plagiarism\service\Check($container);
+$container[\eu\luige\plagiarism\model\Check::class] = function ($container) {
+    return new \eu\luige\plagiarism\model\Check($container);
 };
-$container[\eu\luige\plagiarism\service\PathPatternMatcher::class] = function ($container) {
-    return new \eu\luige\plagiarism\service\PathPatternMatcher($container);
+$container[\eu\luige\plagiarism\model\PathPatternMatcher::class] = function ($container) {
+    return new \eu\luige\plagiarism\model\PathPatternMatcher($container);
 };
-$container[\eu\luige\plagiarism\service\Cache::class] = function ($container) {
-    return new \eu\luige\plagiarism\service\Cache($container);
+$container[\eu\luige\plagiarism\model\Cache::class] = function ($container) {
+    return new \eu\luige\plagiarism\model\Cache($container);
 };
-$container[\eu\luige\plagiarism\service\Preset::class] = function ($container) {
-    return new \eu\luige\plagiarism\service\Preset($container);
+$container[\eu\luige\plagiarism\model\Preset::class] = function ($container) {
+    return new \eu\luige\plagiarism\model\Preset($container);
 };
-$container[\eu\luige\plagiarism\service\CheckSuite::class] = function ($container) {
-    return new \eu\luige\plagiarism\service\CheckSuite($container);
+$container[\eu\luige\plagiarism\model\CheckSuite::class] = function ($container) {
+    return new \eu\luige\plagiarism\model\CheckSuite($container);
 };
-$container[\eu\luige\plagiarism\service\Resource::class] = function ($container) {
-    return new \eu\luige\plagiarism\service\Resource($container);
+$container[\eu\luige\plagiarism\model\Resource::class] = function ($container) {
+    return new \eu\luige\plagiarism\model\Resource($container);
 };
-$container[\eu\luige\plagiarism\service\Similarity::class] = function ($container) {
-    return new \eu\luige\plagiarism\service\Similarity($container);
+$container[\eu\luige\plagiarism\model\Similarity::class] = function ($container) {
+    return new \eu\luige\plagiarism\model\Similarity($container);
 };

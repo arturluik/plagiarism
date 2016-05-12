@@ -5,39 +5,39 @@ namespace eu\luige\plagiarism\endpoint;
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
-use eu\luige\plagiarism\service\Check;
-use eu\luige\plagiarism\service\CheckSuite;
+use eu\luige\plagiarism\model\Check;
+use eu\luige\plagiarism\model\CheckSuite;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 class Preset extends Endpoint {
-    /** @var  \eu\luige\plagiarism\service\Preset */
-    private $presetService;
+    /** @var  \eu\luige\plagiarism\model\Preset */
+    private $presetModel;
     /** @var  Check */
-    private $checkService;
+    private $checkModel;
     /** @var  CheckSuite */
-    private $checkSuiteService;
+    private $checkSuiteModel;
 
     /**
      * Preset constructor.
      */
     public function __construct($container) {
         parent::__construct($container);
-        $this->presetService = $this->container->get(\eu\luige\plagiarism\service\Preset::class);
-        $this->checkService = $this->container->get(Check::class);
-        $this->checkSuiteService = $this->container->get(CheckSuite::class);
+        $this->presetModel = $this->container->get(\eu\luige\plagiarism\model\Preset::class);
+        $this->checkModel = $this->container->get(Check::class);
+        $this->checkSuiteModel = $this->container->get(CheckSuite::class);
     }
 
     public function run(Request $request, Response $response) {
 
         $this->assertAttributesExist($request, ['id']);
 
-        $preset = $this->presetService->get($request->getAttribute('id'));
+        $preset = $this->presetModel->get($request->getAttribute('id'));
 
-        $checkSuite = $this->checkSuiteService->create($preset->getSuiteName());
+        $checkSuite = $this->checkSuiteModel->create($preset->getSuiteName());
 
         foreach ($preset->getServiceNames() as $serviceName) {
-            $check = $this->checkService->create(
+            $check = $this->checkModel->create(
                 $preset->getResourceProviderNames(),
                 $serviceName,
                 $preset->getResourceProviderPayloads(),
@@ -59,7 +59,7 @@ class Preset extends Endpoint {
         $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
         $services = explode(',', $request->getParam('serviceNames'));
 
-        $preset = $this->presetService->create(
+        $preset = $this->presetModel->create(
             $services,
             $resourceProviders,
             $request->getParam('suiteName'),
@@ -76,8 +76,8 @@ class Preset extends Endpoint {
     public function all(Request $request, Response $response) {
 
         $apiResponse = new ApiResponse();
-        $apiResponse->setTotalPages($this->presetService->totalPages());
-        $apiResponse->setContent($this->presetService->all($request->getParam('page') ?? 1));
+        $apiResponse->setTotalPages($this->presetModel->totalPages());
+        $apiResponse->setContent($this->presetModel->all($request->getParam('page') ?? 1));
 
         return $this->response($response, $apiResponse);
     }
@@ -93,7 +93,7 @@ class Preset extends Endpoint {
         $resourceProviders = explode(',', $request->getParam('resourceProviderNames'));
         $services = explode(',', $request->getParam('serviceNames'));
 
-        $preset = $this->presetService->update(
+        $preset = $this->presetModel->update(
             $id,
             $services,
             $resourceProviders,
@@ -117,7 +117,7 @@ class Preset extends Endpoint {
         $id = $request = $request->getAttribute('id');
 
         $apiReponse = new ApiResponse();
-        if (!$this->presetService->delete($id)) {
+        if (!$this->presetModel->delete($id)) {
             $apiReponse->setErrorCode(404);
         }
 
@@ -130,7 +130,7 @@ class Preset extends Endpoint {
 
         $id = $request->getAttribute('id');
 
-        $preset = $this->presetService->get($id);
+        $preset = $this->presetModel->get($id);
         if (!$preset) {
             throw new \Exception("Unknown preset with id: $id", 404);
         }
@@ -155,7 +155,7 @@ class Preset extends Endpoint {
         }
 
         foreach ($resourceProviders as $resourceProvider) {
-            $this->checkService->validateResourceProviderPayload($resourceProvider, $payloads[$resourceProvider] ?? []);
+            $this->checkModel->validateResourceProviderPayload($resourceProvider, $payloads[$resourceProvider] ?? []);
         }
     }
 }

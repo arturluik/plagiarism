@@ -1,10 +1,10 @@
 <?php
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
 use Doctrine\ORM\EntityRepository;
 use Slim\Container;
 
-class Preset extends Service {
+class Preset extends Model {
 
     /** @var EntityRepository */
     private $presetRepository;

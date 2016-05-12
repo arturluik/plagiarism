@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use eu\luige\plagiarism\resourceprovider\Git;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\resource\File;
-use eu\luige\plagiarism\service\PathPatternMatcher;
+use eu\luige\plagiarism\model\PathPatternMatcher;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Slim\Container;

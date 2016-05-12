@@ -1,12 +1,12 @@
 <?php
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
 use Doctrine\ORM\EntityRepository;
 use eu\luige\plagiarism\entity\Check;
 use Slim\Container;
 
 
-class Similarity extends Service {
+class Similarity extends Model {
 
     /** @var  EntityRepository */
     private $similarityRepository;

@@ -2,7 +2,7 @@
 
 namespace tests\eu\luige\plagiarism\service;
 
-use eu\luige\plagiarism\service\PathPatternMatcher;
+use eu\luige\plagiarism\model\PathPatternMatcher;
 use Slim\Container;
 
 class PatternMatcherTest extends \PHPUnit_Framework_TestCase

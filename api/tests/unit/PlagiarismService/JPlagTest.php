@@ -6,7 +6,7 @@ namespace tests\eu\luige\plagiarism\plagiarismservice;
 use Doctrine\ORM\EntityManager;
 use eu\luige\plagiarism\plagiarismservice\JPlag;
 use eu\luige\plagiarism\resource\File;
-use eu\luige\plagiarism\service\Check;
+use eu\luige\plagiarism\model\Check;
 use eu\luige\plagiarism\similarity\Similarity;
 use Monolog\Logger;
 use Slim\Container;

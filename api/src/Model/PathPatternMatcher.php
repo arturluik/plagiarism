@@ -1,7 +1,7 @@
 <?php
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
-class PathPatternMatcher extends Service
+class PathPatternMatcher extends Model
 {
 
     public function matchesPattern($pattern, $path) : bool

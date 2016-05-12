@@ -5,7 +5,7 @@ namespace eu\luige\plagiarism\endpoint;
 use eu\luige\plagiarism\datastructure\ApiResponse;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
-use eu\luige\plagiarism\service\Check;
+use eu\luige\plagiarism\model\Check;
 use Monolog\Logger;
 use Slim\Container;
 use Slim\Http\Request;
@@ -19,7 +19,7 @@ class Endpoint {
     /** @var  Logger */
     protected $logger;
     /** @var  Check */
-    private $checkService;
+    private $checkModel;
 
     /**
      * Endpoint constructor.
@@ -29,7 +29,7 @@ class Endpoint {
         $this->container = $container;
         $this->config = $container->get("settings");
         $this->logger = $container->get(Logger::class);
-        $this->checkService = $container->get(Check::class);
+        $this->checkModel = $container->get(Check::class);
     }
 
     public function response(Response $response, ApiResponse $apiResponse) {
@@ -60,13 +60,13 @@ class Endpoint {
 
     public function assertResourceProvidersExist(array $resourceProviderNames) {
         foreach ($resourceProviderNames as $resourceProviderName) {
-            $this->checkService->getResourceProviderByName($resourceProviderName);
+            $this->checkModel->getResourceProviderByName($resourceProviderName);
         }
     }
 
     public function assertServicesExist(array $services) {
         foreach ($services as $service) {
-            $this->checkService->getPlagiarismServiceByName($service);
+            $this->checkModel->getPlagiarismServiceByName($service);
         }
     }
 

@@ -1,12 +1,12 @@
 <?php
-namespace eu\luige\plagiarism\service;
+namespace eu\luige\plagiarism\model;
 
 
 use Doctrine\ORM\EntityRepository;
 use eu\luige\plagiarism\resource\File;
 use Slim\Container;
 
-class Resource extends Service {
+class Resource extends Model {
 
     /** @var EntityRepository */
     protected $resourceRepository;
