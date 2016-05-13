@@ -6,7 +6,7 @@ source env.sh
 
 # Generate documentation
 cd /tmp
-apidoc -i /plagiarism/api/ -o /var/www/plagiarism/documentation -f "index\\.php$"
+apidoc -i /plagiarism/api/ -o /var/www/plagiarism/documentation -f ".php$"
 
 # Start services
 service redis-server start

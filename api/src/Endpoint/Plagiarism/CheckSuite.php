@@ -30,7 +30,14 @@ class CheckSuite extends Endpoint {
         $this->similarityModel = $container->get(Similarity::class);
     }
 
-
+    /**
+     * @api {get} /plagiarism/checksuite/:id Get detailed checksuite information
+     * @apiGroup Plagiarism
+     * @apiVersion 1.0.0
+     * @apiParam {string} checksuite unique check id
+     * @apiSuccessExample {json} Success-Response:
+     * {"error_code":0,"error_message":"","total_pages":1,"content":{"id":1,"name":"Testing-Suite-1.0","created":{"date":"2016-05-12 20:12:45.000000","timezone_type":3,"timezone":"UTC"},"checks":[{"id":1,"status":"status_success","resourceProviders":["MockProvider-1.0"],"plagiarismService":"MockService-1.0"}],"similarities":[{"services":[{"name":"MockService-1.0","similarity":10}],"id":1,"firstResource":"HelloWorld.java","secondResource":"style.css","weight":10}]}}
+     */
     public function get(Request $request, Response $response) {
         $apiResponse = new ApiResponse();
 

@@ -23,6 +23,14 @@ class Check extends Endpoint {
     }
 
 
+    /**
+     * @api {get} /plagiarism/check/:id Get detailed check information
+     * @apiGroup Plagiarism
+     * @apiVersion 1.0.0
+     * @apiParam {string} check unique check id
+     * @apiSuccessExample {json} Success-Response:
+     * {"error_code":0,"error_message":"","total_pages":1,"content":{"id":1,"finished":{"date":"2016-05-12 20:12:45.000000","timezone_type":3,"timezone":"UTC"},"status":"status_success","plagiarismService":"MockService-1.0","resourceProviders":["MockProvider-1.0"],"similarities":[{"id":1,"firstResource":{"id":1,"name":"HelloWorld.java"},"secondResource":{"id":2,"name":"style.css"},"similarity":10,"lines":[{"id":1,"firstResourceLineRange":[10,14],"secondResourceLineRange":[5,14]}]}]}}
+     */
     public function get(Request $request, Response $response) {
         $apiResponse = new ApiResponse();
         $this->assertAttributesExist($request, ['id']);

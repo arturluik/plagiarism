@@ -10,12 +10,6 @@ use eu\luige\plagiarism\endpoint\Similarity;
 require __DIR__ . '/bootstrap.php';
 
 
-/**
- * @api {get} /plagiarism/check/:id Get detailed check information
- * @apiVersion 1.0.0
- * @apiGroup Plagiarism
- * @apiParam {string} [check unique id]
- */
 $app->get('/plagiarism/check/{id}', Check::class . ':get');
 
 $app->get('/plagiarism/checksuite/{id}', CheckSuite::class . ':get');
