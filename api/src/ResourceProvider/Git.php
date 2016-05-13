@@ -4,10 +4,12 @@ namespace eu\luige\plagiarism\resourceprovider;
 
 use eu\luige\plagiarism\datastructure\PayloadProperty;
 use eu\luige\plagiarism\datastructure\SelectProperty;
+use eu\luige\plagiarism\exception\ResourceProviderException;
 use eu\luige\plagiarism\resource\File;
 use eu\luige\plagiarism\model\PathPatternMatcher;
 use GitWrapper\GitWrapper;
 use Slim\Container;
+use stringEncode\Exception;
 
 class Git extends ResourceProvider {
 
@@ -102,11 +104,15 @@ class Git extends ResourceProvider {
      * @return Resource[]
      */
     public function getResources($payload) {
-        $this->cloneAll($payload);
-        if (isset($payload['directoryPattern'])) {
-            return $this->traverse($this->getTempFolder(), $payload['directoryPattern']);
+        try {
+            $this->cloneAll($payload);
+            if (isset($payload['directoryPattern'])) {
+                return $this->traverse($this->getTempFolder(), $payload['directoryPattern']);
+            }
+            return $this->traverse($this->getTempFolder());
+        } catch (Exception $e) {
+            throw new ResourceProviderException('GetResources failed');
         }
-        return $this->traverse($this->getTempFolder());
     }
 
     public function traverse($path, $pattern = false) {
@@ -136,24 +142,20 @@ class Git extends ResourceProvider {
 
         foreach ($payload['clone'] as $repository) {
             $toDir = $this->getTempFolder() . '/' . str_replace('.git', '', basename($repository));
-            try {
-                switch (mb_strtolower($payload['authMethod'])) {
-                    case 'password':
-                        $this->cloneRepositoryWithPassword($repository, $payload['username'], $payload['password'], $toDir);
-                        break;
-                    case 'noauth':
-                        $this->cloneRepositoryWithoutAuthentication($repository, $toDir);
-                        break;
-                    case 'privateKey':
-                        $this->cloneRepositoryWithSsh($repository, $payload['privateKey'], $toDir);
-                        break;
-                    default:
-                        $this->logger->error("Unknown authMethod", ['payload' => $payload]);
-                }
-                $this->logger->info("Repository $repository successfully cloned");
-            } catch (\Exception $e) {
-                $this->logger->info("Failed cloning repository $repository");
+            switch (mb_strtolower($payload['authMethod'])) {
+                case 'password':
+                    $this->cloneRepositoryWithPassword($repository, $payload['username'], $payload['password'], $toDir);
+                    break;
+                case 'noauth':
+                    $this->cloneRepositoryWithoutAuthentication($repository, $toDir);
+                    break;
+                case 'privateKey':
+                    $this->cloneRepositoryWithSsh($repository, $payload['privateKey'], $toDir);
+                    break;
+                default:
+                    $this->logger->error("Unknown authMethod", ['payload' => $payload]);
             }
+            $this->logger->info("Repository $repository successfully cloned");
         }
     }
 
@@ -175,7 +177,8 @@ class Git extends ResourceProvider {
         } catch (\Exception $e) {
             $this->logger->error("Git clone failed for repository $repository", ['error' => $e]);
         } finally {
-            unlink($privateKeyFile);
+            unlink($privateKeyFile ?? "");
+            throw new ResourceProviderException("Unable to clone repository with ssh");
         }
     }
 

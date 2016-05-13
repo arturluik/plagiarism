@@ -4,6 +4,7 @@
 namespace eu\luige\plagiarism\plagiarismservice;
 
 
+use eu\luige\plagiarism\datastructure\PayloadProperty;
 use eu\luige\plagiarism\entity\Similarity;
 use eu\luige\plagiarism\mimetype\MimeType;
 use eu\luige\plagiarism\similarity\SimilarFileLines;
@@ -57,5 +58,25 @@ class MockService extends PlagiarismService {
             MimeType::JAVA,
             MimeType::CSS
         ];
+    }
+
+    /**
+     * Return properties that are needed for payload.
+     *
+     * @return PayloadProperty[]
+     */
+    public function getPayloadProperties() {
+        return [];
+    }
+
+    /**
+     * Validate request payload. Make sure all parameters exist.
+     * If something is wrong, throw new exception
+     * @param array $payload
+     * @throws \Exception
+     * @return bool
+     */
+    public function validatePayload(array  $payload) {
+        return true;
     }
 }

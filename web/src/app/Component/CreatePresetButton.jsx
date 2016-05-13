@@ -42,7 +42,11 @@ export default class CreatePresetButton extends React.Component {
         );
         API.getSupportedMimeTypes().success(result => {
             this.updateState('supportedMimeTypes', result.content.map((mimeType, key)=> {
-                return <option key={key}>{mimeType}</option>
+                return (
+                    <Col sm={4} key={"MimeType" + key}>
+                        <Checkbox value={mimeType}>{mimeType}</Checkbox>
+                    </Col>
+                );
             }));
         });
         API.getResourceProviders().success(result => {
@@ -60,23 +64,31 @@ export default class CreatePresetButton extends React.Component {
     savePreset() {
 
         var presetName = $('#preset-name').val();
-        var mimeType = $('#preset-mimetype').val();
         // Find settings
-        var settings = {};
+        var resourceProviderPayloads = {};
         $("#resourceProviderSettings > div").each((i, settingsDiv) => {
             // Find all settings
-            settings[settingsDiv.id] = {};
+            resourceProviderPayloads[settingsDiv.id] = {};
             ['input', 'select', 'textarea'].forEach(selector => {
                 $(settingsDiv).find(selector).each((i, input) => {
-                    settings[settingsDiv.id][input.name] = input.value;
+                    resourceProviderPayloads[settingsDiv.id][input.name] = input.value;
                 })
             });
 
         });
 
+        var plagiarismServicePayloads = {};
+        var mimeTypes = [];
+        $(".mimeTypes input:checked").each((key, input) => {
+            mimeTypes.push(input.value);
+        });
+
         var plagiarismServices = [];
         $(".plagiarismServices input:checked").each((key, input) => {
             plagiarismServices.push(input.value);
+            plagiarismServicePayloads[input.value] = {
+                'mimeTypes': mimeTypes
+            }
         });
 
         var resouceProviders = [];
@@ -84,7 +96,7 @@ export default class CreatePresetButton extends React.Component {
             resouceProviders.push(input.value);
         });
 
-        API.createPreset(plagiarismServices, resouceProviders, presetName, settings, {'mimeType': mimeType}).success(_ => {
+        API.createPreset(plagiarismServices, resouceProviders, presetName, resourceProviderPayloads, plagiarismServicePayloads).success(_ => {
             this.props.onNotify('success', presetName + ' lisatud');
             this.props.onSuccess();
         }).error(_ => {
@@ -200,9 +212,9 @@ export default class CreatePresetButton extends React.Component {
                             <FormGroup>
                                 <Col sm={4}>Tüüp</Col>
                                 <Col sm={8}>
-                                    <FormControl componentClass="select" id="preset-mimetype">
+                                    <Col sm={8} className='mimeTypes'>
                                         {this.state.supportedMimeTypes}
-                                    </FormControl>
+                                    </Col>
                                 </Col>
                             </FormGroup>
                             <FormGroup>

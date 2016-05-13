@@ -71,14 +71,25 @@ class API {
         return $this->get("/api/plagiarism/preset/$id");
     }
 
-    public function createPreset($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
+    public function createPreset($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads, $plagiarismServicePayloads) {
         return $this->put('/api/plagiarism/preset', [
             'serviceNames' => $serviceNames,
             'resourceProviderNames' => $resourceProviderNames,
             'suiteName' => $suiteName,
             'resourceProviderPayloads' => json_encode($resourceProviderPayloads),
-            'plagiarismServicePayloads' => json_encode(['mimeType' => MimeType::JAVA])
+            'plagiarismServicePayloads' => json_encode($plagiarismServicePayloads)
         ]);
+    }
+
+    public function createPresetJavaMimeType($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {
+
+        $plagiarismServicePayloads = [];
+        foreach (explode(",", $serviceNames) as $service) {
+            $plagiarismServicePayloads[$service] = [
+                'mimeTypes' => [MimeType::JAVA]
+            ];
+        }
+        return $this->createPreset($serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads, $plagiarismServicePayloads);
     }
 
     public function updatePreset($id, $serviceNames, $resourceProviderNames, $suiteName, $resourceProviderPayloads) {

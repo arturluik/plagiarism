@@ -3,6 +3,9 @@
 namespace eu\luige\plagiarism\plagiarismservice;
 
 use Doctrine\ORM\EntityManager;
+use eu\luige\plagiarism\datastructure\PayloadProperty;
+use eu\luige\plagiarism\exception\PlagiarismServiceException;
+use eu\luige\plagiarism\exception\ResourceProviderException;
 use eu\luige\plagiarism\resource\File;
 use eu\luige\plagiarism\model\Check;
 use Monolog\Logger;
@@ -58,22 +61,30 @@ abstract class PlagiarismService {
                 $resources = [];
                 foreach ($check->getResourceProviderNames() as $resourceProviderName) {
                     $resourceProvider = $this->checkService->getResourceProviderByName($resourceProviderName);
-                    $payload = $check->getResourceProviderPayload()[$resourceProviderName] ?? [];
+                    $payload = $check->getResourceProviderPayloads()[$resourceProviderName] ?? [];
                     $jsonpayload = json_encode($payload);
                     $this->logger->info("Using $resourceProviderName with payload $jsonpayload");
                     $resources = array_merge($resources, $resourceProvider->getResources($payload));
                 }
 
                 $service = $this->checkService->getPlagiarismServiceByName($check->getPlagiarismServiceName());
+                $jsonpayload = json_encode($check->getPlagiarismServicePayload());
+                $this->logger->info("Starting {$check->getPlagiarismServiceName()} with payload $jsonpayload");
                 $similarities = $service->compare($resources, $check->getPlagiarismServicePayload());
 
                 $this->logger->info("Message {$message->body} finished");
-            } catch (\Throwable $e) {
-                $check->setStatus(Check::CHECK_STATUS_ERROR);
-                $this->logger->error("Worker error: {$e->getMessage()}", ['error' => $e]);
+            } catch (PlagiarismServiceException $e) {
+                $check->setStatus(Check::CHECK_STATUS_PLAGIARISM_SERIVCE_ERROR);
+                $this->logger->error("Worker plagiarism service error: {$e->getMessage()}", ['error' => $e]);
+            } catch (ResourceProviderException $e) {
+                $check->setStatus(Check::CHECK_STATUS_PLAGIARISM_SERIVCE_ERROR);
+                $this->logger->error("Worker resource provider error: {$e->getMessage()}", ['error' => $e]);
+            } catch (\Exception $e) {
+                $check->setStatus(Check::CHECK_STATUS_UNKOWN_ERROR);
+                $this->logger->error("Worker unkown error: {$e->getMessage()}", ['error' => $e]);
             }
-            $this->checkService->onCheckFinished($check, $similarities);
             $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            $this->checkService->onCheckCompleted($check, $similarities);
         });
         while (true) {
             $channel->wait();
@@ -109,6 +120,23 @@ abstract class PlagiarismService {
      * @return string[]
      */
     abstract public function getSupportedMimeTypes();
+
+    /**
+     * Return properties that are needed for payload.
+     *
+     * @return PayloadProperty[]
+     */
+    abstract public function getPayloadProperties();
+
+    /**
+     * Validate request payload. Make sure all parameters exist.
+     * If something is wrong, throw new exception
+     * @param array $payload
+     * @throws \Exception
+     * @return bool
+     */
+    abstract public function validatePayload(array  $payload);
+
 
     /**
      * Get plagiarims service description for user.
@@ -152,10 +180,14 @@ abstract class PlagiarismService {
         }
     }
 
+    public function createNewTempFolder() {
+        $this->createdTempFolder = "{$this->temp}/" . uniqid($this->getName());
+        mkdir($this->createdTempFolder, 0777, true);
+    }
+
     public function getTempFolder() {
         if (!$this->createdTempFolder) {
-            $this->createdTempFolder = "{$this->temp}/" . uniqid($this->getName());
-            mkdir($this->createdTempFolder, 0777, true);
+            $this->createNewTempFolder();
         }
         return $this->createdTempFolder;
     }

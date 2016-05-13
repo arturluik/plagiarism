@@ -54,6 +54,7 @@ abstract class ResourceProvider {
      * Validate request payload. Make sure all parameters exist.
      * If something is wrong, throw new exception
      * @param array $payload
+     * @throws \Exception
      * @return bool
      */
     abstract public function validatePayload(array  $payload);

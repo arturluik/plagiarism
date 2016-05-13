@@ -36,12 +36,13 @@ class Preset extends Endpoint {
 
         $checkSuite = $this->checkSuiteModel->create($preset->getSuiteName());
 
+
         foreach ($preset->getServiceNames() as $serviceName) {
             $check = $this->checkModel->create(
                 $preset->getResourceProviderNames(),
                 $serviceName,
                 $preset->getResourceProviderPayloads(),
-                $preset->getPlagiarismServicePayloads(),
+                $preset->getPlagiarismServicePayloads()[$serviceName],
                 $checkSuite
             );
         }

@@ -2,6 +2,8 @@
 
 namespace eu\luige\plagiarism\plagiarismservice;
 
+use eu\luige\plagiarism\datastructure\PayloadProperty;
+use eu\luige\plagiarism\exception\PlagiarismServiceException;
 use eu\luige\plagiarism\mimetype\MimeType;
 use eu\luige\plagiarism\resource\Resource;
 use eu\luige\plagiarism\resourcefilter\MimeTypeFilter;
@@ -26,14 +28,34 @@ class Moss extends PlagiarismService {
      * @return Similarity[]
      */
     public function compare(array $resources, array $payload) {
-        $jsonPayload = json_encode($payload);
-        $this->logger->info("Moss {$this->getName()} started with " . count($resources) . " resources payload: $jsonPayload");
-        $mimeTypeFilter = new MimeTypeFilter([MimeType::JAVA]);
+        $similarities = [];
+
+        if (isset($payload['mimeTypes']) && is_array($payload['mimeTypes'])) {
+            foreach ($payload['mimeTypes'] as $mimeType) {
+                $similarities = array_merge($similarities, $this->mossCompare($resources, $mimeType));
+            }
+        } else {
+            throw new PlagiarismServiceException('No mimetypes provided!');
+        }
+
+        return $similarities;
+    }
+
+    private function mossCompare($resources, $mimeType) {
+        $mimeTypeFilter = new MimeTypeFilter([$mimeType]);
         $resources = $mimeTypeFilter->apply($resources);
         $this->logger->info("After filtering: " . count($resources) . " resources");
-        $this->copyResourcesToTempFolder($resources);
         $moss = new \MOSS($this->config['moss']['key']);
-        $moss->setLanguage('java');
+
+        if (!in_array($mimeType, $this->getSupportedMimeTypes())) {
+            $this->logger->info("Moss doesnt't support mimeType: $mimeType");
+            return [];
+        }
+
+        if ($mimeType == MimeType::JAVA) {
+            $moss->setLanguage('java');
+        }
+
 
         foreach ($resources as $resource) {
             if ($resource instanceof File) {
@@ -44,7 +66,6 @@ class Moss extends PlagiarismService {
         $result = $moss->send();
         $this->logger->info("Moss completed with result: $result");
         return $this->getSimilaritiesFromResult($resources, $result);
-
     }
 
     /**
@@ -53,44 +74,51 @@ class Moss extends PlagiarismService {
      * @return Similarity[]
      */
     public function getSimilaritiesFromResult(array $resources, string $resultPage) : array {
-        include __DIR__ . '/../../deps/simple-html-dom/simple-html-dom/simple_html_dom.php';
-        /** @var \simple_html_dom $result */
-        $result = file_get_html(trim($resultPage));
-        /** @var \simple_html_dom_node[] $tableRows */
-        $tableRows = $result->find("table tr");
-        // Skip first, because its information tr
 
-        $similarities = [];
-        for ($i = 1; $i < count($tableRows); $i++) {
-            $tableRow = $tableRows[$i];
-            /** @var \simple_html_dom_node[] $a */
-            $a = $tableRow->find("a");
-            $this->getLinkAndPercentage($a[0]->text());
-            list($firstLink, $firstPercentage) = $this->getLinkAndPercentage($a[0]->text());
-            list($secondLink, $secondPercentage) = $this->getLinkAndPercentage($a[1]->text());
+        try {
 
-            $matchURL = $a[0]->getAttribute('href');
 
-            $this->logger->debug("$firstLink vs $secondPercentage percentage: $firstPercentage and $secondPercentage");
+            include __DIR__ . '/../../deps/simple-html-dom/simple-html-dom/simple_html_dom.php';
+            /** @var \simple_html_dom $result */
+            $result = file_get_html(trim($resultPage));
+            /** @var \simple_html_dom_node[] $tableRows */
+            $tableRows = $result->find("table tr");
+            // Skip first, because its information tr
 
-            $firstResource = $this->findResourceByPath($resources, $firstLink);
-            $secondResource = $this->findResourceByPath($resources, $secondLink);
+            $similarities = [];
+            for ($i = 1; $i < count($tableRows); $i++) {
+                $tableRow = $tableRows[$i];
+                /** @var \simple_html_dom_node[] $a */
+                $a = $tableRow->find("a");
+                $this->getLinkAndPercentage($a[0]->text());
+                list($firstLink, $firstPercentage) = $this->getLinkAndPercentage($a[0]->text());
+                list($secondLink, $secondPercentage) = $this->getLinkAndPercentage($a[1]->text());
 
-            $this->logger->debug("$firstLink  == {$firstResource->getFileName()}");
-            $this->logger->debug("$secondLink == {$secondResource->getFileName()}");
+                $matchURL = $a[0]->getAttribute('href');
 
-            if (!$firstPercentage || !$secondResource) {
-                $this->logger->error("Didnt find match for $firstLink or $secondLink", [$firstResource, $secondResource]);
+                $this->logger->debug("$firstLink vs $secondPercentage percentage: $firstPercentage and $secondPercentage");
+
+                $firstResource = $this->findResourceByPath($resources, $firstLink);
+                $secondResource = $this->findResourceByPath($resources, $secondLink);
+
+                $this->logger->debug("$firstLink  == {$firstResource->getFileName()}");
+                $this->logger->debug("$secondLink == {$secondResource->getFileName()}");
+
+                if (!$firstPercentage || !$secondResource) {
+                    $this->logger->error("Didnt find match for $firstLink or $secondLink", [$firstResource, $secondResource]);
+                }
+
+                $similarity = new Similarity();
+                $similarity->setFirstResource($firstResource);
+                $similarity->setSecondResource($secondResource);
+                $similarity->setSimilarityPercentage(max(intval($firstPercentage), intval($secondPercentage)));
+                $similarity->setSimilarFileLines($this->getSimilarLinesFromMatch($matchURL));
+                $similarities[] = $similarity;
             }
-
-            $similarity = new Similarity();
-            $similarity->setFirstResource($firstResource);
-            $similarity->setSecondResource($secondResource);
-            $similarity->setSimilarityPercentage(max(intval($firstPercentage), intval($secondPercentage)));
-            $similarity->setSimilarFileLines($this->getSimilarLinesFromMatch($matchURL));
-            $similarities[] = $similarity;
+            $this->logger->info("Moss found " . count($similarities) . " similarities");
+        } catch (\Exception $e) {
+            throw new PlagiarismServiceException($e->getMessage());
         }
-        $this->logger->info("Moss found " . count($similarities) . " similarities");
 
         return $similarities;
     }
@@ -167,8 +195,33 @@ class Moss extends PlagiarismService {
      */
     public function getSupportedMimeTypes() {
         return [
-            MimeType::CSS,
             MimeType::JAVA
         ];
+    }
+
+    /**
+     * Return properties that are needed for payload.
+     *
+     * @return PayloadProperty[]
+     */
+    public function getPayloadProperties() {
+        return [
+            
+        ];
+    }
+
+    /**
+     * Validate request payload. Make sure all parameters exist.
+     * If something is wrong, throw new exception
+     * @param array $payload
+     * @throws \Exception
+     * @return bool
+     */
+    public function validatePayload(array  $payload) {
+        if (!isset($payload['mimeTypes'])) {
+            throw new \Exception('mimeTypes parameter is compulsory!');
+        }
+
+        return true;
     }
 }

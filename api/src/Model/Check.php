@@ -13,7 +13,9 @@ use Slim\Container;
 
 class Check extends Model {
 
-    const CHECK_STATUS_ERROR = 'status_error';
+    const CHECK_STATUS_PLAGIARISM_SERIVCE_ERROR = 'status_plagiarism_service_error';
+    const CHECK_STATUS_RESOURCE_PROVIDER_ERROR = 'status_resource_provider_error';
+    const CHECK_STATUS_UNKOWN_ERROR = 'status_unknown_error';
     const CHECK_STATUS_SUCCESS = 'status_success';
     const CHECK_STATUS_PENDING = 'status_pending';
 
@@ -56,14 +58,14 @@ class Check extends Model {
         return $check;
     }
 
-
+    
     /**
      * @param \eu\luige\plagiarism\entity\Check $check
      * @param \eu\luige\plagiarism\similarity\Similarity[] $similarities
      */
-    public function onCheckFinished($check, $similarities) {
+    public function onCheckCompleted($check, $similarities) {
         $this->makeSureDatabaseConnectionIsOpened();
-
+        $this->logger->info("Check {$check->getId()} finished with total similarities " . count($similarities));
         foreach ($similarities as $similarity) {
             try {
                 $similarityEntity = new Similarity();
@@ -84,12 +86,12 @@ class Check extends Model {
                 }
                 $similarityEntity->setSimilarResourceLines($similarFileLines);
             } catch (\Exception $e) {
-                $check->setStatus(Check::CHECK_STATUS_ERROR);
+                $check->setStatus(Check::CHECK_STATUS_UNKOWN_ERROR);
                 $this->logger->error('similarity save error', ['error' => $e]);
             }
         }
         $check->setFinished(new \DateTime());
-        if ($check->getStatus() != Check::CHECK_STATUS_ERROR) {
+        if ($check->getStatus() == Check::CHECK_STATUS_PENDING) {
             $check->setStatus(Check::CHECK_STATUS_SUCCESS);
         }
         $this->entityManager->persist($check);
@@ -99,14 +101,14 @@ class Check extends Model {
     /**
      * @param string[] $resourceProviders
      * @param string $plagiarismService
-     * @param array $resourceProviderPayload
+     * @param array $resourceProviderPayloads
      * @param CheckSuite $checkSuite
      */
-    public function create($resourceProviders, $plagiarismService, $resourceProviderPayload, $plagiarismServicePayload, $checkSuite) {
+    public function create($resourceProviders, $plagiarismService, $resourceProviderPayloads, $plagiarismServicePayload, $checkSuite) {
         $check = new \eu\luige\plagiarism\entity\Check();
         $check->setResourceProviderNames($resourceProviders);
         $check->setPlagiarismServiceName($plagiarismService);
-        $check->setResourceProviderPayload($resourceProviderPayload);
+        $check->setResourceProviderPayloads($resourceProviderPayloads);
         $check->setPlagiarismServicePayload($plagiarismServicePayload);
         $check->setCheckSuite($checkSuite);
         $check->setStatus(self::CHECK_STATUS_PENDING);

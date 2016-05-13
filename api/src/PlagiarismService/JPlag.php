@@ -2,6 +2,8 @@
 
 namespace eu\luige\plagiarism\plagiarismservice;
 
+use eu\luige\plagiarism\datastructure\PayloadProperty;
+use eu\luige\plagiarism\exception\PlagiarismServiceException;
 use eu\luige\plagiarism\mimetype\MimeType;
 use eu\luige\plagiarism\resourcefilter\MimeTypeFilter;
 use eu\luige\plagiarism\similarity\SimilarFileLines;
@@ -46,19 +48,39 @@ class JPlag extends PlagiarismService {
      * @throws \Exception
      */
     public function compare(array $resources, array $payload) {
-        $jsonPayload = json_encode($payload);
-        $this->logger->info("JPlag {$this->getName()} started with " . count($resources) . " resources payload: $jsonPayload");
-        $mimeTypeFilter = new MimeTypeFilter([MimeType::JAVA]);
-        $resources = $mimeTypeFilter->apply($resources);
-        $this->logger->info("After filtering: " . count($resources) . " resources");
-        $this->copyResourcesToTempFolder($resources);
+        $similarities = [];
 
-        $jplagJar = $this->config['app_root'] . '/bin/JPlag/jplag.jar';
-        $resultMessage = shell_exec(
-            "java -jar $jplagJar -l java17 -r {$this->getTempFolder()}/result -s {$this->getTempFolder()}"
-        );
-        $this->logger->info("Jplag finished with message: $resultMessage");
-        if (!is_dir("{$this->getTempFolder()}/result")) throw new \Exception("JPlag failed");
+        if (isset($payload['mimeTypes']) && is_array($payload['mimeTypes'])) {
+            foreach ($payload['mimeTypes'] as $mimeType) {
+                $similarities = array_merge($similarities, $this->jplagCompare($resources, $mimeType));
+            }
+        } else {
+            throw new PlagiarismServiceException('No mimetypes provided!');
+        }
+
+        return $similarities;
+    }
+
+    private function jplagCompare(array $resources, $mimeType) {
+        if (!in_array($mimeType, $this->getSupportedMimeTypes())) {
+            $this->logger->info("Jplag doesn't support mimeType: $mimeType");
+            return [];
+        }
+        try {
+            $mimeTypeFilter = new MimeTypeFilter([$mimeType]);
+            $resources = $mimeTypeFilter->apply($resources);
+            $this->logger->info("After filtering: " . count($resources) . " resources");
+            $this->createNewTempFolder();
+            $this->copyResourcesToTempFolder($resources);
+            $jplagJar = $this->config['app_root'] . '/bin/JPlag/jplag.jar';
+            $resultMessage = shell_exec(
+                "java -jar $jplagJar -l java17 -r {$this->getTempFolder()}/result -s {$this->getTempFolder()}"
+            );
+            $this->logger->info("Jplag finished with message: $resultMessage");
+        } catch (\Exception $e) {
+            throw new PlagiarismServiceException($e->getMessage());
+        }
+        if (!is_dir("{$this->getTempFolder()}/result")) throw new PlagiarismServiceException("JPlag result folder not created");
 
         return $this->parseResult($resources, "{$this->getTempFolder()}/result");
     }
@@ -156,5 +178,30 @@ class JPlag extends PlagiarismService {
             $result[1][0],
             $result[1][1]
         ];
+    }
+
+    /**
+     * Return properties that are needed for payload.
+     *
+     * @return PayloadProperty[]
+     */
+    public function getPayloadProperties() {
+        return [
+            
+        ];
+    }
+
+    /**
+     * Validate request payload. Make sure all parameters exist.
+     * If something is wrong, throw new exception
+     * @param array $payload
+     * @throws \Exception
+     * @return bool
+     */
+    public function validatePayload(array  $payload) {
+        if (!isset($payload['mimeTypes'])) {
+            throw new \Exception('mimeTypes parameter is compulsory!');
+        }
+        return true;
     }
 }

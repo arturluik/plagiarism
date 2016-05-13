@@ -21,7 +21,7 @@ class Check extends Entity {
     /** @var  CheckSuite @ManyToOne(targetEntity="CheckSuite", inversedBy="checks") */
     protected $checkSuite;
     /** @var  array @Column(type="json_array") */
-    protected $resourceProviderPayload;
+    protected $resourceProviderPayloads;
     /** @var  array @Column(type="json_array") */
     protected $plagiarismServicePayload;
     /** @var  string @Column(type="string") */
@@ -128,15 +128,15 @@ class Check extends Entity {
     /**
      * @return array
      */
-    public function getResourceProviderPayload() {
-        return $this->resourceProviderPayload;
+    public function getResourceProviderPayloads() {
+        return $this->resourceProviderPayloads;
     }
 
     /**
-     * @param array $resourceProviderPayload
+     * @param array $resourceProviderPayloads
      */
-    public function setResourceProviderPayload($resourceProviderPayload) {
-        $this->resourceProviderPayload = $resourceProviderPayload;
+    public function setResourceProviderPayloads($resourceProviderPayloads) {
+        $this->resourceProviderPayloads = $resourceProviderPayloads;
     }
 
     /**
