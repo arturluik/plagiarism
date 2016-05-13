@@ -1,11 +1,11 @@
 import React from 'react';
 import Navbar from './Navbar.jsx';
-import Auth from './../Service/Auth.jsx';
 
 import API from './../Service/Api.jsx';
 import Col from 'react-bootstrap/lib/Col';
 import Panel from 'react-bootstrap/lib/Panel';
 
+import {Link} from 'react-router'
 import CreatePresetButton from './CreatePresetButton.jsx';
 import CheckSuiteRow from './CheckSuiteRow.jsx';
 import PresetRow from './PresetRow.jsx';
@@ -89,23 +89,29 @@ export default class Index extends React.Component {
             }
         };
 
+        var presetHeader = (
+            <div>
+                Eeldefineeritud kontrollid
+                <CreatePresetButton onNotify={this.notify.bind(this)}
+                                    onSuccess={this.datasetChanged.bind(this)}/>
+            </div>
+        );
+
         return (
             <div className="container-fluid">
                 <div className="row index">
                     <Navbar/>
                     <NotificationSystem ref="notificationSystem" style={style}/>
                     <Col sm={6}>
-                        <Panel bsStyle={"danger"} header={'Eeldefineeritud kontrollid'}>
+                        <Panel bsStyle={"info"} header={presetHeader}>
                             {this.state.presets}
                             <span class="pull-right">
-                                <CreatePresetButton onNotify={this.notify.bind(this)}
-                                                    onSuccess={this.datasetChanged.bind(this)}/>
                             <AdvancedPagination onPageChange={this.onPresetPageChange.bind(this)}/>
                             </span>
                         </Panel>
                     </Col>
                     <Col sm={6}>
-                        <Panel bsStyle="danger" header="Tulemused">
+                        <Panel bsStyle="info" header="Tulemused">
                             {this.state.checksSuites}
                             <AdvancedPagination onPageChange={this.onCheckSuitePageChange.bind(this)}/>
                         </Panel>

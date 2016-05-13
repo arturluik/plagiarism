@@ -1,6 +1,8 @@
 import React from 'react';
 
 import Pagination from 'react-bootstrap/lib/Pagination';
+import Pager from 'react-bootstrap/lib/Pager';
+import PageItem from 'react-bootstrap/lib/PageItem';
 
 export default class PaginationAdvanced extends React.Component {
 
@@ -11,24 +13,27 @@ export default class PaginationAdvanced extends React.Component {
         };
     }
 
-    handleSelect(eventKey) {
-        this.props.onPageChange(eventKey);
+    handleSelect(direction) {
+
+        
+        var newPage = Math.max(1, this.state.activePage + direction);
+
         this.setState({
-            activePage: eventKey
+            activePage: newPage
+        });
+
+        this.props.onPageChange(newPage);
+        this.setState({
+            activePage: newPage
         });
     }
 
     render() {
         return (
-            <Pagination
-                prev
-                next
-                ellipsis
-                boundaryLinks
-                items={10}
-                maxButtons={0}
-                activePage={this.state.activePage}
-                onSelect={this.handleSelect.bind(this)}/>
+            <Pager>
+                <PageItem previous href="#" onSelect={this.handleSelect.bind(this, -1)}>&larr; Eelmine lehekülg</PageItem>
+                <PageItem next href="#" onSelect={this.handleSelect.bind(this, 1)}>Järgmine lehekülg&rarr;</PageItem>
+            </Pager>
         );
     }
 }

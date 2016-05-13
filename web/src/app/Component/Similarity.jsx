@@ -74,14 +74,14 @@ export default class Similarity extends React.Component {
                     </Panel>
                 </Col>
                 <Col sm={6}>
-                    <Panel bsStyle={"danger"} header={'Esimene fail'}>
+                    <Panel bsStyle={"info"} header={'Esimene fail'}>
                         <Highlight>
                             {this.state.similarity.firstContent}
                         </Highlight>
                     </Panel>
                 </Col>
                 <Col sm={6}>
-                    <Panel bsStyle={"danger"} header={'Teine fail'}>
+                    <Panel bsStyle={"info"} header={'Teine fail'}>
                         <Highlight>
                             {this.state.similarity.secondContent}
                         </Highlight>

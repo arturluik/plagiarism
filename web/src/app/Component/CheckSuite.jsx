@@ -74,13 +74,13 @@ export default class CheckSuite extends React.Component {
             <div>
                 <Navbar/>
                 <Col sm={4}>
-                    <Panel bsStyle={"danger"} header={'Omadused'}>
+                    <Panel bsStyle={"info"} header={'Omadused'}>
                         <h4>Kontrollijad</h4>
                         {this.state.checks}
                     </Panel>
                 </Col>
                 <Col sm={8}>
-                    <Panel bsStyle={"danger"} header={'Tulemused'}>
+                    <Panel bsStyle={"info"} header={'Tulemused'}>
                         <ListGroup>
                             {this.state.similarities}
                         </ListGroup>

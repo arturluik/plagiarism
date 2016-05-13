@@ -18,7 +18,7 @@ export default class PresetRow extends React.Component {
         return (
             <li className="list-group-item">
                 {this.props.preset.suiteName}
-                <Button className="pull-right" onClick={this.run.bind(this)} bsStyle="success"
+                <Button className="pull-right" onClick={this.run.bind(this)} bsStyle="default"
                         bsSize="xs">Start</Button>
             </li>
         );

@@ -9,6 +9,7 @@ import FormGroup from 'react-bootstrap/lib/FormGroup';
 import Col from 'react-bootstrap/lib/Col';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Checkbox from 'react-bootstrap/lib/Checkbox';
+import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 
 import API from './../Service/Api.jsx';
 
@@ -184,8 +185,8 @@ export default class CreatePresetButton extends React.Component {
 
     render() {
         return (
-            <div>
-                <Button bsStyle="danger" bsSize="small" onClick={this.openPopup.bind(this)}>Lisa uus</Button>
+            <div style={{display: "inline", float:"right"}}>
+                <Button bsStyle="primary" bsSize="xsmall" onClick={this.openPopup.bind(this)}>Lisa uus</Button>
                 <Modal show={this.state.showModal} onHide={this.closePopup.bind(this)} backdrop={false}>
                     <Modal.Header closeButton>
                         <Modal.Title>Loo uus eeldefineeritud kontroll</Modal.Title>
