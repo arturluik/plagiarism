@@ -5,9 +5,9 @@ import Panel from  'react-bootstrap/lib/Panel';
 import Col from 'react-bootstrap/lib/Col';
 
 import API from './../Service/Api.jsx';
-import Highlight from 'react-highlight';
 import Table from 'react-bootstrap/lib/Table';
 
+import {PrismCode} from "react-prism";
 import 'react-highlight/'
 
 export default class Similarity extends React.Component {
@@ -16,7 +16,7 @@ export default class Similarity extends React.Component {
         super(props, context);
 
         this.state = {
-            'similarity': {}
+            'similarity': {},
         };
 
         API.getSimilarity(this.props.params.id).success(data => {
@@ -31,15 +31,28 @@ export default class Similarity extends React.Component {
                             </tr>
                         );
                     });
+
+                    var firstLines = [];
+                    var secondLines = [];
+
+                    result.similarResourceLines.forEach((line) => {
+                        firstLines.push(line.firstResourceLineRange[0] + "-" + line.firstResourceLineRange[1])
+                        secondLines.push(line.secondResourceLineRange[0] + "-" + line.secondResourceLineRange[1])
+                    });
+
+                    firstLines = firstLines.join(",");
+                    secondLines = secondLines.join(",");
+
                     return (
                         <div key={"result" + result.id}>
                             <h4>{result.plagiarismService} tulemused</h4>
-                            Sarnasus: {result.similarityPercentage}
+                            Sarnasus: {result.similarityPercentage} <br/>
+                            <a onClick={this.showSimilarities.bind(this, firstLines, secondLines)}>Kuva sarnasused</a>
                             <Table>
                                 <thead>
                                 <tr>
-                                    <th>Esimese faili read</th>
-                                    <th>Teise faili read</th>
+                                    <th className="text-center">Esimese faili read</th>
+                                    <th className="text-center">Teise faili read</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -52,6 +65,17 @@ export default class Similarity extends React.Component {
             });
         });
     };
+
+    showSimilarities(firstLines, secondLines) {
+        this.state.similarity.firstContent += " ";
+        this.state.similarity.secondContent += " ";
+        this.setState({
+            'firstLines': firstLines,
+            'secondLines': secondLines,
+            'similarity': this.state.similarity
+        });
+        this.forceUpdate();
+    }
 
     updateState(parameter, value) {
         this.setState(oldState => {
@@ -75,16 +99,20 @@ export default class Similarity extends React.Component {
                 </Col>
                 <Col sm={6}>
                     <Panel bsStyle={"info"} header={'Esimene fail'}>
-                        <Highlight>
-                            {this.state.similarity.firstContent}
-                        </Highlight>
+                        <pre className="line-numbers" data-line={this.state.firstLines}>
+                            <PrismCode className="language-clike">
+                                {this.state.similarity.firstContent}
+                            </PrismCode>
+                        </pre>
                     </Panel>
                 </Col>
                 <Col sm={6}>
                     <Panel bsStyle={"info"} header={'Teine fail'}>
-                        <Highlight>
-                            {this.state.similarity.secondContent}
-                        </Highlight>
+                        <pre className="line-numbers" data-line={this.state.secondLines}>
+                            <PrismCode className="language-javascript">
+                                {this.state.similarity.secondContent}
+                            </PrismCode>
+                        </pre>
                     </Panel>
                 </Col>
             </div>

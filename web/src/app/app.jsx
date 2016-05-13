@@ -9,6 +9,12 @@ import Similarity from './Component/Similarity.jsx';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Sass/style.scss';
+import '../../../node_modules/prismjs/prism.js'
+import '../../../node_modules/prismjs/themes/prism-coy.css'
+import '../../../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min'
+import '../../../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css'
+import '../../../node_modules/prismjs/plugins/line-highlight/prism-line-highlight.css'
+import '../../../node_modules/prismjs/plugins/line-highlight/prism-line-highlight.min'
 
 render((
     <Router history={browserHistory}>

@@ -1,6 +1,10 @@
 $navbar-color: #2980b9;
 $navbar-text: #fff;
 
+.line-highlight {
+  background: rgba(255, 0,0, 0.1) !important;
+}
+
 .version {
   font-size: 10px;
 }
