@@ -62,7 +62,10 @@ fi
 cd /plagiarism
 ./composer.phar install
 ./composer.phar dump-autoload -o
-cd api
+npm install
+cd web
+node ../node_modules/webpack/bin/webpack.js --progress --colors
+cd ../api
 ./deps/bin/doctrine orm:schema-tool:drop --force
 ./deps/bin/doctrine orm:schema-tool:create
 ./deps/bin/doctrine orm:generate-proxies
