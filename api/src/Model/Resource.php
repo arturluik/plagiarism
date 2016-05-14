@@ -32,7 +32,7 @@ class Resource extends Model {
                 $resourceEntity = new \eu\luige\plagiarism\entity\Resource();
                 $resourceEntity->setContent($resource->getContent());
                 $resourceEntity->setHash($hash);
-                $resourceEntity->setName($resource->getFileName());
+                $resourceEntity->setOriginalPath($resource->getPath());
                 $this->entityManager->persist($resourceEntity);
                 return $resourceEntity;
             } else {

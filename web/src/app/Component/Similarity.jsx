@@ -98,7 +98,7 @@ export default class Similarity extends React.Component {
                     </Panel>
                 </Col>
                 <Col sm={6}>
-                    <Panel bsStyle={"info"} header={'Esimene fail'}>
+                    <Panel bsStyle={"info"} header={this.state.similarity.firstFile}>
                         <pre className="line-numbers" data-line={this.state.firstLines}>
                             <PrismCode className="language-clike">
                                 {this.state.similarity.firstContent}
@@ -107,7 +107,7 @@ export default class Similarity extends React.Component {
                     </Panel>
                 </Col>
                 <Col sm={6}>
-                    <Panel bsStyle={"info"} header={'Teine fail'}>
+                    <Panel bsStyle={"info"} header={this.state.similarity.secondFile}>
                         <pre className="line-numbers" data-line={this.state.secondLines}>
                             <PrismCode className="language-javascript">
                                 {this.state.similarity.secondContent}

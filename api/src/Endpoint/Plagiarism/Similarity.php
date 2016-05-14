@@ -44,6 +44,8 @@ class Similarity extends Endpoint {
                         'similarResourceLines' => $similarity->getSimilarResourceLines()->toArray()
                     ];
                 }, $allSimilarities),
+                'firstFile' => $similarity->getFirstResource()->getOriginalPath(),
+                'secondFile' => $similarity->getSecondResource()->getOriginalPath(),
                 'firstContent' => stream_get_contents($allSimilarities[0]->getFirstResource()->getContent()),
                 'secondContent' => stream_get_contents($allSimilarities[0]->getSecondResource()->getContent())
             ]

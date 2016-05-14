@@ -37,7 +37,7 @@ class Similarity extends Entity {
     }
 
     /**
-     * @return Resource
+     * @return \eu\luige\plagiarism\entity\Resource
      */
     public function getFirstResource() {
         return $this->firstResource;
@@ -51,7 +51,7 @@ class Similarity extends Entity {
     }
 
     /**
-     * @return Resource
+     * @return \eu\luige\plagiarism\entity\Resource
      */
     public function getSecondResource() {
         return $this->secondResource;
