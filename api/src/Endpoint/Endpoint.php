@@ -21,8 +21,8 @@ class Endpoint {
     protected $logger;
     /** @var  Check */
     private $checkModel;
-    /** @var  Cache */
-    private $cache;
+    /** @var  \eu\luige\plagiarism\cache\Cache */
+    protected $cache;
 
     /**
      * Endpoint constructor.
@@ -33,7 +33,7 @@ class Endpoint {
         $this->config = $container->get("settings");
         $this->logger = $container->get(Logger::class);
         $this->checkModel = $container->get(Check::class);
-        $this->cache = $container->get(Cache::class);
+        $this->cache = $container->get(\eu\luige\plagiarism\cache\Cache::class);
     }
 
     public function response(Response $response, ApiResponse $apiResponse) {

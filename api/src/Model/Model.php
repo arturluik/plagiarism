@@ -3,6 +3,7 @@
 namespace eu\luige\plagiarism\model;
 
 use Doctrine\ORM\EntityManager;
+use eu\luige\plagiarism\cache\Cache;
 use Monolog\Logger;
 use Slim\Container;
 
@@ -16,6 +17,8 @@ abstract class Model {
     protected $config;
     /** @var  Logger */
     protected $logger;
+    /** @var  Cache */
+    protected $cache;
 
     /**
      * Service constructor.
@@ -26,6 +29,7 @@ abstract class Model {
         $this->entityManager = $container->get(EntityManager::class);
         $this->config = $container->get('settings');
         $this->logger = $container->get(Logger::class);
+        $this->cache = $container->get(Cache::class);
     }
 
 

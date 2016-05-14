@@ -9,6 +9,7 @@ use eu\luige\plagiarism\model\Check;
 use eu\luige\plagiarism\model\CheckSuite;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use stringEncode\Exception;
 
 class Preset extends Endpoint {
     /** @var  \eu\luige\plagiarism\model\Preset */
@@ -32,13 +33,23 @@ class Preset extends Endpoint {
 
         $this->assertAttributesExist($request, ['id']);
 
-        $preset = $this->presetModel->get($request->getAttribute('id'));
+        $id = $request->getAttribute('id');
+
+        $apiResponse = new ApiResponse();
+        if ($this->cache->get($this->getCacheKey($id))) {
+            $apiResponse->setErrorCode(304);
+            $apiResponse->setErrorMessage('This preset is already started recently, please wait');
+            $this->logger->info("Id $id is cached!");
+            return $this->response($response, $apiResponse);
+        }
+
+        $preset = $this->presetModel->get($id);
 
         $checkSuite = $this->checkSuiteModel->create($preset->getSuiteName());
-
+        $this->cache->put($this->getCacheKey($id), true, $this->config['preset_run_cache_time']);
 
         foreach ($preset->getServiceNames() as $serviceName) {
-            $check = $this->checkModel->create(
+            $this->checkModel->create(
                 $preset->getResourceProviderNames(),
                 $serviceName,
                 $preset->getResourceProviderPayloads(),
@@ -47,7 +58,6 @@ class Preset extends Endpoint {
             );
         }
 
-        $apiResponse = new ApiResponse();
         $apiResponse->setContent([
             'id' => $checkSuite->getId()
         ]);
@@ -158,5 +168,9 @@ class Preset extends Endpoint {
         foreach ($resourceProviders as $resourceProvider) {
             $this->checkModel->validateResourceProviderPayload($resourceProvider, $payloads[$resourceProvider] ?? []);
         }
+    }
+
+    private function getCacheKey($id) {
+        return "cache_preset_$id";
     }
 }

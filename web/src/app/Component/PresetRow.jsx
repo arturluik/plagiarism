@@ -7,7 +7,11 @@ export default class PresetRow extends React.Component {
 
     run() {
         API.runPreset(this.props.preset.id).success(_ => {
-            this.props.onNotify("success", this.props.preset.suiteName + " käivitatud");
+            if (_.error_code == 304) {
+                this.props.onNotify("warning", this.props.preset.suiteName + " on hiljuti juba kävitatud");
+            } else {
+                this.props.onNotify("success", this.props.preset.suiteName + " käivitatud");
+            }
             this.props.onSuccess();
         }).error(_ => {
             this.props.onNotify("error", this.props.preset.suiteName + " käivitamine ebaõnnestus");

@@ -62,6 +62,14 @@ $container[AMQPStreamConnection::class] = function () use ($config) {
     );
 };
 
+$singletons = [];
+function singleton($class) {
+    global $singletons, $container;
+    if (!isset($singletons[$class])) {
+        $singletons[$class] = new $class($container);
+    }
+    return $singletons[$class];
+}
 
 $jsonHelpers = new JsonHelpers\JsonHelpers($app->getContainer());
 $jsonHelpers->registerResponseView();
@@ -76,24 +84,19 @@ $container[Check::class] = function ($container) {
 $container[EntityManager::class] = function () use ($entityManager) {
     return $entityManager;
 };
-$container[\eu\luige\plagiarism\model\Check::class] = function ($container) {
-    return new \eu\luige\plagiarism\model\Check($container);
-};
-$container[\eu\luige\plagiarism\model\PathPatternMatcher::class] = function ($container) {
-    return new \eu\luige\plagiarism\model\PathPatternMatcher($container);
-};
-$container[\eu\luige\plagiarism\model\Cache::class] = function ($container) {
-    return new \eu\luige\plagiarism\model\Cache($container);
-};
-$container[\eu\luige\plagiarism\model\Preset::class] = function ($container) {
-    return new \eu\luige\plagiarism\model\Preset($container);
-};
-$container[\eu\luige\plagiarism\model\CheckSuite::class] = function ($container) {
-    return new \eu\luige\plagiarism\model\CheckSuite($container);
-};
-$container[\eu\luige\plagiarism\model\Resource::class] = function ($container) {
-    return new \eu\luige\plagiarism\model\Resource($container);
-};
-$container[\eu\luige\plagiarism\model\Similarity::class] = function ($container) {
-    return new \eu\luige\plagiarism\model\Similarity($container);
-};
+
+$singletonClasses = [
+    \eu\luige\plagiarism\model\Check::class,
+    \eu\luige\plagiarism\model\PathPatternMatcher::class,
+    \eu\luige\plagiarism\cache\Cache::class,
+    \eu\luige\plagiarism\model\Preset::class,
+    \eu\luige\plagiarism\model\CheckSuite::class,
+    \eu\luige\plagiarism\model\Resource::class,
+    \eu\luige\plagiarism\model\Similarity::class
+];
+
+foreach ($singletonClasses as $singletonClass) {
+    $container[$singletonClass] = function () use ($singletonClass) {
+        return singleton($singletonClass);
+    };
+}

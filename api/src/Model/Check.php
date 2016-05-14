@@ -58,7 +58,7 @@ class Check extends Model {
         return $check;
     }
 
-    
+
     /**
      * @param \eu\luige\plagiarism\entity\Check $check
      * @param \eu\luige\plagiarism\similarity\Similarity[] $similarities
@@ -105,6 +105,7 @@ class Check extends Model {
      * @param CheckSuite $checkSuite
      */
     public function create($resourceProviders, $plagiarismService, $resourceProviderPayloads, $plagiarismServicePayload, $checkSuite) {
+       
         $check = new \eu\luige\plagiarism\entity\Check();
         $check->setResourceProviderNames($resourceProviders);
         $check->setPlagiarismServiceName($plagiarismService);
