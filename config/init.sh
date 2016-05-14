@@ -20,7 +20,6 @@ cp /config/php/php.ini /etc/php/7.0/cli/conf.d/30-application-config.ini
 
 # Postgresql configuration
 cp /config/postgresql/postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
-cp /config/postgresql/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
 
 # RabbitMQ configuration
 cp /config/rabbitmq/rabbitmq-env.conf /etc/rabbitmq/rabbitmq-env.conf
