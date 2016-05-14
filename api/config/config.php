@@ -39,6 +39,13 @@ return [
         'moss' => [
             'key' => '873311630'
         ],
+        //  Weighted average is used for combining different plagiarismService percentages
+        'reliability' => [
+            \eu\luige\plagiarism\plagiarismservice\Moss::class => 1,
+            \eu\luige\plagiarism\plagiarismservice\MockService::class => 1,
+            \eu\luige\plagiarism\plagiarismservice\JPlag::class => 1
+        ],
+        // Automatically starts Nr of workers for plagiarsimService
         'workers' => [
             \eu\luige\plagiarism\plagiarismservice\Moss::class => 2,
             \eu\luige\plagiarism\plagiarismservice\MockService::class => 2,

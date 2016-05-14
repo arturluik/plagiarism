@@ -3,6 +3,7 @@ namespace eu\luige\plagiarism\model;
 
 use Doctrine\ORM\EntityRepository;
 use eu\luige\plagiarism\entity\Check;
+use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use Slim\Container;
 
 
@@ -10,7 +11,10 @@ class Similarity extends Model {
 
     /** @var  EntityRepository */
     private $similarityRepository;
-
+    /** @var  \eu\luige\plagiarism\model\Check */
+    private $checkModel;
+    /** @var  array */
+    private $weights;
 
     /**
      * Similarity constructor.
@@ -18,6 +22,24 @@ class Similarity extends Model {
     public function __construct(Container $container) {
         parent::__construct($container);
         $this->similarityRepository = $this->entityManager->getRepository(\eu\luige\plagiarism\entity\Similarity::class);
+        $this->checkModel = $this->container->get(\eu\luige\plagiarism\model\Check::class);
+    }
+
+    public function getReliabilityWeight($plagiarismServiceName) {
+
+        // If not cached, load new weights
+        if (!$this->weights) {
+            $weights = [];
+            foreach (PlagiarismService::getServices() as $service) {
+                /** @var PlagiarismService $serviceInstance */
+                $serviceInstance = new $service($this->container);
+                $weights[mb_strtolower($serviceInstance->getName())] = $this->config['reliability'][$service] ?? 1;
+            }
+            $this->weights = $weights;
+            $this->logger->info('ReliabilityWeights', $weights);
+        }
+
+        return $this->weights[mb_strtolower($plagiarismServiceName)];
     }
 
     /**
@@ -86,14 +108,17 @@ class Similarity extends Model {
 
         $scoredSimilarities = [];
 
+
         foreach ($grouped as $groupKey => $groupItems) {
             $weight = 0;
+            $usedWeights = 0;
             $entry = [
                 'services' => []
             ];
             foreach ($groupItems as $groupItem) {
                 /** @var \eu\luige\plagiarism\entity\Similarity $groupItem */
-                $weight += $groupItem->getSimilarityPercentage();
+                $weight += $this->getReliabilityWeight($groupItem->getCheck()->getPlagiarismServiceName()) * $groupItem->getSimilarityPercentage();
+                $usedWeights += $this->getReliabilityWeight($groupItem->getCheck()->getPlagiarismServiceName());
                 $entry['services'][] = [
                     'name' => $groupItem->getCheck()->getPlagiarismServiceName(),
                     'similarity' => $groupItem->getSimilarityPercentage()
@@ -102,7 +127,7 @@ class Similarity extends Model {
             $entry['id'] = $groupItems[0]->getId();
             $entry['firstResource'] = $groupItems[0]->getFirstResource()->getName();
             $entry['secondResource'] = $groupItems[0]->getSecondResource()->getName();
-            $entry['weight'] = $weight;
+            $entry['weight'] = intval($weight / $usedWeights);
             $scoredSimilarities[] = $entry;
         }
 
