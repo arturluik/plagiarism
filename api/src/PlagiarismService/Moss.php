@@ -123,7 +123,7 @@ class Moss extends PlagiarismService {
                 $similarity = new Similarity();
                 $similarity->setFirstResource($firstResource);
                 $similarity->setSecondResource($secondResource);
-                $similarity->setSimilarityPercentage(max(intval($firstPercentage), intval($secondPercentage)));
+                $similarity->setSimilarityPercentage(intval(sqrt(intval($firstPercentage) * intval($secondPercentage))));
                 $similarity->setSimilarFileLines($this->getSimilarLinesFromMatch($matchURL));
                 $similarities[] = $similarity;
             }

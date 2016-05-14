@@ -37,7 +37,7 @@ class Cache {
 
     public function put($key, $value, $expire = 0) {
         if ($this->prepare()) {
-            $this->logger->addInfo("[CACHE] Storing $key => $value for $expire");
+            $this->logger->addInfo("[CACHE] Storing $key => " . substr($value, 0, 255) . " for $expire");
             $this->redis->set($key, $value);
             if ($expire) {
                 $this->redis->expire($key, $expire);
@@ -50,7 +50,7 @@ class Cache {
         if ($this->prepare()) {
             $value = $this->redis->get($key);
             if ($value !== null) {
-                $this->logger->info("[CACHE] got value: $value");
+                $this->logger->info("[CACHE] got value: " . substr($value, 0, 255));
                 return $value;
             }
             $this->logger->info("[CACHE] not hit");

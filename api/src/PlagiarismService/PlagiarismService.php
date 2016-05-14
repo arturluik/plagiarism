@@ -3,6 +3,7 @@
 namespace eu\luige\plagiarism\plagiarismservice;
 
 use Doctrine\ORM\EntityManager;
+use eu\luige\plagiarism\cache\Cache;
 use eu\luige\plagiarism\datastructure\PayloadProperty;
 use eu\luige\plagiarism\exception\PlagiarismServiceException;
 use eu\luige\plagiarism\exception\ResourceProviderException;
@@ -30,6 +31,8 @@ abstract class PlagiarismService {
     protected $createdTempFolder;
     /** @var  string */
     protected $temp;
+    /** @var  Cache */
+    protected $cache;
 
     /**
      * PlagiarismService constructor.
@@ -42,6 +45,7 @@ abstract class PlagiarismService {
         $this->config = $container->get("settings");
         $this->temp = $this->config['temp_folder'];
         $this->checkService = $this->container->get(\eu\luige\plagiarism\model\Check::class);
+        $this->cache = $this->container->get(Cache::class);
     }
 
     public function work() {
@@ -65,13 +69,32 @@ abstract class PlagiarismService {
                 $resources = [];
                 foreach ($check->getResourceProviderNames() as $resourceProviderName) {
                     $resourceProvider = $this->checkService->getResourceProviderByName($resourceProviderName);
-
-                    $this->
-
                     $payload = $check->getResourceProviderPayloads()[$resourceProviderName] ?? [];
-                    $jsonpayload = json_encode($payload);
-                    $this->logger->info("Using $resourceProviderName with payload $jsonpayload");
-                    $resources = array_merge($resources, $resourceProvider->getResources($payload));
+
+                    $fetchNew = true;
+
+                    // Wait 2 min for results
+                    $counter = 24;
+                    while (($result = $this->cache->get($this->getCacheKey($resourceProvider, $payload), false)) === 'waiting' && $counter-- > 0) {
+                        $this->logger->info("ResourceProvider already started or cached, waiting for result");
+                        sleep(5);
+                    }
+
+                    if ($result != false && $result !== 'waiting') {
+                        $this->logger->info("Got resourceProvider results from cache");
+                        $fetchedResources = unserialize($result);
+                        $fetchNew = false;
+                    }
+
+                    if ($fetchNew) {
+                        $this->logger->info("ResourceProvider not started fetching resources");
+                        $this->cache->put($this->getCacheKey($resourceProvider, $payload), 'waiting', $this->config['resources_cache_time']);
+                        $jsonpayload = json_encode($payload);
+                        $this->logger->info("Using $resourceProviderName with payload $jsonpayload");
+                        $fetchedResources = $resourceProvider->getResources($payload);
+                        $this->cache->put($this->getCacheKey($resourceProvider, $payload), serialize($fetchedResources), $this->config['resources_cache_time']);
+                    }
+                    $resources = array_merge($resources, $fetchedResources);
                 }
 
                 $service = $this->checkService->getPlagiarismServiceByName($check->getPlagiarismServiceName());
@@ -95,6 +118,10 @@ abstract class PlagiarismService {
         while (true) {
             $channel->wait();
         }
+    }
+
+    private function getCacheKey($resourceProvider, $payload) {
+        return "resourceprovider_cache_key_" . hash('sha256', json_encode([$resourceProvider, $payload]));
     }
 
     public static function getServices() {
