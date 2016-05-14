@@ -8,7 +8,7 @@ import NotFound from './Component/NotFound.jsx';
 import Similarity from './Component/Similarity.jsx';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import './Sass/style.scss';
+import './SCSS/style.scss';
 import '../../../node_modules/prismjs/prism.js'
 import '../../../node_modules/prismjs/themes/prism-coy.css'
 import '../../../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min'
