@@ -7,8 +7,8 @@ export default class CheckSuiteRow extends React.Component {
         return (
             <li className="list-group-item">
 
-                {this.props.checkSuite.name} &
-                {this.props.checkSuite.created.date}
+                <b>{this.props.checkSuite.name}</b> 
+                ({this.props.checkSuite.created.date.replace(".000000", "")})
                 <Link className="pull-right" to={`/checksuite/${this.props.checkSuite.id}`}>Vaata lähemalt</Link>
             </li>
         )

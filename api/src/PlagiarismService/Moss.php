@@ -42,6 +42,11 @@ class Moss extends PlagiarismService {
     }
 
     private function mossCompare($resources, $mimeType) {
+
+        if (count($resources) == 0) {
+            return [];
+        }
+
         $mimeTypeFilter = new MimeTypeFilter([$mimeType]);
         $resources = $mimeTypeFilter->apply($resources);
         $this->logger->info("After filtering: " . count($resources) . " resources");
@@ -52,16 +57,18 @@ class Moss extends PlagiarismService {
             return [];
         }
 
+        $this->createNewTempFolder();
+        $this->copyResourcesToTempFolder($resources);
+
         if ($mimeType == MimeType::JAVA) {
             $moss->setLanguage('java');
         }
 
 
-        foreach ($resources as $resource) {
-            if ($resource instanceof File) {
-                $moss->addFile($resource->getPath());
-            }
-        }
+        $this->logger->info("Adding files from {$this->getTempFolder()}");
+        $this->logger->info('Files', glob($this->getTempFolder() . '/*'));
+        $moss->addByWildcard($this->getTempFolder() . '/*');
+        $this->logger->info("Moss files added");
 
         $result = $moss->send();
         $this->logger->info("Moss completed with result: $result");
@@ -81,6 +88,10 @@ class Moss extends PlagiarismService {
             include __DIR__ . '/../../deps/simple-html-dom/simple-html-dom/simple_html_dom.php';
             /** @var \simple_html_dom $result */
             $result = file_get_html(trim($resultPage));
+            if (is_bool($result)) {
+                throw new PlagiarismServiceException("Moss returned error: $result");
+            }
+
             /** @var \simple_html_dom_node[] $tableRows */
             $tableRows = $result->find("table tr");
             // Skip first, because its information tr
@@ -106,6 +117,7 @@ class Moss extends PlagiarismService {
 
                 if (!$firstPercentage || !$secondResource) {
                     $this->logger->error("Didnt find match for $firstLink or $secondLink", [$firstResource, $secondResource]);
+                    continue;
                 }
 
                 $similarity = new Similarity();
@@ -156,14 +168,8 @@ class Moss extends PlagiarismService {
      * @return mixed|Resource
      */
     private function findResourceByPath(array $resources, string $path) : Resource {
-        foreach ($resources as $resource) {
-            if ($resource instanceof File && $resource->getPath() == $path) {
-                return $resource;
-            }
-        }
-        $this->logger->warn("Resource $path not found");
 
-        return null;
+        return $this->findResourceByUniqueId($resources, basename($path));
     }
 
     private function getLinkAndPercentage($text) : array {
@@ -206,7 +212,7 @@ class Moss extends PlagiarismService {
      */
     public function getPayloadProperties() {
         return [
-            
+
         ];
     }
 

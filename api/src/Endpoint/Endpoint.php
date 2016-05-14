@@ -3,6 +3,7 @@
 namespace eu\luige\plagiarism\endpoint;
 
 use eu\luige\plagiarism\datastructure\ApiResponse;
+use eu\luige\plagiarism\model\Cache;
 use eu\luige\plagiarism\plagiarismservice\PlagiarismService;
 use eu\luige\plagiarism\resourceprovider\ResourceProvider;
 use eu\luige\plagiarism\model\Check;
@@ -20,6 +21,8 @@ class Endpoint {
     protected $logger;
     /** @var  Check */
     private $checkModel;
+    /** @var  Cache */
+    private $cache;
 
     /**
      * Endpoint constructor.
@@ -30,6 +33,7 @@ class Endpoint {
         $this->config = $container->get("settings");
         $this->logger = $container->get(Logger::class);
         $this->checkModel = $container->get(Check::class);
+        $this->cache = $container->get(Cache::class);
     }
 
     public function response(Response $response, ApiResponse $apiResponse) {
@@ -69,7 +73,6 @@ class Endpoint {
             $this->checkModel->getPlagiarismServiceByName($service);
         }
     }
-
 
 
 }

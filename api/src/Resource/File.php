@@ -3,8 +3,7 @@ namespace eu\luige\plagiarism\resource;
 
 use eu\luige\plagiarism\mimetype\MimeType;
 
-class File extends Resource
-{
+class File extends Resource {
     /** @var  String */
     private $path;
     /** @var  string */
@@ -14,13 +13,14 @@ class File extends Resource
      * FileResource constructor.
      * @param String $path
      */
-    public function __construct($path)
-    {
+    public function __construct($path) {
+        parent::__construct();
         $this->path = $path;
+        // Some plagiarismCheckers want to detect mimeType with help of suffix
+        $this->addSuffix(end(explode('.', $path)));
     }
 
-    public function getContent()
-    {
+    public function getContent() {
         if (!$this->cachedContent) {
             $this->cachedContent = file_get_contents($this->getPath());
         }
@@ -30,8 +30,7 @@ class File extends Resource
     /**
      * @return String
      */
-    public function getFileName()
-    {
+    public function getFileName() {
         return basename($this->path);
     }
 
@@ -39,32 +38,28 @@ class File extends Resource
     /**
      * @return String
      */
-    public function getEncoding()
-    {
+    public function getEncoding() {
         return mb_detect_encoding($this->getContent());
     }
-    
+
     /**
      * @return String
      */
-    public function getMimeType()
-    {
+    public function getMimeType() {
         return MimeType::detect($this->getPath());
     }
-    
+
     /**
      * @return String
      */
-    public function getPath()
-    {
+    public function getPath() {
         return $this->path;
     }
 
     /**
      * @param String $path
      */
-    public function setPath($path)
-    {
+    public function setPath($path) {
         $this->path = $path;
     }
 }

@@ -50,7 +50,11 @@ abstract class PlagiarismService {
         $channel = $this->connection->channel();
         $channel->queue_declare($this->getQueueName(), false, true, false, false);
         $channel->basic_consume($this->getQueueName(), '', false, false, false, false, function (AMQPMessage $message) {
+
+            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+
             $this->logger->info("Worker {$this->getName()} got message {$message->body}");
+
             $json = json_decode($message->body, true);
             $checkId = $json['checkId'];
             $check = $this->checkService->get($checkId);
@@ -83,7 +87,6 @@ abstract class PlagiarismService {
                 $check->setStatus(Check::CHECK_STATUS_UNKOWN_ERROR);
                 $this->logger->error("Worker unkown error: {$e->getMessage()}", ['error' => $e]);
             }
-            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             $this->checkService->onCheckCompleted($check, $similarities);
         });
         while (true) {
@@ -157,14 +160,15 @@ abstract class PlagiarismService {
      * @param Resource[] $resources
      * @param $uniqueId
      */
-    public function getResourceByUniqueId(array $resources, $uniqueId) {
+    public function findResourceByUniqueId(array $resources, $uniqueId) {
         foreach ($resources as $resource) {
             if ($resource instanceof File) {
-                if (trim($resource->getFileName()) == trim($uniqueId)) {
+                if (trim($resource->getUniqueId()) == trim($uniqueId)) {
                     return $resource;
                 }
             }
         }
+        $this->logger->error("Couldn't find matching resource for $uniqueId");
     }
 
     /**
@@ -175,7 +179,7 @@ abstract class PlagiarismService {
         $this->logger->info("Copying " . count($resources) . " resources to $tempFolder");
         foreach ($resources as $resource) {
             if ($resource instanceof File) {
-                copy($resource->getPath(), "$tempFolder/{$resource->getFileName()}");
+                copy($resource->getPath(), "$tempFolder/{$resource->getUniqueId()}");
             }
         }
     }
