@@ -19,6 +19,13 @@ abstract class Resource {
         return $this->uniqueId;
     }
 
+    /**
+     * Used for unit testing only
+     * @internal
+     */
+    public function setUniqueId($id) {
+        $this->uniqueId = $id;
+    }
 
     public function addSuffix($suffix) {
         if (count(explode(".", $this->uniqueId)) == 1) {

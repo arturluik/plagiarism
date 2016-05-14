@@ -65,6 +65,9 @@ abstract class PlagiarismService {
                 $resources = [];
                 foreach ($check->getResourceProviderNames() as $resourceProviderName) {
                     $resourceProvider = $this->checkService->getResourceProviderByName($resourceProviderName);
+
+                    $this->
+
                     $payload = $check->getResourceProviderPayloads()[$resourceProviderName] ?? [];
                     $jsonpayload = json_encode($payload);
                     $this->logger->info("Using $resourceProviderName with payload $jsonpayload");

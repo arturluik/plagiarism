@@ -17,7 +17,8 @@ class File extends Resource {
         parent::__construct();
         $this->path = $path;
         // Some plagiarismCheckers want to detect mimeType with help of suffix
-        $this->addSuffix(end(explode('.', $path)));
+        $exploded = explode('.', $path);
+        $this->addSuffix(end($exploded));
     }
 
     public function getContent() {

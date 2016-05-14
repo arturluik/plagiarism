@@ -117,12 +117,12 @@ class JPlag extends PlagiarismService {
 
             $similarity = new Similarity();
             $similarity->setSimilarityPercentage(max($percentage1, $percentage2));
-
+            
             $this->logger->debug("$file1 vs $file2 percentage: {$similarity->getSimilarityPercentage()}");
 
             $resource1 = $this->findResourceByUniqueId($resources, $file1);
             $resource2 = $this->findResourceByUniqueId($resources, $file2);
-
+            
             if (!$resource1 || !$resource2) {
                 $this->logger->error("Didn't found resource for file $file1 or $file2", [$resource1, $resource2]);
                 continue;

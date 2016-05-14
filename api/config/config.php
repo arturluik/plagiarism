@@ -9,6 +9,7 @@ return [
         'default_paging_size' => 15,
         'app_root' => __DIR__ . '/../',
         'preset_run_cache_time' => 10, // seconds, prevents multiple runs once
+        'resources_cache_time' => 60, // How long resources are cached
         'amqp' => [
             'server' => 'localhost',
             'port' => 5672,

@@ -34,6 +34,10 @@ class JPlagTest extends \PHPUnit_Framework_TestCase {
         $resource1 = new File("/test/ElvisImpersonator.java");
         $resource2 = new File("/test/BogusPeriod.java");
 
+        // Test doesn't copy files
+        $resource1->setUniqueId('ElvisImpersonator.java');
+        $resource2->setUniqueId('BogusPeriod.java');
+        
         /** @var Similarity[] $similarities */
         $similarities = $this->jplag->parseResult([$resource1, $resource2], __DIR__ . '/../../stubs/JPlagResult/');
 
