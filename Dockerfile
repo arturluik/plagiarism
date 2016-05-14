@@ -21,29 +21,6 @@ RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 RUN npm install apidoc -g
 
-# Apidoc configuration (used to generate automated API documentation)
-COPY config/apidoc.json /tmp/apidoc.json
-
-# Apache configuration
-COPY config/apache/plagiarism-vhost.conf /etc/apache2/sites-available
-RUN a2dissite 000-default.conf
-RUN a2ensite plagiarism-vhost.conf
-RUN a2enmod rewrite
-RUN a2enmod dump_io
-
-# PHP configuration
-COPY config/php/php.ini /etc/php/7.0/apache2/conf.d/30-application-config.ini
-COPY config/php/php.ini /etc/php/7.0/cli/conf.d/30-application-config.ini
-
-# Postgresql configuration
-COPY config/postgresql/postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
-COPY config/postgresql/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
-
-# RabbitMQ configuration
-RUN service rabbitmq-server start && rabbitmq-plugins enable rabbitmq_management
-COPY config/rabbitmq/rabbitmq-env.conf /etc/rabbitmq/rabbitmq-env.conf
-COPY config/rabbitmq/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
-
 COPY config/init.sh .
 COPY config/env.sh .
 RUN  chmod +x init.sh

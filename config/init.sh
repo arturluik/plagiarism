@@ -4,6 +4,29 @@
 source env.sh
 
 
+# Apidoc configuration (used to generate automated API documentation)
+cp /config/apidoc.json /tmp/apidoc.json
+
+# Apache configuration
+cp /config/apache/plagiarism-vhost.conf /etc/apache2/sites-available
+a2dissite 000-default.conf
+a2ensite plagiarism-vhost.conf
+a2enmod rewrite
+a2enmod dump_io
+
+# PHP configuration
+cp /config/php/php.ini /etc/php/7.0/apache2/conf.d/30-application-config.ini
+cp /config/php/php.ini /etc/php/7.0/cli/conf.d/30-application-config.ini
+
+# Postgresql configuration
+cp /config/postgresql/postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
+cp /config/postgresql/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
+
+# RabbitMQ configuration
+cp /config/rabbitmq/rabbitmq-env.conf /etc/rabbitmq/rabbitmq-env.conf
+cp /config/rabbitmq/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+service rabbitmq-server start && rabbitmq-plugins enable rabbitmq_management
+
 # Generate documentation
 cd /tmp
 apidoc -i /plagiarism/api/ -o /var/www/plagiarism/documentation -f ".php$"
