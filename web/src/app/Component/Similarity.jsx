@@ -8,7 +8,6 @@ import API from './../Service/Api.jsx';
 import Table from 'react-bootstrap/lib/Table';
 
 import {PrismCode} from "react-prism";
-import 'react-highlight/'
 
 export default class Similarity extends React.Component {
 
