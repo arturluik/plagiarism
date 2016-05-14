@@ -55,8 +55,7 @@ class MockService extends PlagiarismService {
      */
     public function getSupportedMimeTypes() {
         return [
-            MimeType::JAVA,
-            MimeType::CSS
+            MimeType::JAVA
         ];
     }
 
