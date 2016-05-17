@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>WordList.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<HR>
+<H3><CENTER>WordList.java</CENTER></H3><HR>
+<PRE>
+package org.effectivejava.examples.chapter03.item12;
+<A NAME="0"></A>
+import java.util.Collections;
+import java.util.Set;
+<FONT color="#0000ff"><A HREF="javascript:ZweiFrames('match7-1.html#0',3,'match7-top.html#0',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>import java.util.TreeSet;
+
+public class WordList {
+	public static void main(String[] args) {
+		Set&lt;String&gt; s = new TreeSet&lt;String&gt;();</B></FONT>
+		Collections.addAll(s, args);
+		System.out.println(s);
+	}
+}
+</PRE>
+</BODY>
+</HTML>

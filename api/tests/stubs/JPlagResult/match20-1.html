@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>Raw.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>Raw.java</CENTER></H3><HR>
+<PRE>
+<A NAME="0"></A><FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match20-0.html#0',2,'match20-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>package org.effectivejava.examples.chapter05.item23;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+public class Raw {
+	// Uses raw type (List) - fails at runtime! - Page 112
+	public static void main(String[] args) {
+		List&lt;String&gt; strings = new ArrayList&lt;String&gt;();
+		unsafeAdd(strings, new Integer(42));</B></FONT>
+		String s = strings.get(0); // Compiler-generated cast
+	}
+
+	private static void unsafeAdd(List list, Object o) {
+		list.add(o);
+	}
+
+	// Use of raw type for unknown element type - don't do this! - Page 113
+	static int rawNumElementsInCommon(Set s1, Set s2) {
+		int result = 0;
+		for (Object o1 : s1)
+			if (s2.contains(o1))
+				result++;
+		return result;
+	}
+
+	// Unbounded wildcard type - typesafe and flexible - Page 113
+	static int numElementsInCommon(Set&lt;?&gt; s1, Set&lt;?&gt; s2) {
+		int result = 0;
+		for (Object o1 : s1)
+			if (s2.contains(o1))
+				result++;
+		return result;
+	}
+}
+</PRE>
+</BODY>
+</HTML>

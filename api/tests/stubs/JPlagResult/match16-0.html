@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>Planet.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<HR>
+<H3><CENTER>Planet.java</CENTER></H3><HR>
+<PRE>
+// Enum type with data and behavior - Pages 149-150
+package org.effectivejava.examples.chapter06.item30;
+
+public enum Planet {
+	MERCURY(3.302e+23, 2.439e6), VENUS(4.869e+24, 6.052e6), EARTH(5.975e+24,
+			6.378e6), MARS(6.419e+23, 3.393e6), JUPITER(1.899e+27, 7.149e7), SATURN(
+			5.685e+26, 6.027e7), URANUS(8.683e+25, 2.556e7), NEPTUNE(1.024e+26,
+			2.477e7);
+	private final double mass; // In kilograms
+	private final double radius; // In meters
+	private final double surfaceGravity; // In m / s^2
+
+	// Universal gravitational constant in m^3 / kg s^2
+	private static final double G = 6.67300E-11;
+
+	// Constructor
+	Planet(double mass, double radius) {
+		this.mass = mass;
+		this.radius = radius;
+<A NAME="0"></A>		surfaceGravity = G * mass / (radius * radius);
+	}
+
+<FONT color="#0000ff"><A HREF="javascript:ZweiFrames('match16-1.html#0',3,'match16-top.html#0',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>	public double mass() {
+		return mass;
+	}
+
+	public double radius() {
+		return radius;
+	}
+
+	public double surfaceGravity() {
+		return surfaceGravity;
+	}
+
+	public double surfaceWeight(double mass) {
+		return mass * surfaceGravity; // F = ma
+	}</B></FONT>
+}
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>CaseInsensitiveString.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>CaseInsensitiveString.java</CENTER></H3><HR>
+<PRE>
+<A NAME="0"></A>// Broken - violates symmetry! - Pages 36-37
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match25-0.html#0',2,'match25-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>package org.effectivejava.examples.chapter03.item08;
+
+public final class CaseInsensitiveString {
+	private final String s;
+
+	public CaseInsensitiveString(String s) {
+		if (s == null)
+			throw new NullPointerException();
+		this.s = s;
+	}</B></FONT>
+
+	// Broken - violates symmetry!
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof CaseInsensitiveString)
+			return s.equalsIgnoreCase(((CaseInsensitiveString) o).s);
+		if (o instanceof String) // One-way interoperability!
+			return s.equalsIgnoreCase((String) o);
+		return false;
+	}
+
+	// This version is correct.
+	// @Override public boolean equals(Object o) {
+	// return o instanceof CaseInsensitiveString &amp;&amp;
+	// ((CaseInsensitiveString) o).s.equalsIgnoreCase(s);
+	// }
+
+	public static void main(String[] args) {
+		CaseInsensitiveString cis = new CaseInsensitiveString(&quot;Polish&quot;);
+		String s = &quot;polish&quot;;
+		System.out.println(cis.equals(s) + &quot;  &quot; + s.equals(cis));
+	}
+}
+</PRE>
+</BODY>
+</HTML>

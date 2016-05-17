@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>Bigram.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>Bigram.java</CENTER></H3><HR>
+<PRE>
+// Can you spot the bug? - Page 176
+package org.effectivejava.examples.chapter06.item36;
+
+<A NAME="0"></A>import java.util.HashSet;
+import java.util.Set;
+
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match11-0.html#0',2,'match11-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>public class Bigram {
+	private final char first;
+	private final char second;
+
+	public Bigram(char first, char second) {
+		this.first = first;
+		this.second = second;
+	}
+
+	public boolean equals(Bigram b) {
+		return b.first == first &amp;&amp; b.second == second;
+	}
+
+	public int hashCode() {
+		return 31 * first + second;
+	}
+
+	public static void main(String[] args) {</B></FONT>
+		Set&lt;Bigram&gt; s = new HashSet&lt;Bigram&gt;();
+		for (int i = 0; i &lt; 10; i++)
+			for (char ch = 'a'; ch &lt;= 'z'; ch++)
+				s.add(new Bigram(ch, ch));
+		System.out.println(s.size());
+	}
+}
+</PRE>
+</BODY>
+</HTML>

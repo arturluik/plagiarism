@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>ConcurrentTimer.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<HR>
+<H3><CENTER>ConcurrentTimer.java</CENTER></H3><HR>
+<PRE>
+// Simple framework for timing concurrent execution
+package org.effectivejava.examples.chapter10.item69;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+
+public class ConcurrentTimer {
+<A NAME="0"></A>	private ConcurrentTimer() {
+	} // Noninstantiable
+
+<FONT color="#0000ff"><A HREF="javascript:ZweiFrames('match35-1.html#0',3,'match35-top.html#0',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>	public static long time(Executor executor, int concurrency,
+			final Runnable action) throws InterruptedException {
+		final CountDownLatch ready = new CountDownLatch(concurrency);
+		final CountDownLatch start = new CountDownLatch(1);
+		final CountDownLatch done = new CountDownLatch(concurrency);</B></FONT>
+
+		for (int i = 0; i &lt; concurrency; i++) {
+			executor.execute(new Runnable() {
+				public void run() {
+					ready.countDown(); // Tell timer we're ready
+					try {
+						start.await(); // Wait till peers are ready
+						action.run();
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					} finally {
+						done.countDown(); // Tell timer we're done
+					}
+				}
+			});
+		}
+
+		ready.await(); // Wait for all workers to be ready
+		long startNanos = System.nanoTime();
+		start.countDown(); // And they're off!
+		done.await(); // Wait for all workers to finish
+		return System.nanoTime() - startNanos;
+	}
+}
+</PRE>
+</BODY>
+</HTML>

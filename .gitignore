@@ -3,5 +3,5 @@ logs/*
 api/deps
 web/static/documentation
 composer.lock
-node_module
+node_modules
 web/build

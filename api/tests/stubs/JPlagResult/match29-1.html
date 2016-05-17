@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>DiceRolls.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>DiceRolls.java</CENTER></H3><HR>
+<PRE>
+// Same bug as NestIteration.java (but different symptom)!! - Page 213
+package org.effectivejava.examples.chapter08.item46;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+
+enum Face {
+	ONE, TWO, THREE, FOUR, FIVE, SIX
+}
+
+public class DiceRolls {
+<A NAME="0"></A>	public static void main(String[] args) {
+		Collection&lt;Face&gt; faces = Arrays.asList(Face.values());
+
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match29-0.html#0',2,'match29-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>		for (Iterator&lt;Face&gt; i = faces.iterator(); i.hasNext();)
+			for (Iterator&lt;Face&gt; j = faces.iterator(); j.hasNext();)
+				System.out.println(i.next() + &quot; &quot; + j.next());</B></FONT>
+
+		// Preferred idiom for nested iteration on collections and arrays
+		// for (Face face1 : faces)
+		// for (Face face2 : faces)
+		// System.out.println(face1 + &quot; &quot; + face2);
+	}
+}
+</PRE>
+</BODY>
+</HTML>

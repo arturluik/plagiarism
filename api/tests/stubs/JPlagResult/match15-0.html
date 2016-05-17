@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>Union.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<HR>
+<H3><CENTER>Union.java</CENTER></H3><HR>
+<PRE>
+// Generic union method with wildcard types - Pages 137-138
+package org.effectivejava.examples.chapter05.item28;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class Union {
+
+<A NAME="0"></A>	public static &lt;E&gt; Set&lt;E&gt; union(Set&lt;? extends E&gt; s1, Set&lt;? extends E&gt; s2) {
+		Set&lt;E&gt; result = new HashSet&lt;E&gt;(s1);
+		result.addAll(s2);
+<FONT color="#0000ff"><A HREF="javascript:ZweiFrames('match15-1.html#0',3,'match15-top.html#0',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>		return result;
+	}
+
+	// Simple program to exercise flexible generic method
+	public static void main(String[] args) {
+		Set&lt;Integer&gt; integers = new HashSet&lt;Integer&gt;();
+		integers.add(1);
+		integers.add(3);
+		integers.add(5);</B></FONT>
+
+		Set&lt;Double&gt; doubles = new HashSet&lt;Double&gt;();
+		doubles.add(2.0);
+		doubles.add(4.0);
+		doubles.add(6.0);
+
+		// Won't compile; see page 137
+		// Set&lt;Number&gt; numbers = union(integers, doubles);
+
+		// Explicit type parameter is necessary here
+		Set&lt;Number&gt; numbers = Union.&lt;Number&gt; union(integers, doubles);
+
+		System.out.println(numbers);
+	}
+}
+</PRE>
+</BODY>
+</HTML>

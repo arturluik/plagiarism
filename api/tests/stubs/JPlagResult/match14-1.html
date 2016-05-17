@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>InstrumentedHashSet.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>InstrumentedHashSet.java</CENTER></H3><HR>
+<PRE>
+// Broken - Inappropriate use of inheritance!
+package org.effectivejava.examples.chapter04.item16;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+
+public class InstrumentedHashSet&lt;E&gt; extends HashSet&lt;E&gt; {
+	// The number of attempted element insertions
+	private int addCount = 0;
+
+	public InstrumentedHashSet() {
+	}
+
+	public InstrumentedHashSet(int initCap, float loadFactor) {
+		super(initCap, loadFactor);
+	}
+
+	@Override
+	public boolean add(E e) {
+		addCount++;
+		return super.add(e);
+	}
+
+	@Override
+	public boolean addAll(Collection&lt;? extends E&gt; c) {
+		addCount += c.size();
+		return super.addAll(c);
+	}
+
+	public int getAddCount() {
+<A NAME="0"></A>		return addCount;
+	}
+
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match14-0.html#0',2,'match14-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>	public static void main(String[] args) {
+		InstrumentedHashSet&lt;String&gt; s = new InstrumentedHashSet&lt;String&gt;();
+		s.addAll(Arrays.asList(&quot;Snap&quot;, &quot;Crackle&quot;, &quot;Pop&quot;));</B></FONT>
+		System.out.println(s.getAddCount());
+	}
+}
+</PRE>
+</BODY>
+</HTML>

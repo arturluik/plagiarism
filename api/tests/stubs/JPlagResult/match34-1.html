@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>Arithmetic.java</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>Arithmetic.java</CENTER></H3><HR>
+<PRE>
+// Avoid float and double if exact answers are required!! - Page 48
+package org.effectivejava.examples.chapter08.item48;
+
+import java.math.BigDecimal;
+
+public class Arithmetic {
+	public static void main(String[] args) {
+		System.out.println(1.03 - .42);
+		System.out.println();
+
+		System.out.println(1.00 - 9 * .10);
+		System.out.println();
+
+		howManyCandies1();
+<A NAME="0"></A>		System.out.println();
+
+		howManyCandies2();
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match34-0.html#0',2,'match34-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>		System.out.println();
+
+		howManyCandies3();
+	}
+
+	// Broken - uses floating point for monetary calculation!
+	public static void howManyCandies1() {
+		double funds = 1.00;
+		int itemsBought = 0;
+		for (double price = .10; funds &gt;= price; price += .10) {</B></FONT>
+			funds -= price;
+			itemsBought++;
+		}
+		System.out.println(itemsBought + &quot; items bought.&quot;);
+		System.out.println(&quot;Change: $&quot; + funds);
+	}
+
+	public static void howManyCandies2() {
+		final BigDecimal TEN_CENTS = new BigDecimal(&quot;.10&quot;);
+
+		int itemsBought = 0;
+		BigDecimal funds = new BigDecimal(&quot;1.00&quot;);
+		for (BigDecimal price = TEN_CENTS; funds.compareTo(price) &gt;= 0; price = price
+				.add(TEN_CENTS)) {
+			itemsBought++;
+			funds = funds.subtract(price);
+		}
+		System.out.println(itemsBought + &quot; items bought.&quot;);
+		System.out.println(&quot;Money left over: $&quot; + funds);
+	}
+
+	public static void howManyCandies3() {
+		int itemsBought = 0;
+		int funds = 100;
+		for (int price = 10; funds &gt;= price; price += 10) {
+			itemsBought++;
+			funds -= price;
+		}
+		System.out.println(itemsBought + &quot; items bought.&quot;);
+		System.out.println(&quot;Money left over: &quot; + funds + &quot; cents&quot;);
+	}
+}
+</PRE>
+</BODY>
+</HTML>
