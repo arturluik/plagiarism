@@ -8,7 +8,7 @@
     "url": "git+https://github.com/Tomatipasta/plagiarism.git"
   },
   "author": "Artur Luik <artur.luik@gmail.com>",
-  "license": "MIT",
+  "license": "GNU GPLv3",
   "bugs": {
     "url": "https://github.com/Tomatipasta/plagiarism/issues"
   },

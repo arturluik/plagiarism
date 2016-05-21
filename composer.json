@@ -1,7 +1,7 @@
 {
-  "name": "Tomatipasta/plagiarism",
+  "name": "arturluik/plagiarism",
   "description": "Collection of plagiarism services",
-  "license": "MIT",
+  "license": "GNU GPLv3",
   "authors": [
     {
       "name": "Artur Luik",
