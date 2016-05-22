@@ -91,7 +91,7 @@ class Git extends ResourceProvider {
             new PayloadProperty('textarea', 'clone', 'Repositooriumid', false, 'Giti repositooriumite URId, kui neid on rohkem, siis eraldada komaga'),
             new PayloadProperty('text', 'username', 'Kasutajatunnus', false, 'Kasutajatunnus giti autentimiseks'),
             new PayloadProperty('text', 'password', 'Parool', false, 'Parool giti autentimiseks'),
-            new PayloadProperty('textarea', 'pubkey', 'Avalik võti', false, 'Avalik võti giti autentimiseks (kui parooli pole)'),
+            new PayloadProperty('textarea', 'privateKey', 'võti', false, 'Privaatvõti giti autentimiseks (kui parooli pole)'),
             new PayloadProperty('text', 'directoryPattern', 'Sisumuster', false,
                 'Repositoorumi täpsema sisu filtreerimiseks: näiteks /*/EX08 otsib kõikdiest repositooriumi kasutades EX08 kasuta ja kasutab selle sisu')
         ];
