@@ -7,6 +7,13 @@ use Slim\Http\Response;
 
 class PlagiarismService extends Endpoint {
 
+    /**
+     * @api {get} /plagiarism/supportedmimetypes Get all supported mime types
+     * @apiGroup Plagiarism
+     * @apiVersion 1.0.0
+     * @apiSuccessExample {json} Success-Response:
+     * {"error_code":0,"error_message":"","total_pages":1,"content":["text\/x-java-source"]}
+     */
     public function getSupportedTypes(Request $request, Response $response) {
         $apiResponse = new ApiResponse();
 
@@ -24,6 +31,13 @@ class PlagiarismService extends Endpoint {
         return $this->response($response, $apiResponse);
     }
 
+    /**
+     * @api {get} /plagiarism/plagiarismservice Get all supported plagiarism service identificators
+     * @apiGroup Plagiarism
+     * @apiVersion 1.0.0
+     * @apiSuccessExample {json} Success-Response:
+     * {"error_code":0,"error_message":"","total_pages":1,"content":["JPlag-1.0","MockService-1.0","Moss-1.0"]}
+     */
     public function all(Request $request, Response $response) {
         $apiResponse = new ApiResponse();
 
@@ -38,6 +52,14 @@ class PlagiarismService extends Endpoint {
         return $this->response($response, $apiResponse);
     }
 
+    /**
+     * @api {get} /plagiarism/plagiarismservice/id Get detailed plagiarism service information
+     * @apiGroup Plagiarism
+     * @apiVersion 1.0.0
+     * @apiParam {int} id Plagiarism service identificator
+     * @apiSuccessExample {json} Success-Response:
+     * {"error_code":0,"error_message":"","total_pages":1,"content":{"name":"Moss-1.0","description":"Standforid \u00fclikooli poolt loodud plagiaadituvastus\u00fcsteem"}}
+     */
     public function get(Request $request, Response $response) {
 
         $this->assertAttributesExist($request, ['id']);

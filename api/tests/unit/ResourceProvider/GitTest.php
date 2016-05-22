@@ -77,7 +77,7 @@ class GitTest extends \PHPUnit_Framework_TestCase {
             "authMethod" => "noauth",
             "directoryPattern" => "/api/tests/stubs/Resources",
             "clone" => [
-                "https://github.com/Tomatipasta/plagiarism.git"
+                "https://github.com/arturluik/plagiarism.git"
             ]
         ]);
 
@@ -89,7 +89,7 @@ class GitTest extends \PHPUnit_Framework_TestCase {
         $resources = $this->git->getResources([
             "authMethod" => "noauth",
             "clone" => [
-                "https://github.com/Tomatipasta/plagiarism.git"
+                "https://github.com/arturluik/plagiarism.git"
             ]
         ]);
 

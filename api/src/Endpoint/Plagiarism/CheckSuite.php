@@ -34,7 +34,7 @@ class CheckSuite extends Endpoint {
      * @api {get} /plagiarism/checksuite/:id Get detailed checksuite information
      * @apiGroup Plagiarism
      * @apiVersion 1.0.0
-     * @apiParam {string} checksuite unique check id
+     * @apiParam {string} checksuite Unique check id
      * @apiSuccessExample {json} Success-Response:
      * {"error_code":0,"error_message":"","total_pages":1,"content":{"id":1,"name":"Testing-Suite-1.0","created":{"date":"2016-05-12 20:12:45.000000","timezone_type":3,"timezone":"UTC"},"checks":[{"id":1,"status":"status_success","resourceProviders":["MockProvider-1.0"],"plagiarismService":"MockService-1.0"}],"similarities":[{"services":[{"name":"MockService-1.0","similarity":10}],"id":1,"firstResource":"HelloWorld.java","secondResource":"style.css","weight":10}]}}
      */
@@ -66,6 +66,14 @@ class CheckSuite extends Endpoint {
         return $this->response($response, $apiResponse);
     }
 
+    /**
+     * @api {get} /plagiarism/checksuite Get all checksuites
+     * @apiGroup Plagiarism
+     * @apiVersion 1.0.0
+     * @apiParam {int} page Page number
+     * @apiSuccessExample {json} Success-Response:
+     * {"error_code":0,"error_message":"","total_pages":1,"content":[{"id":7,"name":"Testing-Suite-1.0","created":{"date":"2016-05-22 10:30:42.000000","timezone_type":3,"timezone":"UTC"}},{"id":6,"name":"testPreset1-run","created":{"date":"2016-05-22 10:30:40.000000","timezone_type":3,"timezone":"UTC"}},{"id":5,"name":"Jplag testing preset","created":{"date":"2016-05-22 10:30:29.000000","timezone_type":3,"timezone":"UTC"}},{"id":4,"name":"Jplag and mock testing preset","created":{"date":"2016-05-22 10:30:19.000000","timezone_type":3,"timezone":"UTC"}},{"id":3,"name":"Testing simple mock provider","created":{"date":"2016-05-22 10:30:17.000000","timezone_type":3,"timezone":"UTC"}},{"id":2,"name":"Testing-Suite-1.0 multiple providers","created":{"date":"2016-05-22 10:30:16.000000","timezone_type":3,"timezone":"UTC"}},{"id":1,"name":"Testing-Suite-1.0","created":{"date":"2016-05-22 10:30:16.000000","timezone_type":3,"timezone":"UTC"}}]}
+     */
     public function all(Request $request, Response $response) {
 
         $apiResponse = new ApiResponse();
@@ -81,6 +89,27 @@ class CheckSuite extends Endpoint {
         return $this->response($response, $apiResponse);
     }
 
+    /**
+     * @api {put} /plagiarism/checksuite Add new checksuite
+     * @apiGroup Plagiarism
+     * @apiVersion 1.0.0
+     * @apiParam {string} name Name of the checksuite
+     * @apiParam {string} resourceProviderNames Comma separated array of resource provider identificators
+     * @apiParam {string} serviceNames Comma separated array of resource providers
+     * @apiParam {json} resourceProviderPayloads Json array of [provider_identificator] => [key1 => value1, ...]
+     * @apiParam {json} plagiarismServicePayloads Json array of [plagiarismservice_identificator] => [key1 => value1, ...]
+     * @apiParamExample {json} Request-Example:
+     *     {
+     *       "name": "test checksuite",
+     *       "resourceProviderNames" : "GIT-1.0,MockProvider-1.0",
+     *       "serviceNames" : "MOSS-1.0,JPlag-1.0",
+     *       "resourceProviderPayloads" : '{"GIT-1.0": {"clone": "git@something", "authMethod": "noAuth"}, "MockProvider-1.0": {}}'
+     *       "plagiarismServicePayloads" : '{"MOSS-1.0": {}, "JPlag1-0": {}}'
+     *     }
+     *
+     * @apiSuccessExample {json} Success-Response:
+     * {"error_code":0,"error_message":"","total_pages":1,"content":{"id":9}}
+     */
     public function create(Request $request, Response $response) {
         $apiResponse = new ApiResponse();
 
@@ -94,7 +123,12 @@ class CheckSuite extends Endpoint {
 
         $payload = json_decode($request->getParam('resourceProviderPayloads'), true);
         if (json_last_error()) {
-            throw new \Exception('Payload json parse error');
+            throw new \Exception('resourceProviderPayloads json parse error');
+        }
+
+        json_decode($request->getParam('plagiarismServicePayloads'), true);
+        if (json_last_error()) {
+            throw new \Exception('plagiarismServicePayload json parse error');
         }
 
         foreach ($resourceProviders as $resourceProvider) {
